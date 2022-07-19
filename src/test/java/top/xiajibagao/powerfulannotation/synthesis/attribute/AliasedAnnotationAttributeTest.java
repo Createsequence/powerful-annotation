@@ -1,6 +1,5 @@
 package top.xiajibagao.powerfulannotation.synthesis.attribute;
 
-import cn.hutool.core.annotation.Alias;
 import cn.hutool.core.util.ReflectUtil;
 import org.junit.Assert;
 import org.junit.Test;
@@ -26,7 +25,6 @@ public class AliasedAnnotationAttributeTest {
 		Assert.assertEquals(annotation.annotationType(), valueAnnotationAttribute.getAnnotationType());
 
 		// 方法属性
-		Assert.assertEquals(valueMethod.getAnnotation(Alias.class), valueAnnotationAttribute.getAnnotation(Alias.class));
 		Assert.assertEquals(valueMethod.getName(), valueAnnotationAttribute.getAttributeName());
 		Assert.assertEquals(nameMethod.getReturnType(), valueAnnotationAttribute.getAttributeType());
 	}

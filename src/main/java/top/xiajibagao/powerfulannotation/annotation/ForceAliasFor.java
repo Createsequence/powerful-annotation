@@ -1,12 +1,11 @@
 package top.xiajibagao.powerfulannotation.annotation;
 
-import cn.hutool.core.annotation.Alias;
 import top.xiajibagao.powerfulannotation.synthesis.RelationType;
 
 import java.lang.annotation.*;
 
 /**
- * <p>{@link Link}的子注解。表示“原始属性”将强制作为“关联属性”的别名。效果等同于在“原始属性”上添加{@link Alias}注解，
+ * <p>{@link Link}的子注解。表示“原始属性”将强制作为“关联属性”的别名。
  * 任何情况下，获取“关联属性”的值都将直接返回“原始属性”的值
  *
  * @author huangchengxing

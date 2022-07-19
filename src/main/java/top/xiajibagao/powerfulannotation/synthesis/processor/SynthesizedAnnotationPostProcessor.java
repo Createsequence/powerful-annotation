@@ -14,7 +14,7 @@ import java.util.Comparator;
  * 用于对合成器中的合成注解进行后处理，以支持一些特殊的功能。
  * 当存在多个处理器时，将按{@link #order()}排序，越小越优先执行。
  *
- * <p>默认提供了以下实现，用于支持合成注解基于{@link cn.hutool.core.annotation.Alias}与{@link Link}的别名机制：
+ * <p>默认提供了以下实现，用于支持合成注解基于{@link Link}的别名机制：
  * <ul>
  *     <li>
  *         {@link MirrorLinkAnnotationPostProcessor}：用于处理合成注解中代理带有{@link Link},

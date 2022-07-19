@@ -1,6 +1,5 @@
 package top.xiajibagao.powerfulannotation.synthesis;
 
-import cn.hutool.core.annotation.Alias;
 import top.xiajibagao.powerfulannotation.annotation.Link;
 
 import java.lang.annotation.Repeatable;
@@ -13,7 +12,6 @@ import java.lang.annotation.Repeatable;
  *
  * <p>当一个注解中的所有属性同时具备多种关系时，将依次按下述顺序处理：
  * <ol>
- *     <li>属性上的{@link Alias}注解；</li>
  *     <li>属性上的{@link Link}注解，且{@link Link#type()}为{@link #MIRROR_FOR}；</li>
  *     <li>属性上的{@link Link}注解，且{@link Link#type()}为{@link #FORCE_ALIAS_FOR}；</li>
  *     <li>属性上的{@link Link}注解，且{@link Link#type()}为{@link #ALIAS_FOR}；</li>
@@ -47,7 +45,7 @@ public enum RelationType {
 	ALIAS_FOR,
 
 	/**
-	 * <p>表示“原始属性”将强制作为“关联属性”的别名。效果等同于在“原始属性”上添加{@link Alias}注解，
+	 * <p>表示“原始属性”将强制作为“关联属性”的别名。
 	 * 任何情况下，获取“关联属性”的值都将直接返回“原始属性”的值
 	 */
 	FORCE_ALIAS_FOR,

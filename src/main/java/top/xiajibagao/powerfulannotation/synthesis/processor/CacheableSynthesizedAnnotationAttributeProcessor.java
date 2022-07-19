@@ -1,6 +1,5 @@
 package top.xiajibagao.powerfulannotation.synthesis.processor;
 
-import cn.hutool.core.annotation.Alias;
 import cn.hutool.core.lang.Assert;
 import cn.hutool.core.map.multi.RowKeyTable;
 import cn.hutool.core.map.multi.Table;
@@ -19,7 +18,7 @@ import java.util.Comparator;
  *
  * <p>通过该处理器获取合成注解属性值时会出现隐式别名，
  * 即子注解和元注解中同时存在类型和名称皆相同的属性时，元注解中属性总是会被该属性覆盖，
- * 并且该覆盖关系并不会通过{@link Alias}或{@link Link}被传递到关联的属性中。
+ * 并且该覆盖关系并不会通过{@link Link}被传递到关联的属性中。
  *
  * @author huangchengxing
  */
