@@ -7,6 +7,7 @@ import cn.hutool.core.lang.Opt;
 import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.ObjectUtil;
 import top.xiajibagao.powerfulannotation.helper.ForestMap;
+import top.xiajibagao.powerfulannotation.helper.FuncUtils;
 import top.xiajibagao.powerfulannotation.helper.LinkedForestMap;
 import top.xiajibagao.powerfulannotation.helper.TreeEntry;
 
@@ -35,6 +36,11 @@ public class SimpleRepeatableMappingRegistry implements RepeatableMappingRegistr
 	protected final ForestMap<Class<? extends Annotation>, RepeatableMapping> mappingForestMap;
 
 	/**
+	 * 解析器
+	 */
+	protected final List<RepeatableMappingParser> mappingParsers;
+
+	/**
 	 * 构造一个支持{@link Repeatable}注解的容器关系映射表
 	 *
 	 * @param parsers 要使用的解析器
@@ -47,9 +53,25 @@ public class SimpleRepeatableMappingRegistry implements RepeatableMappingRegistr
 	}
 
 	/**
-	 * 解析器
+	 * 获取关系解析器
+	 *
+	 * @return 关系解析器
 	 */
-	protected final List<RepeatableMappingParser> mappingParsers;
+	@Override
+	public List<RepeatableMappingParser> getMappingParser() {
+		return mappingParsers;
+	}
+
+	/**
+	 * 注册关系解析器
+	 *
+	 * @param mappingParser 关系解析器
+	 */
+	@Override
+	public void registerMappingParser(RepeatableMappingParser mappingParser) {
+		Assert.notNull(mappingParser, "mappingParser must not null");
+		mappingParsers.add(mappingParser);
+	}
 
 	/**
 	 * <p>注册指定注解类，将会解析其与关联的容器或元素注解的映射关系 <br>
@@ -198,7 +220,7 @@ public class SimpleRepeatableMappingRegistry implements RepeatableMappingRegistr
 			return Collections.emptyList();
 		}
 		// 将容器注解一层一层的兑换为元素注解
-		List<Annotation> results = forEachElements(container, elementType, containerMapping, t -> {});
+		List<Annotation> results = forEachElements(container, elementType, containerMapping, FuncUtils.doNothing());
 		return (List<T>)results;
 	}
 
@@ -227,5 +249,4 @@ public class SimpleRepeatableMappingRegistry implements RepeatableMappingRegistr
 		} while (ObjectUtil.isNotNull(mapping) && mapping.hasParent());
 		return results;
 	}
-
 }

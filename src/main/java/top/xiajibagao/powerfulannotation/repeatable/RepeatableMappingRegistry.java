@@ -14,6 +14,20 @@ import java.util.List;
 public interface RepeatableMappingRegistry {
 
 	/**
+	 * 获取关系解析器
+	 *
+	 * @return 关系解析器
+	 */
+	List<RepeatableMappingParser> getMappingParser();
+
+	/**
+	 * 注册关系解析器
+	 *
+	 * @param mappingParser 关系解析器
+	 */
+	void registerMappingParser(RepeatableMappingParser mappingParser);
+
+	/**
 	 * 注册指定注解类
 	 *
 	 * @param annotationType 注解类
