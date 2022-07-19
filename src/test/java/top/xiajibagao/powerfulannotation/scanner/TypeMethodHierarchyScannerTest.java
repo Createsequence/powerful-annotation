@@ -10,7 +10,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.*;
 
-public class MethodAnnotationScannerTest {
+public class TypeMethodHierarchyScannerTest {
 
 	@Test
 	public void supportTest() {

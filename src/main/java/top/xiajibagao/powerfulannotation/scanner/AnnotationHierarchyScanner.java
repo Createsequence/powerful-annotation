@@ -4,6 +4,7 @@ import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.ClassUtil;
 import cn.hutool.core.util.ObjectUtil;
 import top.xiajibagao.powerfulannotation.helper.AnnotationUtils;
+import top.xiajibagao.powerfulannotation.helper.FuncUtils;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
@@ -18,27 +19,23 @@ import java.util.stream.Stream;
  *
  * @author huangchengxing
  */
-public class AnnotationHierarchyScanner implements AnnotationScanner {
+public class AnnotationHierarchyScanner extends AbstractHierarchyScanner<AnnotationHierarchyScanner> {
 
 	/**
-	 * 获取当前注解的元注解后，是否继续递归扫描的元注解的元注解
+	 * 构造一个类注解扫描器
 	 */
-	private final boolean includeSupperMetaAnnotation;
-
-	/**
-	 * 构造一个元注解扫描器
-	 *
-	 * @param includeSupperMetaAnnotation 获取当前注解的元注解后，是否继续递归扫描的元注解的元注解
-	 */
-	public AnnotationHierarchyScanner(boolean includeSupperMetaAnnotation) {
-		this.includeSupperMetaAnnotation = includeSupperMetaAnnotation;
+	public AnnotationHierarchyScanner() {
+		super(FuncUtils.alwaysTrue(), Collections.emptySet());
 	}
 
 	/**
-	 * 构造一个元注解扫描器，默认在扫描当前注解上的元注解后，并继续递归扫描元注解
+	 * 构造一个类注解扫描器
+	 *
+	 * @param filter       过滤器
+	 * @param excludeTypes 不包含的类型
 	 */
-	public AnnotationHierarchyScanner() {
-		this(true);
+	protected AnnotationHierarchyScanner(Predicate<Class<?>> filter, Set<Class<?>> excludeTypes) {
+		super(filter, excludeTypes);
 	}
 
 	/**
@@ -50,22 +47,6 @@ public class AnnotationHierarchyScanner implements AnnotationScanner {
 	@Override
 	public boolean support(AnnotatedElement element) {
 		return (element instanceof Class && ClassUtil.isAssignable(Annotation.class, (Class<?>)element));
-	}
-
-	/**
-	 * 获取注解元素上的全部注解。调用该方法前，需要确保调用{@link #support(AnnotatedElement)}返回为true
-	 *
-	 * @param element 被注解的元素
-	 * @return 注解
-	 */
-	@Override
-	public List<Annotation> getAnnotations(AnnotatedElement element) {
-		final List<Annotation> annotations = new ArrayList<>();
-		scan(
-			(index, annotation) -> annotations.add(annotation), element,
-			annotation -> ObjectUtil.notEqual(annotation, element)
-		);
-		return annotations;
 	}
 
 	/**
@@ -102,7 +83,25 @@ public class AnnotationHierarchyScanner implements AnnotationScanner {
 				}
 			}
 			distance++;
-		} while (includeSupperMetaAnnotation && !deque.isEmpty());
+		} while (!deque.isEmpty());
+	}
+
+	@Override
+	protected void collectToQueue(List<Class<?>> nextClassQueue, Class<?> targetClass) {
+		Stream.of(targetClass.getDeclaredAnnotations())
+			.map(Annotation::annotationType)
+			.forEach(nextClassQueue::add);
+	}
+
+	@Override
+	protected Class<?> getClassFormAnnotatedElement(AnnotatedElement annotatedElement) {
+		return (Class<?>)annotatedElement;
+	}
+
+	@Override
+	protected Annotation[] getAnnotationsFromTargetClass(AnnotatedElement source, int index, Class<?> targetClass) {
+		return targetClass.getDeclaredAnnotations();
 	}
 
 }
+

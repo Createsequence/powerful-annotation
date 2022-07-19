@@ -11,7 +11,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class MateAnnotationScannerTest {
+public class AnnotationHierarchyScannerTest {
 
 	@Test
 	public void supportTest() {
@@ -32,15 +32,6 @@ public class MateAnnotationScannerTest {
 		Assert.assertTrue(annotations.containsKey(AnnotationForScannerTest.class));
 		Assert.assertTrue(annotations.containsKey(AnnotationForScannerTest1.class));
 		Assert.assertTrue(annotations.containsKey(AnnotationForScannerTest2.class));
-		Assert.assertFalse(annotations.containsKey(AnnotationForScannerTest3.class));
-
-		scanner = new AnnotationHierarchyScanner(false);
-		Assert.assertTrue(scanner.support(AnnotationForScannerTest3.class));
-		annotations = CollUtil.toMap(scanner.getAnnotations(AnnotationForScannerTest3.class), new HashMap<>(), Annotation::annotationType);
-		Assert.assertEquals(1, annotations.size());
-		Assert.assertTrue(annotations.containsKey(AnnotationForScannerTest2.class));
-		Assert.assertFalse(annotations.containsKey(AnnotationForScannerTest.class));
-		Assert.assertFalse(annotations.containsKey(AnnotationForScannerTest1.class));
 		Assert.assertFalse(annotations.containsKey(AnnotationForScannerTest3.class));
 	}
 

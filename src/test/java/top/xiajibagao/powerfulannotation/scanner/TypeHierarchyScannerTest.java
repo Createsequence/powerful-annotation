@@ -11,7 +11,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class TypeAnnotationScannerTest {
+public class TypeHierarchyScannerTest {
 
 	@Test
 	public void supportTest() {

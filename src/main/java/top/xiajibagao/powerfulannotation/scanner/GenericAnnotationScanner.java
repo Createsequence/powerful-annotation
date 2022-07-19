@@ -105,38 +105,29 @@ public class GenericAnnotationScanner implements AnnotationScanner {
 		}
 		// 注解元素是类
 		if (element instanceof Class) {
-			scanElements(typeHierarchyScanner, consumer, element, filter);
+			scanElement(typeHierarchyScanner, consumer, element, filter);
 		}
 		// 注解元素是方法
 		else if (element instanceof Method) {
-			scanElements(typeMethodHierarchyScanner, consumer, element, filter);
+			scanElement(typeMethodHierarchyScanner, consumer, element, filter);
 		}
 		// 注解元素是其他类型
 		else {
-			scanElements(flatElementScanner, consumer, element, filter);
+			scanElement(flatElementScanner, consumer, element, filter);
 		}
 	}
 
 	/**
 	 * 扫描注解类的层级结构（若存在），然后对获取到的注解和注解对应的层级索引进行处理
-	 *
-	 * @param scanner      使用的扫描器
-	 * @param consumer     对获取到的注解和注解对应的层级索引的处理
-	 * @param element 被注解的元素
-	 * @param filter       注解过滤器，无法通过过滤器的注解不会被处理。该参数允许为空。
 	 */
-	private void scanElements(
+	private void scanElement(
 		AnnotationScanner scanner,
 		BiConsumer<Integer, Annotation> consumer,
 		AnnotatedElement element,
 		Predicate<Annotation> filter) {
 		// 扫描类上注解
 		final ListValueMap<Integer, Annotation> classAnnotations = new ListValueMap<>(new LinkedHashMap<>());
-		scanner.scan((index, annotation) -> {
-			if (filter.test(annotation)) {
-				classAnnotations.putValue(index, annotation);
-			}
-		}, element, filter);
+		scanner.scan(classAnnotations::putValue, element, filter);
 
 		// 扫描元注解
 		classAnnotations.forEach((index, annotations) ->

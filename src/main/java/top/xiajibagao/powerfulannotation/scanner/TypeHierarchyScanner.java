@@ -12,7 +12,7 @@ import java.util.function.Predicate;
  *
  * @author huangchengxing
  */
-public class TypeHierarchyScanner extends AbstractTypeHierarchyScanner<TypeHierarchyScanner> implements AnnotationScanner {
+public class TypeHierarchyScanner extends AbstractTypeHierarchyScanner<TypeHierarchyScanner> {
 
 	/**
 	 * 构造一个类注解扫描器
@@ -66,28 +66,6 @@ public class TypeHierarchyScanner extends AbstractTypeHierarchyScanner<TypeHiera
 	@Override
 	protected Annotation[] getAnnotationsFromTargetClass(AnnotatedElement source, int index, Class<?> targetClass) {
 		return targetClass.getAnnotations();
-	}
-
-	/**
-	 * 是否允许扫描父类
-	 *
-	 * @param includeSuperClass 是否允许扫描父类
-	 * @return 当前实例
-	 */
-	@Override
-	public TypeHierarchyScanner setIncludeSuperClass(boolean includeSuperClass) {
-		return super.setIncludeSuperClass(includeSuperClass);
-	}
-
-	/**
-	 * 是否允许扫描父接口
-	 *
-	 * @param includeInterfaces 是否允许扫描父类
-	 * @return 当前实例
-	 */
-	@Override
-	public TypeHierarchyScanner setIncludeInterfaces(boolean includeInterfaces) {
-		return super.setIncludeInterfaces(includeInterfaces);
 	}
 
 }
