@@ -5,8 +5,8 @@ import cn.hutool.core.map.MapBuilder;
 import cn.hutool.core.util.ClassUtil;
 import org.junit.Assert;
 import org.junit.Test;
-import top.xiajibagao.powerfulannotation.synthesis.AnnotationAttribute;
 import top.xiajibagao.powerfulannotation.synthesis.SynthesizedAnnotation;
+import top.xiajibagao.powerfulannotation.synthesis.attribute.AnnotationAttribute;
 
 import java.lang.annotation.Annotation;
 import java.util.Arrays;

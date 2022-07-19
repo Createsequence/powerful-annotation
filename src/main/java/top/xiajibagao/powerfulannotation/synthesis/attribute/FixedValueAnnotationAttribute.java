@@ -3,7 +3,6 @@ package top.xiajibagao.powerfulannotation.synthesis.attribute;
 import cn.hutool.core.lang.Assert;
 import cn.hutool.core.util.ClassUtil;
 import cn.hutool.core.util.ObjectUtil;
-import top.xiajibagao.powerfulannotation.synthesis.AnnotationAttribute;
 
 /**
  * 总是返回固定值的注解属性

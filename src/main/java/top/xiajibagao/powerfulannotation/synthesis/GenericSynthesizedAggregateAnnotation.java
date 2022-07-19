@@ -7,6 +7,7 @@ import top.xiajibagao.powerfulannotation.annotation.Link;
 import top.xiajibagao.powerfulannotation.helper.SynthesizedAnnotationUtils;
 import top.xiajibagao.powerfulannotation.scanner.AnnotationHierarchyScanner;
 import top.xiajibagao.powerfulannotation.scanner.AnnotationScanner;
+import top.xiajibagao.powerfulannotation.synthesis.attribute.AnnotationAttributeValueProvider;
 import top.xiajibagao.powerfulannotation.synthesis.processor.AliasLinkAnnotationPostProcessor;
 import top.xiajibagao.powerfulannotation.synthesis.processor.CacheableSynthesizedAnnotationAttributeProcessor;
 import top.xiajibagao.powerfulannotation.synthesis.processor.SynthesizedAnnotationAttributeProcessor;

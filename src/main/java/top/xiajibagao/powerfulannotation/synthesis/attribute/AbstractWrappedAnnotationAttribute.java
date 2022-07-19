@@ -2,7 +2,6 @@ package top.xiajibagao.powerfulannotation.synthesis.attribute;
 
 import cn.hutool.core.lang.Assert;
 import cn.hutool.core.util.ObjectUtil;
-import top.xiajibagao.powerfulannotation.synthesis.AnnotationAttribute;
 
 import java.util.ArrayList;
 import java.util.Collection;

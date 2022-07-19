@@ -1,5 +1,6 @@
 package top.xiajibagao.powerfulannotation.synthesis;
 
+import top.xiajibagao.powerfulannotation.synthesis.attribute.AnnotationAttribute;
 import top.xiajibagao.powerfulannotation.synthesis.processor.SynthesizedAnnotationPostProcessor;
 import top.xiajibagao.powerfulannotation.synthesis.proxy.SynthesizedAnnotationInvocationHandler;
 

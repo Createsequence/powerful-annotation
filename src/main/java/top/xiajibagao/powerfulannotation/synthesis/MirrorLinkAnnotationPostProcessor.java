@@ -4,6 +4,7 @@ import cn.hutool.core.lang.Assert;
 import cn.hutool.core.text.CharSequenceUtil;
 import cn.hutool.core.util.ObjectUtil;
 import top.xiajibagao.powerfulannotation.annotation.Link;
+import top.xiajibagao.powerfulannotation.synthesis.attribute.AnnotationAttribute;
 import top.xiajibagao.powerfulannotation.synthesis.attribute.MirroredAnnotationAttribute;
 import top.xiajibagao.powerfulannotation.synthesis.processor.AbstractLinkAnnotationPostProcessor;
 

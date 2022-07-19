@@ -4,12 +4,12 @@ import cn.hutool.core.lang.Assert;
 import cn.hutool.core.lang.Opt;
 import cn.hutool.core.util.ObjectUtil;
 import top.xiajibagao.powerfulannotation.annotation.Link;
-import top.xiajibagao.powerfulannotation.synthesis.AnnotationAttribute;
 import top.xiajibagao.powerfulannotation.synthesis.AnnotationSynthesizer;
 import top.xiajibagao.powerfulannotation.synthesis.RelationType;
 import top.xiajibagao.powerfulannotation.synthesis.SynthesizedAnnotation;
 import top.xiajibagao.powerfulannotation.synthesis.attribute.AbstractWrappedAnnotationAttribute;
 import top.xiajibagao.powerfulannotation.synthesis.attribute.AliasedAnnotationAttribute;
+import top.xiajibagao.powerfulannotation.synthesis.attribute.AnnotationAttribute;
 import top.xiajibagao.powerfulannotation.synthesis.attribute.ForceAliasedAnnotationAttribute;
 
 import java.util.function.BinaryOperator;

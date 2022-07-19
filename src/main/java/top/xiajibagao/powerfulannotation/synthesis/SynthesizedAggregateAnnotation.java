@@ -1,6 +1,7 @@
 package top.xiajibagao.powerfulannotation.synthesis;
 
 import top.xiajibagao.powerfulannotation.annotation.Link;
+import top.xiajibagao.powerfulannotation.synthesis.attribute.AnnotationAttributeValueProvider;
 import top.xiajibagao.powerfulannotation.synthesis.processor.SynthesizedAnnotationAttributeProcessor;
 import top.xiajibagao.powerfulannotation.synthesis.processor.SynthesizedAnnotationPostProcessor;
 
@@ -39,7 +40,8 @@ import java.lang.annotation.Annotation;
  * @see SynthesizedAnnotationPostProcessor
  * @see GenericSynthesizedAggregateAnnotation
  */
-public interface SynthesizedAggregateAnnotation extends AggregateAnnotation, Hierarchical, AnnotationSynthesizer, AnnotationAttributeValueProvider {
+public interface SynthesizedAggregateAnnotation extends AggregateAnnotation, Hierarchical, AnnotationSynthesizer,
+	AnnotationAttributeValueProvider {
 
 	// ================== hierarchical ==================
 

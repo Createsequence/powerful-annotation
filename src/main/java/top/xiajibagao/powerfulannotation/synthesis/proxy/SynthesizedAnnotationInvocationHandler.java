@@ -7,8 +7,8 @@ import cn.hutool.core.util.ClassUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.ReflectUtil;
 import top.xiajibagao.powerfulannotation.helper.AnnotationUtils;
-import top.xiajibagao.powerfulannotation.synthesis.AnnotationAttributeValueProvider;
 import top.xiajibagao.powerfulannotation.synthesis.SynthesizedAnnotation;
+import top.xiajibagao.powerfulannotation.synthesis.attribute.AnnotationAttributeValueProvider;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationHandler;

@@ -1,6 +1,5 @@
 package top.xiajibagao.powerfulannotation.synthesis.attribute;
 
-import top.xiajibagao.powerfulannotation.synthesis.AnnotationAttribute;
 import top.xiajibagao.powerfulannotation.synthesis.RelationType;
 import top.xiajibagao.powerfulannotation.synthesis.processor.AliasLinkAnnotationPostProcessor;
 

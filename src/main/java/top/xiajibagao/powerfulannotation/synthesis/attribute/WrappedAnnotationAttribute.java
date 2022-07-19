@@ -1,7 +1,5 @@
 package top.xiajibagao.powerfulannotation.synthesis.attribute;
 
-import top.xiajibagao.powerfulannotation.synthesis.AnnotationAttribute;
-
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.Collection;

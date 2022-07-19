@@ -1,6 +1,8 @@
 package top.xiajibagao.powerfulannotation.synthesis;
 
 import cn.hutool.core.collection.CollUtil;
+import top.xiajibagao.powerfulannotation.synthesis.attribute.AnnotationAttribute;
+import top.xiajibagao.powerfulannotation.synthesis.attribute.AnnotationAttributeValueProvider;
 import top.xiajibagao.powerfulannotation.synthesis.proxy.SynthesizedAnnotationInvocationHandler;
 
 import java.lang.annotation.Annotation;

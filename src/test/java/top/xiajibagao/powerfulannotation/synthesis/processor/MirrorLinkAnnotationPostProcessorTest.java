@@ -6,6 +6,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import top.xiajibagao.powerfulannotation.annotation.Link;
 import top.xiajibagao.powerfulannotation.synthesis.*;
+import top.xiajibagao.powerfulannotation.synthesis.attribute.AnnotationAttribute;
 import top.xiajibagao.powerfulannotation.synthesis.attribute.CacheableAnnotationAttribute;
 import top.xiajibagao.powerfulannotation.synthesis.attribute.MirroredAnnotationAttribute;
 import top.xiajibagao.powerfulannotation.synthesis.attribute.WrappedAnnotationAttribute;

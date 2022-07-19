@@ -1,7 +1,7 @@
-package top.xiajibagao.powerfulannotation.synthesis;
+package top.xiajibagao.powerfulannotation.synthesis.attribute;
 
 import cn.hutool.core.util.ReflectUtil;
-import top.xiajibagao.powerfulannotation.synthesis.attribute.*;
+import top.xiajibagao.powerfulannotation.synthesis.SynthesizedAnnotation;
 import top.xiajibagao.powerfulannotation.synthesis.processor.SynthesizedAnnotationPostProcessor;
 
 import java.lang.annotation.Annotation;

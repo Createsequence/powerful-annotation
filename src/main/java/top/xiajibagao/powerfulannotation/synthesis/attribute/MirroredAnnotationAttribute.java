@@ -1,7 +1,6 @@
 package top.xiajibagao.powerfulannotation.synthesis.attribute;
 
 import cn.hutool.core.lang.Assert;
-import top.xiajibagao.powerfulannotation.synthesis.AnnotationAttribute;
 import top.xiajibagao.powerfulannotation.synthesis.MirrorLinkAnnotationPostProcessor;
 import top.xiajibagao.powerfulannotation.synthesis.RelationType;
 

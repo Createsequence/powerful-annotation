@@ -3,19 +3,15 @@ package top.xiajibagao.powerfulannotation.helper;
 import cn.hutool.core.util.ObjectUtil;
 import top.xiajibagao.powerfulannotation.annotation.Link;
 import top.xiajibagao.powerfulannotation.scanner.AnnotationScanner;
-import top.xiajibagao.powerfulannotation.synthesis.GenericSynthesizedAggregateAnnotation;
-import top.xiajibagao.powerfulannotation.synthesis.RepeatableContainerAnnotation;
-import top.xiajibagao.powerfulannotation.synthesis.RepeatableSynthesizedAggregateAnnotation;
-import top.xiajibagao.powerfulannotation.synthesis.SynthesizedAggregateAnnotation;
+import top.xiajibagao.powerfulannotation.synthesis.*;
+import top.xiajibagao.powerfulannotation.synthesis.attribute.FixedValueAnnotationAttribute;
+import top.xiajibagao.powerfulannotation.synthesis.proxy.ProxiedSynthesizedAnnotation;
 import top.xiajibagao.powerfulannotation.synthesis.proxy.SynthesizedAnnotationInvocationHandler;
 
 import java.lang.annotation.Annotation;
 import java.lang.annotation.Inherited;
 import java.lang.reflect.AnnotatedElement;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -289,6 +285,39 @@ public class SynthesizedAnnotationUtils {
     public static boolean isSynthesizedAnnotation(Annotation annotation) {
         return SynthesizedAnnotationInvocationHandler.isProxyAnnotation(annotation.getClass());
     }
+
+    /**
+     * 获取未被代理前的注解类
+     *
+     * @param annotation 注解类
+     * @return T
+     */
+    @SuppressWarnings("unchecked")
+    public static <T extends Annotation> T getSourceAnnotation(T annotation) {
+        while (!isSynthesizedAnnotation(annotation)) {
+            annotation = (T)((ProxiedSynthesizedAnnotation)annotation).getSynthesizedAnnotation().getAnnotation();
+        }
+        return annotation;
+    }
+
+    /**
+     * 更新注解对象的属性值
+     *
+     * @param annotation 注解
+     * @param attributes 要更新的属性与新属性值
+     * @return T
+     */
+    @SuppressWarnings("unchecked")
+    public static <T extends Annotation> T updateAttributeValue(T annotation, Map<String, Object> attributes) {
+        annotation = getSourceAnnotation(annotation);
+        SynthesizedAnnotation synthesizedAnnotation = new GenericSynthesizedAnnotation<>(
+            annotation.annotationType(), annotation, 0, 0
+        );
+        attributes.forEach((a, v) -> synthesizedAnnotation.replaceAttribute(a, attribute -> new FixedValueAnnotationAttribute(attribute, v)));
+        return (T)SynthesizedAnnotationInvocationHandler.createProxy(annotation.annotationType(), synthesizedAnnotation);
+    }
+
+    // ============================ 私有方法 ============================
 
     /**
      * 对指定注解对象及其元注解进行聚合

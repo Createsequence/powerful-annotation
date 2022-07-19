@@ -4,6 +4,7 @@ import cn.hutool.core.lang.Opt;
 import cn.hutool.core.util.ClassUtil;
 import cn.hutool.core.util.ObjectUtil;
 import top.xiajibagao.powerfulannotation.helper.AnnotationUtils;
+import top.xiajibagao.powerfulannotation.synthesis.attribute.AnnotationAttribute;
 import top.xiajibagao.powerfulannotation.synthesis.attribute.CacheableAnnotationAttribute;
 
 import java.lang.annotation.Annotation;
@@ -37,7 +38,7 @@ public class GenericSynthesizedAnnotation<R, T extends Annotation> implements Sy
 	 * @param verticalDistance   距离根对象的水平距离
 	 * @param horizontalDistance 距离根对象的垂直距离
 	 */
-	protected GenericSynthesizedAnnotation(
+	public GenericSynthesizedAnnotation(
 		R root, T annotation, int verticalDistance, int horizontalDistance) {
 		this.root = root;
 		this.annotation = annotation;

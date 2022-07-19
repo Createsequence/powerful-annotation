@@ -4,7 +4,6 @@ import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.ReflectUtil;
 import org.junit.Assert;
 import org.junit.Test;
-import top.xiajibagao.powerfulannotation.synthesis.AnnotationAttribute;
 
 import java.lang.annotation.*;
 import java.lang.reflect.Method;

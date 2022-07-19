@@ -5,11 +5,11 @@ import cn.hutool.core.util.ReflectUtil;
 import org.junit.Assert;
 import org.junit.Test;
 import top.xiajibagao.powerfulannotation.annotation.Link;
-import top.xiajibagao.powerfulannotation.synthesis.*;
-import top.xiajibagao.powerfulannotation.synthesis.attribute.AliasedAnnotationAttribute;
-import top.xiajibagao.powerfulannotation.synthesis.attribute.CacheableAnnotationAttribute;
-import top.xiajibagao.powerfulannotation.synthesis.attribute.ForceAliasedAnnotationAttribute;
-import top.xiajibagao.powerfulannotation.synthesis.attribute.WrappedAnnotationAttribute;
+import top.xiajibagao.powerfulannotation.synthesis.RelationType;
+import top.xiajibagao.powerfulannotation.synthesis.SynthesizedAggregateAnnotation;
+import top.xiajibagao.powerfulannotation.synthesis.SynthesizedAnnotation;
+import top.xiajibagao.powerfulannotation.synthesis.SynthesizedAnnotationSelector;
+import top.xiajibagao.powerfulannotation.synthesis.attribute.*;
 
 import java.lang.annotation.*;
 import java.lang.reflect.Method;

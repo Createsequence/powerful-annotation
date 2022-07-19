@@ -7,6 +7,7 @@ import cn.hutool.core.util.ObjectUtil;
 import top.xiajibagao.powerfulannotation.annotation.Link;
 import top.xiajibagao.powerfulannotation.helper.SynthesizedAnnotationUtils;
 import top.xiajibagao.powerfulannotation.synthesis.*;
+import top.xiajibagao.powerfulannotation.synthesis.attribute.AnnotationAttribute;
 
 import java.lang.annotation.Annotation;
 import java.util.HashMap;

@@ -2,6 +2,7 @@ package top.xiajibagao.powerfulannotation.synthesis;
 
 import org.junit.Assert;
 import org.junit.Test;
+import top.xiajibagao.powerfulannotation.synthesis.attribute.AnnotationAttribute;
 
 import java.lang.annotation.Annotation;
 import java.util.Map;
