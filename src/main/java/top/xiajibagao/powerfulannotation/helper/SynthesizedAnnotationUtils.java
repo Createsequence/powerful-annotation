@@ -4,6 +4,8 @@ import cn.hutool.core.util.ObjectUtil;
 import top.xiajibagao.powerfulannotation.annotation.Link;
 import top.xiajibagao.powerfulannotation.scanner.AnnotationScanner;
 import top.xiajibagao.powerfulannotation.synthesis.GenericSynthesizedAggregateAnnotation;
+import top.xiajibagao.powerfulannotation.synthesis.RepeatableContainerAnnotation;
+import top.xiajibagao.powerfulannotation.synthesis.RepeatableSynthesizedAggregateAnnotation;
 import top.xiajibagao.powerfulannotation.synthesis.SynthesizedAggregateAnnotation;
 import top.xiajibagao.powerfulannotation.synthesis.proxy.SynthesizedAnnotationInvocationHandler;
 
@@ -162,9 +164,22 @@ public class SynthesizedAnnotationUtils {
      * @return T
      */
     public static <T extends Annotation> T getSynthesizedAnnotation(AnnotatedElement element, Class<T> annotationType) {
-        List<Annotation> annotations = scanTypeHierarchy(element);
+        List<Annotation> annotations = scanDirectly(element);
         return aggregatingFromAnnotationWithMeta(annotations)
             .synthesize(annotationType);
+    }
+
+    /**
+     * 获取可重复的合成注解
+     *
+     * @param annotatedEle   注解元素
+     * @param annotationType 注解类型
+     * @return java.util.List<T>
+     */
+    public static <T extends Annotation> List<T> getRepeatableSynthesizedAnnotations(AnnotatedElement annotatedEle, Class<T> annotationType) {
+        List<Annotation> annotations = scanDirectly(annotatedEle);
+        return aggregatingRepeatableFromAnnotationWithMeta(annotations)
+            .getRepeatableAnnotations(annotationType);
     }
 
     /**
@@ -224,6 +239,19 @@ public class SynthesizedAnnotationUtils {
     }
 
     /**
+     * 获取可重复的合成注解
+     *
+     * @param annotatedEle   注解元素
+     * @param annotationType 注解类型
+     * @return java.util.List<T>
+     */
+    public static <T extends Annotation> List<T> findRepeatableSynthesizedAnnotations(AnnotatedElement annotatedEle, Class<T> annotationType) {
+        List<Annotation> annotations = scanTypeHierarchy(annotatedEle);
+        return aggregatingRepeatableFromAnnotationWithMeta(annotations)
+            .getRepeatableAnnotations(annotationType);
+    }
+
+    /**
      * 获取元素上所有指定注解
      * <ul>
      *     <li>若元素是类，则递归解析全部父类和全部父接口上的注解;</li>
@@ -260,6 +288,16 @@ public class SynthesizedAnnotationUtils {
      */
     public static boolean isSynthesizedAnnotation(Annotation annotation) {
         return SynthesizedAnnotationInvocationHandler.isProxyAnnotation(annotation.getClass());
+    }
+
+    /**
+     * 对指定注解对象及其元注解进行聚合
+     *
+     * @param annotations 注解对象
+     * @return 聚合注解
+     */
+    private static RepeatableContainerAnnotation aggregatingRepeatableFromAnnotationWithMeta(List<Annotation> annotations) {
+        return new RepeatableSynthesizedAggregateAnnotation(annotations, AnnotationScanner.DIRECTLY_AND_META_ANNOTATION);
     }
 
     /**
