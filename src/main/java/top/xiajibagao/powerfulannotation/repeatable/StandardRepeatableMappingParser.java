@@ -23,11 +23,6 @@ public class StandardRepeatableMappingParser implements RepeatableMappingParser 
 	private static final String VALUE = "value";
 
 	/**
-	 * 默认实例
-	 */
-	public static final StandardRepeatableMappingParser INSTANCE = new StandardRepeatableMappingParser();
-
-	/**
 	 * 获取注解类上的{@link Repeatable}，若存在则获取其指定的容器注解类，并为当前注解类型与其建立映射关系。 <br>
 	 * 要求{@link Repeatable#value()}指定的注解类中，必须有名为{@link #VALUE}的属性，
 	 * 且该属性的返回值类型必须为{@code annotationType}。 <br>

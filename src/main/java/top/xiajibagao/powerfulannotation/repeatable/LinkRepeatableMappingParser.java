@@ -19,11 +19,6 @@ import java.lang.reflect.Method;
  */
 public class LinkRepeatableMappingParser implements RepeatableMappingParser {
 
-	/**
-	 * 默认实例
-	 */
-	public static final LinkRepeatableMappingParser INSTANCE = new LinkRepeatableMappingParser();
-
 	@Override
 	public RepeatableMapping parse(Class<? extends Annotation> annotationType, RepeatableMappingRegistry registry) {
 		final Link link = SynthesizedAnnotationUtils.getSynthesizedAnnotation(annotationType, Link.class);
