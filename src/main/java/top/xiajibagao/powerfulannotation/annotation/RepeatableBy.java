@@ -1,6 +1,5 @@
-package top.xiajibagao.powerfulannotation.repeatable;
+package top.xiajibagao.powerfulannotation.annotation;
 
-import top.xiajibagao.powerfulannotation.annotation.Link;
 import top.xiajibagao.powerfulannotation.synthesis.RelationType;
 
 import java.lang.annotation.*;

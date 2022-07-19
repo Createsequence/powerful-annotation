@@ -3,6 +3,7 @@ package top.xiajibagao.powerfulannotation.repeatable;
 import org.junit.Assert;
 import org.junit.Test;
 import top.xiajibagao.powerfulannotation.annotation.Link;
+import top.xiajibagao.powerfulannotation.annotation.RepeatableBy;
 import top.xiajibagao.powerfulannotation.synthesis.RelationType;
 
 import java.lang.annotation.ElementType;
