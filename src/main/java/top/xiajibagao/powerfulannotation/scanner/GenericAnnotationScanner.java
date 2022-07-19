@@ -30,32 +30,32 @@ import java.util.function.Predicate;
  * 此外，扫描器支持在获取到层级结构中的注解对象后，再对注解对象的元注解进行扫描。
  *
  * @author huangchengxing
- * @see TypeAnnotationScanner
- * @see MethodAnnotationScanner
- * @see MetaAnnotationScanner
- * @see ElementAnnotationScanner
+ * @see TypeHierarchyScanner
+ * @see TypeMethodHierarchyScanner
+ * @see AnnotationHierarchyScanner
+ * @see FlatElementAnnotationScanner
  */
 public class GenericAnnotationScanner implements AnnotationScanner {
 
 	/**
 	 * 类型扫描器
 	 */
-	private final AnnotationScanner typeScanner;
+	private final AnnotationScanner typeHierarchyScanner;
 
 	/**
 	 * 方法扫描器
 	 */
-	private final AnnotationScanner methodScanner;
+	private final AnnotationScanner typeMethodHierarchyScanner;
 
 	/**
 	 * 元注解扫描器
 	 */
-	private final AnnotationScanner metaScanner;
+	private final AnnotationScanner annotationHierarchyScanner;
 
 	/**
 	 * 普通元素扫描器
 	 */
-	private final AnnotationScanner elementScanner;
+	private final AnnotationScanner flatElementScanner;
 
 	/**
 	 * 通用注解扫描器支持扫描所有类型的{@link AnnotatedElement}
@@ -80,14 +80,14 @@ public class GenericAnnotationScanner implements AnnotationScanner {
 		boolean enableScanSupperClass,
 		boolean enableScanSupperInterface) {
 
-		this.metaScanner = enableScanMetaAnnotation ? new MetaAnnotationScanner() : new EmptyAnnotationScanner();
-		this.typeScanner = new TypeAnnotationScanner(
+		this.annotationHierarchyScanner = enableScanMetaAnnotation ? new AnnotationHierarchyScanner() : new NothingScanner();
+		this.typeHierarchyScanner = new TypeHierarchyScanner(
 			enableScanSupperClass, enableScanSupperInterface, a -> true, Collections.emptySet()
 		);
-		this.methodScanner = new MethodAnnotationScanner(
+		this.typeMethodHierarchyScanner = new TypeMethodHierarchyScanner(
 			enableScanSupperClass, enableScanSupperInterface, a -> true, Collections.emptySet()
 		);
-		this.elementScanner = new ElementAnnotationScanner();
+		this.flatElementScanner = new FlatElementAnnotationScanner();
 	}
 
 	/**
@@ -105,15 +105,15 @@ public class GenericAnnotationScanner implements AnnotationScanner {
 		}
 		// 注解元素是类
 		if (element instanceof Class) {
-			scanElements(typeScanner, consumer, element, filter);
+			scanElements(typeHierarchyScanner, consumer, element, filter);
 		}
 		// 注解元素是方法
 		else if (element instanceof Method) {
-			scanElements(methodScanner, consumer, element, filter);
+			scanElements(typeMethodHierarchyScanner, consumer, element, filter);
 		}
 		// 注解元素是其他类型
 		else {
-			scanElements(elementScanner, consumer, element, filter);
+			scanElements(flatElementScanner, consumer, element, filter);
 		}
 	}
 
@@ -142,7 +142,7 @@ public class GenericAnnotationScanner implements AnnotationScanner {
 		classAnnotations.forEach((index, annotations) ->
 			annotations.forEach(annotation -> {
 				consumer.accept(index, annotation);
-				metaScanner.scan(consumer, annotation.annotationType(), filter);
+				annotationHierarchyScanner.scan(consumer, annotation.annotationType(), filter);
 			})
 		);
 	}

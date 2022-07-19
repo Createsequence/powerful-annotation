@@ -16,10 +16,10 @@ import java.util.function.Predicate;
  * 为需要从类的层级结构中获取注解的{@link AnnotationScanner}提供基本实现
  *
  * @author huangchengxing
- * @see TypeAnnotationScanner
- * @see MetaAnnotationScanner
+ * @see TypeHierarchyScanner
+ * @see AnnotationHierarchyScanner
  */
-public abstract class AbstractTypeAnnotationScanner<T extends AbstractTypeAnnotationScanner<T>> implements AnnotationScanner {
+public abstract class AbstractTypeHierarchyScanner<T extends AbstractTypeHierarchyScanner<T>> implements AnnotationScanner {
 
 	/**
 	 * 是否允许扫描父类
@@ -55,7 +55,7 @@ public abstract class AbstractTypeAnnotationScanner<T extends AbstractTypeAnnota
 	 * @param excludeTypes      不包含的类型
 	 */
 	@SuppressWarnings("unchecked")
-	protected AbstractTypeAnnotationScanner(boolean includeSuperClass, boolean includeInterfaces, Predicate<Class<?>> filter, Set<Class<?>> excludeTypes) {
+	protected AbstractTypeHierarchyScanner(boolean includeSuperClass, boolean includeInterfaces, Predicate<Class<?>> filter, Set<Class<?>> excludeTypes) {
 		Assert.notNull(filter, "filter must not null");
 		Assert.notNull(excludeTypes, "excludeTypes must not null");
 		this.includeSuperClass = includeSuperClass;

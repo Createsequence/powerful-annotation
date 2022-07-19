@@ -9,11 +9,11 @@ import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 /**
- * 扫描{@link AnnotatedElement}上的注解，不支持处理层级对象
+ * 支持扫描{@link AnnotatedElement}上的注解，而不处理其层级结构的扫描器
  *
  * @author huangchengxing
  */
-public class ElementAnnotationScanner implements AnnotationScanner {
+public class FlatElementAnnotationScanner implements AnnotationScanner {
 
 	/**
 	 * 判断是否支持扫描该注解元素，仅当注解元素不为空时返回{@code true}

@@ -12,7 +12,7 @@ import java.util.function.Predicate;
  *
  * @author huangchengxing
  */
-public class TypeAnnotationScanner extends AbstractTypeAnnotationScanner<TypeAnnotationScanner> implements AnnotationScanner {
+public class TypeHierarchyScanner extends AbstractTypeHierarchyScanner<TypeHierarchyScanner> implements AnnotationScanner {
 
 	/**
 	 * 构造一个类注解扫描器
@@ -22,14 +22,14 @@ public class TypeAnnotationScanner extends AbstractTypeAnnotationScanner<TypeAnn
 	 * @param filter             过滤器
 	 * @param excludeTypes       不包含的类型
 	 */
-	public TypeAnnotationScanner(boolean includeSupperClass, boolean includeInterfaces, Predicate<Class<?>> filter, Set<Class<?>> excludeTypes) {
+	public TypeHierarchyScanner(boolean includeSupperClass, boolean includeInterfaces, Predicate<Class<?>> filter, Set<Class<?>> excludeTypes) {
 		super(includeSupperClass, includeInterfaces, filter, excludeTypes);
 	}
 
 	/**
 	 * 构建一个类注解扫描器，默认允许扫描指定元素的父类以及父接口
 	 */
-	public TypeAnnotationScanner() {
+	public TypeHierarchyScanner() {
 		this(true, true, t -> true, CollUtil.newLinkedHashSet());
 	}
 
@@ -75,7 +75,7 @@ public class TypeAnnotationScanner extends AbstractTypeAnnotationScanner<TypeAnn
 	 * @return 当前实例
 	 */
 	@Override
-	public TypeAnnotationScanner setIncludeSuperClass(boolean includeSuperClass) {
+	public TypeHierarchyScanner setIncludeSuperClass(boolean includeSuperClass) {
 		return super.setIncludeSuperClass(includeSuperClass);
 	}
 
@@ -86,7 +86,7 @@ public class TypeAnnotationScanner extends AbstractTypeAnnotationScanner<TypeAnn
 	 * @return 当前实例
 	 */
 	@Override
-	public TypeAnnotationScanner setIncludeInterfaces(boolean includeInterfaces) {
+	public TypeHierarchyScanner setIncludeInterfaces(boolean includeInterfaces) {
 		return super.setIncludeInterfaces(includeInterfaces);
 	}
 

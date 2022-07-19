@@ -12,7 +12,7 @@ import java.util.function.Predicate;
  *
  * @author huangchengxing
  */
-public class EmptyAnnotationScanner implements AnnotationScanner {
+public class NothingScanner implements AnnotationScanner {
 
 	@Override
 	public boolean support(AnnotatedElement annotatedEle) {
@@ -28,4 +28,5 @@ public class EmptyAnnotationScanner implements AnnotationScanner {
 	public void scan(BiConsumer<Integer, Annotation> consumer, AnnotatedElement annotatedEle, Predicate<Annotation> filter) {
 		// do nothing
 	}
+
 }

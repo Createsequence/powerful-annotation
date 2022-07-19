@@ -15,7 +15,7 @@ public class TypeAnnotationScannerTest {
 
 	@Test
 	public void supportTest() {
-		AnnotationScanner scanner = new TypeAnnotationScanner();
+		AnnotationScanner scanner = new TypeHierarchyScanner();
 		Assert.assertTrue(scanner.support(Example.class));
 		Assert.assertFalse(scanner.support(ReflectUtil.getField(Example.class, "id")));
 		Assert.assertFalse(scanner.support(ReflectUtil.getMethod(Example.class, "getId")));
@@ -24,31 +24,31 @@ public class TypeAnnotationScannerTest {
 
 	@Test
 	public void getAnnotationsTest() {
-		AnnotationScanner scanner = new TypeAnnotationScanner();
+		AnnotationScanner scanner = new TypeHierarchyScanner();
 		List<Annotation> annotations = scanner.getAnnotations(Example.class);
 		Assert.assertEquals(3, annotations.size());
 		annotations.forEach(a -> Assert.assertEquals(a.annotationType(), AnnotationForScannerTest.class));
 
 		// 不查找父接口
-		scanner = new TypeAnnotationScanner().setIncludeInterfaces(false);
+		scanner = new TypeHierarchyScanner().setIncludeInterfaces(false);
 		annotations = scanner.getAnnotations(Example.class);
 		Assert.assertEquals(2, annotations.size());
 		annotations.forEach(a -> Assert.assertEquals(a.annotationType(), AnnotationForScannerTest.class));
 
 		// 不查找父类
-		scanner = new TypeAnnotationScanner().setIncludeSuperClass(false);
+		scanner = new TypeHierarchyScanner().setIncludeSuperClass(false);
 		annotations = scanner.getAnnotations(Example.class);
 		Assert.assertEquals(1, annotations.size());
 		annotations.forEach(a -> Assert.assertEquals(a.annotationType(), AnnotationForScannerTest.class));
 
 		// 不查找ExampleSupplerClass.class
-		scanner = new TypeAnnotationScanner().addExcludeTypes(ExampleSupplerClass.class);
+		scanner = new TypeHierarchyScanner().addExcludeTypes(ExampleSupplerClass.class);
 		annotations = scanner.getAnnotations(Example.class);
 		Assert.assertEquals(1, annotations.size());
 		annotations.forEach(a -> Assert.assertEquals(a.annotationType(), AnnotationForScannerTest.class));
 
 		// 只查找ExampleSupplerClass.class
-		scanner = new TypeAnnotationScanner().setFilter(t -> ClassUtil.isAssignable(ExampleSupplerClass.class, t));
+		scanner = new TypeHierarchyScanner().setFilter(t -> ClassUtil.isAssignable(ExampleSupplerClass.class, t));
 		annotations = scanner.getAnnotations(Example.class);
 		Assert.assertEquals(2, annotations.size());
 		annotations.forEach(a -> Assert.assertEquals(a.annotationType(), AnnotationForScannerTest.class));
@@ -59,7 +59,7 @@ public class TypeAnnotationScannerTest {
 		Map<Integer, List<Annotation>> map = new HashMap<>();
 
 		// 查找父类与父接口
-		new TypeAnnotationScanner().scan(
+		new TypeHierarchyScanner().scan(
 			(index, annotation) -> map.computeIfAbsent(index, i -> new ArrayList<>()).add(annotation),
 			Example.class, null
 		);
@@ -73,7 +73,7 @@ public class TypeAnnotationScannerTest {
 
 		// 不查找父接口
 		map.clear();
-		new TypeAnnotationScanner()
+		new TypeHierarchyScanner()
 			.setIncludeInterfaces(false)
 			.scan(
 				(index, annotation) -> map.computeIfAbsent(index, i -> new ArrayList<>()).add(annotation),
@@ -87,7 +87,7 @@ public class TypeAnnotationScannerTest {
 
 		// 不查找父类
 		map.clear();
-		new TypeAnnotationScanner()
+		new TypeHierarchyScanner()
 			.setIncludeSuperClass(false)
 			.scan(
 				(index, annotation) -> map.computeIfAbsent(index, i -> new ArrayList<>()).add(annotation),
@@ -99,7 +99,7 @@ public class TypeAnnotationScannerTest {
 
 		// 不查找ExampleSupplerClass.class
 		map.clear();
-		new TypeAnnotationScanner()
+		new TypeHierarchyScanner()
 			.addExcludeTypes(ExampleSupplerClass.class)
 			.scan(
 				(index, annotation) -> map.computeIfAbsent(index, i -> new ArrayList<>()).add(annotation),
@@ -111,7 +111,7 @@ public class TypeAnnotationScannerTest {
 
 		// 只查找ExampleSupplerClass.class
 		map.clear();
-		new TypeAnnotationScanner()
+		new TypeHierarchyScanner()
 			.setFilter(t -> ClassUtil.isAssignable(ExampleSupplerClass.class, t))
 			.scan(
 				(index, annotation) -> map.computeIfAbsent(index, i -> new ArrayList<>()).add(annotation),

@@ -5,8 +5,8 @@ import cn.hutool.core.lang.Opt;
 import cn.hutool.core.util.ObjectUtil;
 import top.xiajibagao.powerfulannotation.annotation.Link;
 import top.xiajibagao.powerfulannotation.helper.AnnotationUtils;
+import top.xiajibagao.powerfulannotation.scanner.AnnotationHierarchyScanner;
 import top.xiajibagao.powerfulannotation.scanner.AnnotationScanner;
-import top.xiajibagao.powerfulannotation.scanner.MetaAnnotationScanner;
 import top.xiajibagao.powerfulannotation.synthesis.processor.AliasLinkAnnotationPostProcessor;
 import top.xiajibagao.powerfulannotation.synthesis.processor.CacheableSynthesizedAnnotationAttributeProcessor;
 import top.xiajibagao.powerfulannotation.synthesis.processor.SynthesizedAnnotationAttributeProcessor;
@@ -87,7 +87,7 @@ public class GenericSynthesizedAggregateAnnotation
 	 * @param source 源注解
 	 */
 	public GenericSynthesizedAggregateAnnotation(Annotation... source) {
-		this(Arrays.asList(source), new MetaAnnotationScanner());
+		this(Arrays.asList(source), new AnnotationHierarchyScanner());
 	}
 
 	/**

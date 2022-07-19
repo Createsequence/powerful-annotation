@@ -12,11 +12,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class ElementAnnotationScannerTest {
+public class FlatElementAnnotationScannerTest {
 
 	@Test
 	public void supportTest() {
-		final ElementAnnotationScanner scanner = new ElementAnnotationScanner();
+		final FlatElementAnnotationScanner scanner = new FlatElementAnnotationScanner();
 		Assert.assertTrue(scanner.support(ReflectUtil.getField(Example.class, "id")));
 		Assert.assertTrue(scanner.support(ReflectUtil.getMethod(Example.class, "getId")));
 		Assert.assertFalse(scanner.support(null));
@@ -25,7 +25,7 @@ public class ElementAnnotationScannerTest {
 
 	@Test
 	public void getAnnotationsTest() {
-		final ElementAnnotationScanner scanner = new ElementAnnotationScanner();
+		final FlatElementAnnotationScanner scanner = new FlatElementAnnotationScanner();
 		final Field field = ReflectUtil.getField(Example.class, "id");
 		Assert.assertNotNull(field);
 		Assert.assertTrue(scanner.support(field));
@@ -36,7 +36,7 @@ public class ElementAnnotationScannerTest {
 
 	@Test
 	public void scanTest() {
-		final ElementAnnotationScanner scanner = new ElementAnnotationScanner();
+		final FlatElementAnnotationScanner scanner = new FlatElementAnnotationScanner();
 		final Field field = ReflectUtil.getField(Example.class, "id");
 		final Map<Integer, List<Annotation>> map = new HashMap<>();
 		scanner.scan(

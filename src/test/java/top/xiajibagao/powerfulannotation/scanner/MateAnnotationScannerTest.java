@@ -15,7 +15,7 @@ public class MateAnnotationScannerTest {
 
 	@Test
 	public void supportTest() {
-		AnnotationScanner scanner = new MetaAnnotationScanner();
+		AnnotationScanner scanner = new AnnotationHierarchyScanner();
 		Assert.assertTrue(scanner.support(AnnotationForScannerTest.class));
 		Assert.assertFalse(scanner.support(ReflectUtil.getField(Example.class, "id")));
 		Assert.assertFalse(scanner.support(ReflectUtil.getMethod(Example.class, "getId")));
@@ -25,7 +25,7 @@ public class MateAnnotationScannerTest {
 
 	@Test
 	public void getAnnotationsTest() {
-		AnnotationScanner scanner = new MetaAnnotationScanner();
+		AnnotationScanner scanner = new AnnotationHierarchyScanner();
 		Assert.assertTrue(scanner.support(AnnotationForScannerTest3.class));
 		Map<Class<? extends Annotation>, Annotation> annotations = CollUtil.toMap(scanner.getAnnotations(AnnotationForScannerTest3.class), new HashMap<>(), Annotation::annotationType);
 		Assert.assertEquals(3, annotations.size());
@@ -34,7 +34,7 @@ public class MateAnnotationScannerTest {
 		Assert.assertTrue(annotations.containsKey(AnnotationForScannerTest2.class));
 		Assert.assertFalse(annotations.containsKey(AnnotationForScannerTest3.class));
 
-		scanner = new MetaAnnotationScanner(false);
+		scanner = new AnnotationHierarchyScanner(false);
 		Assert.assertTrue(scanner.support(AnnotationForScannerTest3.class));
 		annotations = CollUtil.toMap(scanner.getAnnotations(AnnotationForScannerTest3.class), new HashMap<>(), Annotation::annotationType);
 		Assert.assertEquals(1, annotations.size());
@@ -46,7 +46,7 @@ public class MateAnnotationScannerTest {
 
 	@Test
 	public void scanTest() {
-		AnnotationScanner scanner = new MetaAnnotationScanner();
+		AnnotationScanner scanner = new AnnotationHierarchyScanner();
 		Map<Integer, List<Annotation>> map = new HashMap<>();
 		scanner.scan(
 			(index, annotation) -> map.computeIfAbsent(index, i -> new ArrayList<>()).add(annotation),

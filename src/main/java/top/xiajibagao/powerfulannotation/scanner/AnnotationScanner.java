@@ -32,10 +32,10 @@ import java.util.function.Predicate;
  * </ul>
  *
  * @author huangchengxing
- * @see TypeAnnotationScanner
- * @see MethodAnnotationScanner
- * @see MetaAnnotationScanner
- * @see ElementAnnotationScanner
+ * @see TypeHierarchyScanner
+ * @see TypeMethodHierarchyScanner
+ * @see AnnotationHierarchyScanner
+ * @see FlatElementAnnotationScanner
  * @see GenericAnnotationScanner
  */
 public interface AnnotationScanner {
@@ -45,7 +45,7 @@ public interface AnnotationScanner {
 	/**
 	 * 不扫描任何注解
 	 */
-	AnnotationScanner NOTHING = new EmptyAnnotationScanner();
+	AnnotationScanner NOTHING = new NothingScanner();
 
 	/**
 	 * 扫描元素本身直接声明的注解，包括父类带有{@link Inherited}、被传递到元素上的注解的扫描器

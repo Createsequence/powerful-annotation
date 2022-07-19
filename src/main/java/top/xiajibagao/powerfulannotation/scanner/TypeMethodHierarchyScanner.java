@@ -13,16 +13,16 @@ import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 /**
- * 扫描{@link Method}上的注解
+ * 支持扫描{@link Method}与其所在类的类层级结构中，具有相同签名的方法上注解的扫描器
  *
  * @author huangchengxing
  */
-public class MethodAnnotationScanner extends AbstractTypeAnnotationScanner<MethodAnnotationScanner> implements AnnotationScanner {
+public class TypeMethodHierarchyScanner extends AbstractTypeHierarchyScanner<TypeMethodHierarchyScanner> implements AnnotationScanner {
 
 	/**
 	 * 构造一个类注解扫描器，仅扫描该方法上直接声明的注解
 	 */
-	public MethodAnnotationScanner() {
+	public TypeMethodHierarchyScanner() {
 		this(false);
 	}
 
@@ -31,7 +31,7 @@ public class MethodAnnotationScanner extends AbstractTypeAnnotationScanner<Metho
 	 *
 	 * @param scanSameSignatureMethod 是否扫描类层级结构中具有相同方法签名的方法
 	 */
-	public MethodAnnotationScanner(boolean scanSameSignatureMethod) {
+	public TypeMethodHierarchyScanner(boolean scanSameSignatureMethod) {
 		this(scanSameSignatureMethod, targetClass -> true, CollUtil.newLinkedHashSet());
 	}
 
@@ -42,7 +42,7 @@ public class MethodAnnotationScanner extends AbstractTypeAnnotationScanner<Metho
 	 * @param filter                  过滤器
 	 * @param excludeTypes            不包含的类型
 	 */
-	public MethodAnnotationScanner(boolean scanSameSignatureMethod, Predicate<Class<?>> filter, Set<Class<?>> excludeTypes) {
+	public TypeMethodHierarchyScanner(boolean scanSameSignatureMethod, Predicate<Class<?>> filter, Set<Class<?>> excludeTypes) {
 		super(scanSameSignatureMethod, scanSameSignatureMethod, filter, excludeTypes);
 	}
 
@@ -54,7 +54,7 @@ public class MethodAnnotationScanner extends AbstractTypeAnnotationScanner<Metho
 	 * @param filter            过滤器
 	 * @param excludeTypes      不包含的类型
 	 */
-	public MethodAnnotationScanner(boolean includeSuperClass, boolean includeInterfaces, Predicate<Class<?>> filter, Set<Class<?>> excludeTypes) {
+	public TypeMethodHierarchyScanner(boolean includeSuperClass, boolean includeInterfaces, Predicate<Class<?>> filter, Set<Class<?>> excludeTypes) {
 		super(includeSuperClass, includeInterfaces, filter, excludeTypes);
 	}
 
@@ -106,7 +106,7 @@ public class MethodAnnotationScanner extends AbstractTypeAnnotationScanner<Metho
 	 * @param scanSuperMethodIfOverride 是否扫描类层级结构中具有相同方法签名的方法
 	 * @return 当前实例
 	 */
-	public MethodAnnotationScanner setScanSameSignatureMethod(boolean scanSuperMethodIfOverride) {
+	public TypeMethodHierarchyScanner setScanSameSignatureMethod(boolean scanSuperMethodIfOverride) {
 		setIncludeInterfaces(scanSuperMethodIfOverride);
 		setIncludeSuperClass(scanSuperMethodIfOverride);
 		return this;

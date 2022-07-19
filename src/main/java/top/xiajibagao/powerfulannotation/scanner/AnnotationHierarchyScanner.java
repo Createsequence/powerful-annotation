@@ -14,13 +14,11 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
- * 扫描注解类上存在的注解，支持处理枚举实例或枚举类型
- * 需要注意，当待解析是枚举类时，有可能与{@link TypeAnnotationScanner}冲突
+ * 支持扫描注解类与其元注解的层级结构中的注解的扫描器
  *
  * @author huangchengxing
- * @see TypeAnnotationScanner
  */
-public class MetaAnnotationScanner implements AnnotationScanner {
+public class AnnotationHierarchyScanner implements AnnotationScanner {
 
 	/**
 	 * 获取当前注解的元注解后，是否继续递归扫描的元注解的元注解
@@ -32,14 +30,14 @@ public class MetaAnnotationScanner implements AnnotationScanner {
 	 *
 	 * @param includeSupperMetaAnnotation 获取当前注解的元注解后，是否继续递归扫描的元注解的元注解
 	 */
-	public MetaAnnotationScanner(boolean includeSupperMetaAnnotation) {
+	public AnnotationHierarchyScanner(boolean includeSupperMetaAnnotation) {
 		this.includeSupperMetaAnnotation = includeSupperMetaAnnotation;
 	}
 
 	/**
 	 * 构造一个元注解扫描器，默认在扫描当前注解上的元注解后，并继续递归扫描元注解
 	 */
-	public MetaAnnotationScanner() {
+	public AnnotationHierarchyScanner() {
 		this(true);
 	}
 
