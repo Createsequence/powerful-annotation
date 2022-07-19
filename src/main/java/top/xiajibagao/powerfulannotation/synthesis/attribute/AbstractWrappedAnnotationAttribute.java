@@ -23,7 +23,6 @@ public abstract class AbstractWrappedAnnotationAttribute implements WrappedAnnot
 
 	protected AbstractWrappedAnnotationAttribute(AnnotationAttribute original, AnnotationAttribute linked) {
 		Assert.notNull(original, "target must not null");
-		Assert.notNull(linked, "linked must not null");
 		this.original = original;
 		this.linked = linked;
 	}
