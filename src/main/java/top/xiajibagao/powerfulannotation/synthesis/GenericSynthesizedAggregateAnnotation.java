@@ -4,7 +4,7 @@ import cn.hutool.core.lang.Assert;
 import cn.hutool.core.lang.Opt;
 import cn.hutool.core.util.ObjectUtil;
 import top.xiajibagao.powerfulannotation.annotation.Link;
-import top.xiajibagao.powerfulannotation.helper.AnnotationUtils;
+import top.xiajibagao.powerfulannotation.helper.SynthesizedAnnotationUtils;
 import top.xiajibagao.powerfulannotation.scanner.AnnotationHierarchyScanner;
 import top.xiajibagao.powerfulannotation.scanner.AnnotationScanner;
 import top.xiajibagao.powerfulannotation.synthesis.processor.AliasLinkAnnotationPostProcessor;
@@ -199,7 +199,7 @@ public class GenericSynthesizedAggregateAnnotation
 		// 根注解默认水平坐标为0，根注解的元注解坐标从1开始
 		for (int i = 0; i < source.size(); i++) {
 			final Annotation sourceAnnotation = source.get(i);
-			Assert.isFalse(AnnotationUtils.isSynthesizedAnnotation(sourceAnnotation), "source [{}] has been synthesized");
+			Assert.isFalse(SynthesizedAnnotationUtils.isSynthesizedAnnotation(sourceAnnotation), "source [{}] has been synthesized");
 			annotationMap.put(sourceAnnotation.annotationType(), new MetaAnnotation(sourceAnnotation, sourceAnnotation, 0, i));
 			Assert.isTrue(
 				annotationScanner.support(sourceAnnotation.annotationType()),

@@ -5,7 +5,7 @@ import cn.hutool.core.lang.Opt;
 import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.ObjectUtil;
 import top.xiajibagao.powerfulannotation.annotation.Link;
-import top.xiajibagao.powerfulannotation.helper.AnnotationUtils;
+import top.xiajibagao.powerfulannotation.helper.SynthesizedAnnotationUtils;
 import top.xiajibagao.powerfulannotation.synthesis.*;
 
 import java.lang.annotation.Annotation;
@@ -91,7 +91,7 @@ public abstract class AbstractLinkAnnotationPostProcessor implements Synthesized
 	 */
 	protected Link getLinkAnnotation(AnnotationAttribute attribute, RelationType... relationTypes) {
 		return Opt.ofNullable(attribute)
-				.map(t -> AnnotationUtils.getSynthesizedAnnotation(attribute.getAttribute(), Link.class))
+				.map(t -> SynthesizedAnnotationUtils.getSynthesizedAnnotation(attribute.getAttribute(), Link.class))
 				.filter(a -> ArrayUtil.contains(relationTypes, a.type()))
 				.get();
 	}
