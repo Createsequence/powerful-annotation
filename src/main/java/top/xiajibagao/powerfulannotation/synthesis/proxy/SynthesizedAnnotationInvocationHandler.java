@@ -1,4 +1,4 @@
-package top.xiajibagao.powerfulannotation.synthesis;
+package top.xiajibagao.powerfulannotation.synthesis.proxy;
 
 import cn.hutool.core.lang.Assert;
 import cn.hutool.core.lang.Opt;
@@ -7,6 +7,8 @@ import cn.hutool.core.util.ClassUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.ReflectUtil;
 import top.xiajibagao.powerfulannotation.helper.AnnotationUtils;
+import top.xiajibagao.powerfulannotation.synthesis.AnnotationAttributeValueProvider;
+import top.xiajibagao.powerfulannotation.synthesis.SynthesizedAnnotation;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationHandler;
@@ -26,19 +28,19 @@ import java.util.stream.Stream;
  * @see SynthesizedAnnotation
  * @see AnnotationAttributeValueProvider
  */
-public class SynthesizedAnnotationProxy implements InvocationHandler {
+public class SynthesizedAnnotationInvocationHandler implements InvocationHandler {
 
 	private final AnnotationAttributeValueProvider annotationAttributeValueProvider;
 	private final SynthesizedAnnotation annotation;
 	private final Map<String, BiFunction<Method, Object[], Object>> methods;
 
 	/**
-	 * 创建一个代理注解，生成的代理对象将是{@link SyntheticProxyAnnotation}与指定的注解类的子类。
+	 * 创建一个注解代理对象
 	 *
-	 * @param <T>                              注解类型
 	 * @param annotationType                   注解类型
 	 * @param annotationAttributeValueProvider 注解属性值获取器
 	 * @param annotation                       合成注解
+	 * @param <T>                              注解类型
 	 * @return 代理注解
 	 */
 	@SuppressWarnings("unchecked")
@@ -49,23 +51,23 @@ public class SynthesizedAnnotationProxy implements InvocationHandler {
 		if (ObjectUtil.isNull(annotation)) {
 			return null;
 		}
-		final SynthesizedAnnotationProxy proxyHandler = new SynthesizedAnnotationProxy(annotationAttributeValueProvider, annotation);
+		final SynthesizedAnnotationInvocationHandler proxyHandler = new SynthesizedAnnotationInvocationHandler(annotationAttributeValueProvider, annotation);
 		if (ObjectUtil.isNull(annotation)) {
 			return null;
 		}
 		return (T) Proxy.newProxyInstance(
 				annotationType.getClassLoader(),
-				new Class[]{annotationType, SyntheticProxyAnnotation.class},
+				new Class[]{annotationType, ProxiedSynthesizedAnnotation.class},
 				proxyHandler
 		);
 	}
 
 	/**
-	 * 创建一个代理注解，生成的代理对象将是{@link SyntheticProxyAnnotation}与指定的注解类的子类。
+	 * 创建一个代理注解，生成的代理对象将是{@link ProxiedSynthesizedAnnotation}与指定的注解类的子类。
 	 *
-	 * @param <T>            注解类型
 	 * @param annotationType 注解类型
 	 * @param annotation     合成注解
+	 * @param <T>            注解类型
 	 * @return 代理注解
 	 */
 	public static <T extends Annotation> T create(
@@ -74,16 +76,23 @@ public class SynthesizedAnnotationProxy implements InvocationHandler {
 	}
 
 	/**
-	 * 该类是否为通过{@code SynthesizedAnnotationProxy}生成的代理类
+	 * 该类是否为通过{@code SynthesizedAnnotationInvocationHandler}生成的代理类
 	 *
 	 * @param annotationType 注解类型
 	 * @return 是否
 	 */
 	public static boolean isProxyAnnotation(Class<?> annotationType) {
-		return ClassUtil.isAssignable(SyntheticProxyAnnotation.class, annotationType);
+		return ClassUtil.isAssignable(ProxiedSynthesizedAnnotation.class, annotationType);
 	}
 
-	SynthesizedAnnotationProxy(AnnotationAttributeValueProvider annotationAttributeValueProvider, SynthesizedAnnotation annotation) {
+	/**
+	 * 创建一个代理对象
+	 *
+	 * @param annotationAttributeValueProvider 属性值提供者
+	 * @param annotation 代理的合成注解
+	 */
+	SynthesizedAnnotationInvocationHandler(
+		AnnotationAttributeValueProvider annotationAttributeValueProvider, SynthesizedAnnotation annotation) {
 		Assert.notNull(annotationAttributeValueProvider, "annotationAttributeValueProvider must not null");
 		Assert.notNull(annotation, "annotation must not null");
 		this.annotationAttributeValueProvider = annotationAttributeValueProvider;
@@ -93,7 +102,7 @@ public class SynthesizedAnnotationProxy implements InvocationHandler {
 	}
 
 	@Override
-	public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+	public Object invoke(Object proxy, Method method, Object[] args) {
 		return Opt.ofNullable(methods.get(method.getName()))
 				.map(m -> m.apply(method, args))
 				.orElseGet(() -> ReflectUtil.invoke(this, method, args));
@@ -120,6 +129,9 @@ public class SynthesizedAnnotationProxy implements InvocationHandler {
 		}
 	}
 
+	/**
+	 * 代理toString方法
+	 */
 	private String proxyToString() {
 		final String attributes = Stream.of(ClassUtil.getDeclaredMethods(annotation.getAnnotation().annotationType()))
 				.filter(AnnotationUtils::isAttributeMethod)
@@ -130,32 +142,25 @@ public class SynthesizedAnnotationProxy implements InvocationHandler {
 		return CharSequenceUtil.format("@{}({})", annotation.annotationType().getName(), attributes);
 	}
 
+	/**
+	 * 代理hashCode方法
+	 */
 	private int proxyHashCode() {
 		return Objects.hash(annotationAttributeValueProvider, annotation);
 	}
 
+	/**
+	 * 代理获取合成注解对象的方法
+	 */
 	private Object proxyGetSynthesizedAnnotation() {
 		return annotation;
 	}
 
+	/**
+	 * 获取代理获取属性的方法
+	 */
 	private Object proxyAttributeValue(Method attributeMethod) {
 		return annotationAttributeValueProvider.getAttributeValue(attributeMethod.getName(), attributeMethod.getReturnType());
-	}
-
-	/**
-	 * 通过代理类生成的合成注解
-	 *
-	 * @author huangchengxing
-	 */
-	interface SyntheticProxyAnnotation extends SynthesizedAnnotation {
-
-		/**
-		 * 获取该代理注解对应的已合成注解
-		 *
-		 * @return 理注解对应的已合成注解
-		 */
-		SynthesizedAnnotation getSynthesizedAnnotation();
-
 	}
 
 }

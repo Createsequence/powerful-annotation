@@ -7,7 +7,7 @@ import cn.hutool.core.util.ObjectUtil;
 import top.xiajibagao.powerfulannotation.scanner.AnnotationScanner;
 import top.xiajibagao.powerfulannotation.synthesis.GenericSynthesizedAggregateAnnotation;
 import top.xiajibagao.powerfulannotation.synthesis.SynthesizedAggregateAnnotation;
-import top.xiajibagao.powerfulannotation.synthesis.SynthesizedAnnotationProxy;
+import top.xiajibagao.powerfulannotation.synthesis.proxy.SynthesizedAnnotationInvocationHandler;
 
 import java.lang.annotation.*;
 import java.lang.reflect.AnnotatedElement;
@@ -65,10 +65,10 @@ public class AnnotationUtils {
      *
      * @param annotation 注解对象
      * @return 是否
-     * @see SynthesizedAnnotationProxy#isProxyAnnotation(Class)
+     * @see SynthesizedAnnotationInvocationHandler#isProxyAnnotation(Class)
      */
     public static boolean isSynthesizedAnnotation(Annotation annotation) {
-        return SynthesizedAnnotationProxy.isProxyAnnotation(annotation.getClass());
+        return SynthesizedAnnotationInvocationHandler.isProxyAnnotation(annotation.getClass());
     }
 
     /**

@@ -1,6 +1,7 @@
 package top.xiajibagao.powerfulannotation.synthesis;
 
 import top.xiajibagao.powerfulannotation.synthesis.processor.SynthesizedAnnotationPostProcessor;
+import top.xiajibagao.powerfulannotation.synthesis.proxy.SynthesizedAnnotationInvocationHandler;
 
 import java.lang.annotation.Annotation;
 import java.util.Collection;
@@ -32,7 +33,7 @@ import java.util.Map;
  * @see SynthesizedAnnotationPostProcessor
  * @see SynthesizedAnnotation
  * @see AbstractAnnotationSynthesizer
- * @see SynthesizedAnnotationProxy
+ * @see SynthesizedAnnotationInvocationHandler
  */
 public interface AnnotationSynthesizer {
 

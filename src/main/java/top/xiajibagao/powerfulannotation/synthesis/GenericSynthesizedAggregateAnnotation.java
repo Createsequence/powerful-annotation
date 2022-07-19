@@ -11,6 +11,7 @@ import top.xiajibagao.powerfulannotation.synthesis.processor.AliasLinkAnnotation
 import top.xiajibagao.powerfulannotation.synthesis.processor.CacheableSynthesizedAnnotationAttributeProcessor;
 import top.xiajibagao.powerfulannotation.synthesis.processor.SynthesizedAnnotationAttributeProcessor;
 import top.xiajibagao.powerfulannotation.synthesis.processor.SynthesizedAnnotationPostProcessor;
+import top.xiajibagao.powerfulannotation.synthesis.proxy.SynthesizedAnnotationInvocationHandler;
 
 import java.lang.annotation.Annotation;
 import java.util.*;
@@ -47,7 +48,7 @@ import java.util.*;
  *
  * @author huangchengxing
  * @see cn.hutool.core.annotation.AnnotationUtil
- * @see SynthesizedAnnotationProxy
+ * @see SynthesizedAnnotationInvocationHandler
  * @see SynthesizedAnnotationSelector
  * @see SynthesizedAnnotationAttributeProcessor
  * @see SynthesizedAnnotationPostProcessor
@@ -287,11 +288,11 @@ public class GenericSynthesizedAggregateAnnotation
 	 *
 	 * @param annotationType 注解类型
 	 * @return 合成注解对象
-	 * @see SynthesizedAnnotationProxy#create(Class, AnnotationAttributeValueProvider, SynthesizedAnnotation)
+	 * @see SynthesizedAnnotationInvocationHandler#create(Class, AnnotationAttributeValueProvider, SynthesizedAnnotation)
 	 */
 	@Override
 	public <T extends Annotation> T synthesize(Class<T> annotationType, SynthesizedAnnotation annotation) {
-		return SynthesizedAnnotationProxy.create(annotationType, this, annotation);
+		return SynthesizedAnnotationInvocationHandler.create(annotationType, this, annotation);
 	}
 
 	/**
