@@ -44,7 +44,7 @@ public class SynthesizedAnnotationInvocationHandler implements InvocationHandler
 	 * @return 代理注解
 	 */
 	@SuppressWarnings("unchecked")
-	public static <T extends Annotation> T create(
+	public static <T extends Annotation> T createProxy(
 			Class<T> annotationType,
 			AnnotationAttributeValueProvider annotationAttributeValueProvider,
 			SynthesizedAnnotation annotation) {
@@ -70,9 +70,9 @@ public class SynthesizedAnnotationInvocationHandler implements InvocationHandler
 	 * @param <T>            注解类型
 	 * @return 代理注解
 	 */
-	public static <T extends Annotation> T create(
+	public static <T extends Annotation> T createProxy(
 			Class<T> annotationType, SynthesizedAnnotation annotation) {
-		return create(annotationType, annotation, annotation);
+		return createProxy(annotationType, annotation, annotation);
 	}
 
 	/**

@@ -288,11 +288,11 @@ public class GenericSynthesizedAggregateAnnotation
 	 *
 	 * @param annotationType 注解类型
 	 * @return 合成注解对象
-	 * @see SynthesizedAnnotationInvocationHandler#create(Class, AnnotationAttributeValueProvider, SynthesizedAnnotation)
+	 * @see SynthesizedAnnotationInvocationHandler#createProxy(Class, AnnotationAttributeValueProvider, SynthesizedAnnotation)
 	 */
 	@Override
 	public <T extends Annotation> T synthesize(Class<T> annotationType, SynthesizedAnnotation annotation) {
-		return SynthesizedAnnotationInvocationHandler.create(annotationType, this, annotation);
+		return SynthesizedAnnotationInvocationHandler.createProxy(annotationType, this, annotation);
 	}
 
 	/**

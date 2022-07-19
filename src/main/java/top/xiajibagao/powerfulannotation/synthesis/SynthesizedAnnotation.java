@@ -13,7 +13,7 @@ import java.util.function.UnaryOperator;
  * <p>该类主要用于为注解对象提供动态属性的功能，在合成注解中，注解的属性以{@link AnnotationAttribute}形式存在，
  * 并允许被其他{@link AnnotationAttribute}实例所替换，因此一个合成注解的属性值允许与原始的注解对象不同。
  *
- * <p>合成注解允许通过{@link SynthesizedAnnotationInvocationHandler#create(Class, SynthesizedAnnotation)}
+ * <p>合成注解允许通过{@link SynthesizedAnnotationInvocationHandler#createProxy(Class, SynthesizedAnnotation)}
  * 生成对应类型的代理对象，该代理对象的属性值将与{@link #getAttributeValue(String, Class)}的返回值保持一致。<br>
  * 此外，合成注解还允许被注册到注解合成器{@link AnnotationSynthesizer}，该合成器支持根据一定的规则
  * 使一组相关联的{@link SynthesizedAnnotation}互相交换属性，从而通过{@link AnnotationSynthesizer#synthesize(Class)}
