@@ -3,9 +3,6 @@ package top.xiajibagao.powerfulannotation.scanner;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.ObjectUtil;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.experimental.Accessors;
 
 import java.util.List;
 import java.util.Set;
@@ -18,9 +15,6 @@ import java.util.function.Predicate;
  * @see TypeHierarchyScanner
  * @see AnnotationHierarchyScanner
  */
-@Accessors(chain = true)
-@Getter
-@Setter
 public abstract class AbstractTypeHierarchyScanner<T extends AbstractTypeHierarchyScanner<T>> extends AbstractHierarchyScanner<T> {
 
     /**
@@ -46,6 +40,28 @@ public abstract class AbstractTypeHierarchyScanner<T extends AbstractTypeHierarc
         super(filter, excludeTypes);
         this.includeSuperClass = includeSuperClass;
         this.includeInterfaces = includeInterfaces;
+    }
+    
+    /**
+     * 设置是否允许扫描父类
+     *
+     * @param includeSuperClass 是否允许扫描父类
+     * @return T
+     */
+    protected T setIncludeSuperClass(boolean includeSuperClass) {
+        this.includeSuperClass = includeSuperClass;
+        return typedThis;
+    }
+
+    /**
+     * 设置是否允许扫描父接口
+     *
+     * @param includeInterfaces 是否允许扫描父接口
+     * @return T
+     */
+    protected T setIncludeInterfaces(boolean includeInterfaces) {
+        this.includeInterfaces = includeInterfaces;
+        return typedThis;
     }
 
     /**

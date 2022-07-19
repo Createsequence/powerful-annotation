@@ -35,7 +35,7 @@ public abstract class AbstractHierarchyScanner<T extends AbstractHierarchyScanne
 	/**
 	 * 当前实例
 	 */
-	private final T typedThis;
+	protected final T typedThis;
 
 	/**
 	 * 构造一个类注解扫描器

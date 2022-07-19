@@ -8,24 +8,26 @@
     <artifactId>powerful-annotation</artifactId>
     <version>0.0.1</version>
     <name>powerful-annotation</name>
-    <description>基于 SpringBoot 的注解式字典项、关联表与枚举值通用处理框架</description>
+    <description>java原生注解增强库</description>
     <url>https://gitee.com/CreateSequence/powerful-annotation</url>
+
+    <developers>
+        <developer>
+            <name>Createsequence</name>
+            <email>841396397@qq.com</email>
+            <organization>xiajibagao</organization>
+        </developer>
+    </developers>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.source>1.8</maven.compiler.source>
-        <maven.compiler.target>1.8</maven.compiler.target>
-        <lomboke.version>1.18.24</lomboke.version>
+        <java.version>1.8</java.version>
+        <server.id>maven-central</server.id>
         <hutool.version>5.8.3</hutool.version>
         <junit.version>4.13.2</junit.version>
     </properties>
 
     <dependencies>
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <version>${lomboke.version}</version>
-        </dependency>
         <dependency>
             <groupId>cn.hutool</groupId>
             <artifactId>hutool-core</artifactId>
