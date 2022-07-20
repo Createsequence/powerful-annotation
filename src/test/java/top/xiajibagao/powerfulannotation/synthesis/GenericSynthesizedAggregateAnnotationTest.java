@@ -88,7 +88,7 @@ public class GenericSynthesizedAggregateAnnotationTest {
 		Assert.assertEquals("Child!", childAnnotation.childValue());
 		Assert.assertEquals("Child!", childAnnotation.childValueAlias());
 		Assert.assertEquals(childAnnotation.grandParentType(), Integer.class);
-		Assert.assertThrows(IllegalArgumentException.class, () -> new GenericSynthesizedAggregateAnnotation(childAnnotation));
+		Assert.assertThrows(IllegalArgumentException.class, () -> new GenericSynthesizedAggregateAnnotation(childAnnotation).init());
 
 		final ParentAnnotation parentAnnotation = syntheticMetaAnnotation.synthesize(ParentAnnotation.class);
 		SynthesizedAnnotation parentSyntheticAnnotation = syntheticMetaAnnotation.getSynthesizedAnnotation(ParentAnnotation.class);
@@ -99,7 +99,7 @@ public class GenericSynthesizedAggregateAnnotationTest {
 		Assert.assertNotNull(parentAnnotation);
 		Assert.assertEquals("Child's Parent!", parentAnnotation.parentValue());
 		Assert.assertEquals("java.lang.Void", parentAnnotation.grandParentType());
-		Assert.assertThrows(IllegalArgumentException.class, () -> new GenericSynthesizedAggregateAnnotation(parentAnnotation));
+		Assert.assertThrows(IllegalArgumentException.class, () -> new GenericSynthesizedAggregateAnnotation(parentAnnotation).init());
 
 		final GrandParentAnnotation grandParentAnnotation = syntheticMetaAnnotation.synthesize(GrandParentAnnotation.class);
 		SynthesizedAnnotation grandParentSyntheticAnnotation = syntheticMetaAnnotation.getSynthesizedAnnotation(GrandParentAnnotation.class);
@@ -111,7 +111,7 @@ public class GenericSynthesizedAggregateAnnotationTest {
 		Assert.assertNotNull(grandParentAnnotation);
 		Assert.assertEquals("Child's GrandParent!", grandParentAnnotation.grandParentValue());
 		Assert.assertEquals(grandParentAnnotation.grandParentType(), Integer.class);
-		Assert.assertThrows(IllegalArgumentException.class, () -> new GenericSynthesizedAggregateAnnotation(grandParentAnnotation));
+		Assert.assertThrows(IllegalArgumentException.class, () -> new GenericSynthesizedAggregateAnnotation(grandParentAnnotation).init());
 	}
 
 	@Test

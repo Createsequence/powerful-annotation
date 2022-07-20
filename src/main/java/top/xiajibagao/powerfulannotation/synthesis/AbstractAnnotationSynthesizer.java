@@ -8,10 +8,7 @@ import top.xiajibagao.powerfulannotation.scanner.AnnotationScanner;
 import top.xiajibagao.powerfulannotation.synthesis.processor.SynthesizedAnnotationPostProcessor;
 
 import java.lang.annotation.Annotation;
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * {@link AnnotationSynthesizer}的基本实现
@@ -28,7 +25,7 @@ public abstract class AbstractAnnotationSynthesizer<T> implements AnnotationSynt
 	/**
 	 * 包含根注解以及其元注解在内的全部注解实例
 	 */
-	protected final Map<Class<? extends Annotation>, SynthesizedAnnotation> synthesizedAnnotationMap;
+	protected Map<Class<? extends Annotation>, SynthesizedAnnotation> synthesizedAnnotationMap;
 
 	/**
 	 * 已经合成过的注解对象
@@ -51,6 +48,11 @@ public abstract class AbstractAnnotationSynthesizer<T> implements AnnotationSynt
 	protected final AnnotationScanner annotationScanner;
 
 	/**
+	 * 是否已完成初始化
+	 */
+	private boolean inited;
+
+	/**
 	 * 构造一个注解合成器
 	 *
 	 * @param source                   当前查找的注解对象
@@ -71,14 +73,25 @@ public abstract class AbstractAnnotationSynthesizer<T> implements AnnotationSynt
 		this.source = source;
 		this.annotationSelector = annotationSelector;
 		this.annotationScanner = annotationScanner;
+		this.synthesizedAnnotationMap = Collections.emptyMap();
 		this.postProcessors = CollUtil.unmodifiable(
 			CollUtil.sort(annotationPostProcessors, Comparator.comparing(SynthesizedAnnotationPostProcessor::order))
 		);
 		this.synthesizedProxyAnnotations = new LinkedHashMap<>();
-		this.synthesizedAnnotationMap = MapUtil.unmodifiable(loadAnnotations());
-		annotationPostProcessors.forEach(processor ->
-			synthesizedAnnotationMap.values().forEach(synthesized -> processor.process(synthesized, this))
-		);
+
+	}
+
+	/**
+	 * 初始化合成器
+	 */
+	protected void init() {
+		if (!inited) {
+			inited = true;
+			this.synthesizedAnnotationMap = MapUtil.unmodifiable(loadAnnotations());
+			this.postProcessors.forEach(processor ->
+				synthesizedAnnotationMap.values().forEach(synthesized -> processor.process(synthesized, this))
+			);
+		}
 	}
 
 	/**
@@ -136,6 +149,7 @@ public abstract class AbstractAnnotationSynthesizer<T> implements AnnotationSynt
 	 */
 	@Override
 	public SynthesizedAnnotation getSynthesizedAnnotation(Class<?> annotationType) {
+		init();
 		return synthesizedAnnotationMap.get(annotationType);
 	}
 
@@ -146,6 +160,7 @@ public abstract class AbstractAnnotationSynthesizer<T> implements AnnotationSynt
 	 */
 	@Override
 	public Map<Class<? extends Annotation>, SynthesizedAnnotation> getAllSynthesizedAnnotation() {
+		init();
 		return synthesizedAnnotationMap;
 	}
 
@@ -159,6 +174,7 @@ public abstract class AbstractAnnotationSynthesizer<T> implements AnnotationSynt
 	@SuppressWarnings("unchecked")
 	@Override
 	public <A extends Annotation> A synthesize(Class<A> annotationType) {
+		init();
 		return (A)synthesizedProxyAnnotations.computeIfAbsent(annotationType, type -> {
 			final SynthesizedAnnotation synthesizedAnnotation = synthesizedAnnotationMap.get(annotationType);
 			return ObjectUtil.isNull(synthesizedAnnotation) ?

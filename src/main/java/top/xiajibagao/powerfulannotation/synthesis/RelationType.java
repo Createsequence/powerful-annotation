@@ -2,8 +2,6 @@ package top.xiajibagao.powerfulannotation.synthesis;
 
 import top.xiajibagao.powerfulannotation.annotation.Link;
 
-import java.lang.annotation.Repeatable;
-
 /**
  * <p>注解属性的关系类型 <br>
  * 若将被{@link Link}注解的属性称为“原始属性”，而在{@link Link}注解中指向的注解属性称为“关联属性”，
@@ -48,13 +46,6 @@ public enum RelationType {
 	 * <p>表示“原始属性”将强制作为“关联属性”的别名。
 	 * 任何情况下，获取“关联属性”的值都将直接返回“原始属性”的值
 	 */
-	FORCE_ALIAS_FOR,
-
-	/**
-	 * 表示当前注解存在容器注解，可以通过{@link Link}指向的注解类的指定子段获取对应的注解对象 <br>
-	 * 在任何情况下，一个注解最多只能被作为一个注解的容器注解，一个注解也仅能指定一个容器注解。
-	 * 并且，该注解不能与{@link Repeatable}同时使用
-	 */
-	REPEATABLE_BY;
+	FORCE_ALIAS_FOR
 
 }

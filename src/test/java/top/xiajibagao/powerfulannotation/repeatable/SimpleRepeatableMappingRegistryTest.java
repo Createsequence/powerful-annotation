@@ -5,10 +5,9 @@ import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.lang.Opt;
 import org.junit.Assert;
 import org.junit.Test;
-import top.xiajibagao.powerfulannotation.annotation.Link;
+import top.xiajibagao.powerfulannotation.annotation.RepeatableBy;
 import top.xiajibagao.powerfulannotation.helper.ForestMap;
 import top.xiajibagao.powerfulannotation.helper.TreeEntry;
-import top.xiajibagao.powerfulannotation.synthesis.RelationType;
 
 import java.lang.annotation.*;
 import java.util.Collection;
@@ -19,7 +18,7 @@ public class SimpleRepeatableMappingRegistryTest {
 	@Test
 	public void registerTest() {
 		SimpleRepeatableMappingRegistry registry = new SimpleRepeatableMappingRegistry(
-			new StandardRepeatableMappingParser(), new LinkRepeatableMappingParser()
+			new StandardRepeatableMappingParser(), new RepeatableByMappingParser()
 		);
 		registry.register(AnnotationForTest1.class);
 
@@ -40,7 +39,7 @@ public class SimpleRepeatableMappingRegistryTest {
 	@Test
 	public void isContainerTest() {
 		SimpleRepeatableMappingRegistry registry = new SimpleRepeatableMappingRegistry(
-			new StandardRepeatableMappingParser(), new LinkRepeatableMappingParser()
+			new StandardRepeatableMappingParser(), new RepeatableByMappingParser()
 		);
 		registry.register(AnnotationForTest1.class);
 
@@ -53,7 +52,7 @@ public class SimpleRepeatableMappingRegistryTest {
 	@Test
 	public void hasContainerTest() {
 		SimpleRepeatableMappingRegistry registry = new SimpleRepeatableMappingRegistry(
-			new StandardRepeatableMappingParser(), new LinkRepeatableMappingParser()
+			new StandardRepeatableMappingParser(), new RepeatableByMappingParser()
 		);
 		registry.register(AnnotationForTest1.class);
 
@@ -66,7 +65,7 @@ public class SimpleRepeatableMappingRegistryTest {
 	@Test
 	public void getContainersTest() {
 		SimpleRepeatableMappingRegistry registry = new SimpleRepeatableMappingRegistry(
-			new StandardRepeatableMappingParser(), new LinkRepeatableMappingParser()
+			new StandardRepeatableMappingParser(), new RepeatableByMappingParser()
 		);
 		registry.register(AnnotationForTest1.class);
 
@@ -81,7 +80,7 @@ public class SimpleRepeatableMappingRegistryTest {
 	@Test
 	public void getAllElementsFromContainerTest() {
 		SimpleRepeatableMappingRegistry registry = new SimpleRepeatableMappingRegistry(
-			new StandardRepeatableMappingParser(), new LinkRepeatableMappingParser()
+			new StandardRepeatableMappingParser(), new RepeatableByMappingParser()
 		);
 		registry.register(AnnotationForTest1.class);
 
@@ -93,7 +92,7 @@ public class SimpleRepeatableMappingRegistryTest {
 	@Test
 	public void getElementsFromContainerTest() {
 		SimpleRepeatableMappingRegistry registry = new SimpleRepeatableMappingRegistry(
-			new StandardRepeatableMappingParser(), new LinkRepeatableMappingParser()
+			new StandardRepeatableMappingParser(), new RepeatableByMappingParser()
 		);
 		registry.register(AnnotationForTest1.class);
 
@@ -123,7 +122,7 @@ public class SimpleRepeatableMappingRegistryTest {
 		String name() default "";
 	}
 
-	@Link(annotation = AnnotationForTest3.class, attribute = "annotations", type = RelationType.REPEATABLE_BY)
+	@RepeatableBy(annotation = AnnotationForTest3.class, attribute = "annotations")
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target({ ElementType.METHOD, ElementType.TYPE })
 	@interface AnnotationForTest2 {

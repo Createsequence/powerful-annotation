@@ -1,5 +1,6 @@
 package top.xiajibagao.powerfulannotation.synthesis;
 
+import cn.hutool.core.collection.CollUtil;
 import top.xiajibagao.powerfulannotation.repeatable.RepeatableMappingParser;
 import top.xiajibagao.powerfulannotation.repeatable.RepeatableMappingRegistry;
 import top.xiajibagao.powerfulannotation.repeatable.SimpleRepeatableMappingRegistry;
@@ -26,7 +27,7 @@ public class RepeatableSynthesizedAggregateAnnotation
         super(source, annotationScanner);
         this.repeatableMappingRegistry = new SimpleRepeatableMappingRegistry(
             RepeatableMappingParser.STANDARD_REPEATABLE_MAPPING_PARSER,
-            RepeatableMappingParser.LINK_REPEATABLE_MAPPING_PARSER
+            RepeatableMappingParser.REPEATABLE_BY_MAPPING_PARSER
         );
     }
 
@@ -63,10 +64,14 @@ public class RepeatableSynthesizedAggregateAnnotation
         return annotationMap;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public <T extends Annotation> List<T> getRepeatableAnnotations(Class<T> annotationType) {
-        List<T> annotations = new ArrayList<>();
+        init();
+        List<T> annotations = isAnnotationPresent(annotationType) ?
+            CollUtil.newArrayList((T)getSynthesizedAnnotation(annotationType).getAnnotation()) : new ArrayList<>();
         synthesizedAnnotationMap.values().stream()
+            .map(SynthesizedAnnotation::getAnnotation)
             .filter(annotation -> repeatableMappingRegistry.isContainerOf(annotationType, annotation.annotationType()))
             .map(annotation -> repeatableMappingRegistry.getElementsFromContainer(annotation, annotationType))
             .forEach(annotations::addAll);

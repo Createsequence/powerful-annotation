@@ -2,20 +2,18 @@ package top.xiajibagao.powerfulannotation.repeatable;
 
 import org.junit.Assert;
 import org.junit.Test;
-import top.xiajibagao.powerfulannotation.annotation.Link;
 import top.xiajibagao.powerfulannotation.annotation.RepeatableBy;
-import top.xiajibagao.powerfulannotation.synthesis.RelationType;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-public class LinkRepeatableMappingParserTest {
+public class RepeatableByMappingParserTest {
 
 	@Test
 	public void parseTest() {
-		LinkRepeatableMappingParser parser = new LinkRepeatableMappingParser();
+		RepeatableByMappingParser parser = new RepeatableByMappingParser();
 
 		RepeatableMapping mapping1 = parser.parse(AnnotationForTest1.class, null);
 		Assert.assertNotNull(mapping1);
@@ -39,7 +37,7 @@ public class LinkRepeatableMappingParserTest {
 		String value() default "";
 	}
 
-	@Link(annotation = AnnotationForTest3.class, type = RelationType.REPEATABLE_BY)
+	@RepeatableBy(annotation = AnnotationForTest3.class)
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target({ ElementType.METHOD, ElementType.TYPE })
 	@interface AnnotationForTest2 {

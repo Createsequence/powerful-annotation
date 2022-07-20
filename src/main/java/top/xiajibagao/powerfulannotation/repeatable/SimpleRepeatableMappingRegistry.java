@@ -26,7 +26,7 @@ import java.util.stream.Stream;
  * @author huangchengxing
  * @see RepeatableMappingParser
  * @see StandardRepeatableMappingParser
- * @see LinkRepeatableMappingParser
+ * @see RepeatableByMappingParser
  */
 public class SimpleRepeatableMappingRegistry implements RepeatableMappingRegistry {
 

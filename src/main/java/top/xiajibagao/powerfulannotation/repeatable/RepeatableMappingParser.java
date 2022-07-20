@@ -12,7 +12,7 @@ import java.lang.reflect.Method;
  * 中即系不同规则下的容器注解与元素注解间的映射关系
  *
  * @author huangchengxing
- * @see LinkRepeatableMappingParser
+ * @see RepeatableByMappingParser
  * @see StandardRepeatableMappingParser
  */
 public interface RepeatableMappingParser {
@@ -20,7 +20,7 @@ public interface RepeatableMappingParser {
 	/**
 	 * 用于处理由{@link Link}注解对应的元素注解与容器注解层级
 	 */
-	LinkRepeatableMappingParser LINK_REPEATABLE_MAPPING_PARSER = new LinkRepeatableMappingParser();
+	RepeatableByMappingParser REPEATABLE_BY_MAPPING_PARSER = new RepeatableByMappingParser();
 
 	/**
 	 * 用于处理由{@link Repeatable}注解对应的元素注解与容器注解层级

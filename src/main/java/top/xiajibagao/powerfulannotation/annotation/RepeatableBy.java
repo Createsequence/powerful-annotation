@@ -1,7 +1,5 @@
 package top.xiajibagao.powerfulannotation.annotation;
 
-import top.xiajibagao.powerfulannotation.synthesis.RelationType;
-
 import java.lang.annotation.*;
 
 /**
@@ -12,7 +10,6 @@ import java.lang.annotation.*;
  *
  * @author huangchengxing
  */
-@Link(type = RelationType.REPEATABLE_BY)
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.METHOD, ElementType.ANNOTATION_TYPE})
@@ -21,13 +18,11 @@ public @interface RepeatableBy {
 	/**
 	 * 产生关联的注解类型，当不指定时，默认指注释的属性所在的类
 	 */
-	@Link(annotation = Link.class, attribute = "annotation", type = RelationType.FORCE_ALIAS_FOR)
-	Class<? extends Annotation> annotation() default Annotation.class;
+	Class<? extends Annotation> annotation();
 
 	/**
 	 * {@link #annotation()}指定注解中关联的属性
 	 */
-	@Link(annotation = Link.class, attribute = "attribute", type = RelationType.FORCE_ALIAS_FOR)
 	String attribute() default "value";
 
 }

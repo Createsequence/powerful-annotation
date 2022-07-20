@@ -253,6 +253,7 @@ public class GenericSynthesizedAggregateAnnotation
 	 */
 	@Override
 	public Object getAttributeValue(String attributeName, Class<?> attributeType) {
+		init();
 		return attributeProcessor.getAttributeValue(attributeName, attributeType, synthesizedAnnotationMap.values());
 	}
 
@@ -265,6 +266,7 @@ public class GenericSynthesizedAggregateAnnotation
 	 */
 	@Override
 	public <T extends Annotation> T getAnnotation(Class<T> annotationType) {
+		init();
 		return Opt.ofNullable(annotationType)
 			.map(synthesizedAnnotationMap::get)
 			.map(SynthesizedAnnotation::getAnnotation)
@@ -280,6 +282,7 @@ public class GenericSynthesizedAggregateAnnotation
 	 */
 	@Override
 	public boolean isAnnotationPresent(Class<? extends Annotation> annotationType) {
+		init();
 		return synthesizedAnnotationMap.containsKey(annotationType);
 	}
 
@@ -290,6 +293,7 @@ public class GenericSynthesizedAggregateAnnotation
 	 */
 	@Override
 	public Annotation[] getAnnotations() {
+		init();
 		return synthesizedAnnotationMap.values().stream()
 			.map(SynthesizedAnnotation::getAnnotation)
 			.toArray(Annotation[]::new);
@@ -304,6 +308,7 @@ public class GenericSynthesizedAggregateAnnotation
 	 */
 	@Override
 	public <T extends Annotation> T synthesize(Class<T> annotationType, SynthesizedAnnotation annotation) {
+		init();
 		return SynthesizedAnnotationInvocationHandler.createProxy(annotationType, this, annotation);
 	}
 
