@@ -11,7 +11,10 @@ import top.xiajibagao.powerfulannotation.synthesis.proxy.SynthesizedAnnotationIn
 import java.lang.annotation.Annotation;
 import java.lang.annotation.Inherited;
 import java.lang.reflect.AnnotatedElement;
-import java.util.*;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -147,34 +150,6 @@ public class AnnotatedElementUtils {
         List<Annotation> annotations = scanDirectlyAndMetaAnnotation(element);
         return annotations.stream()
             .anyMatch(annotation -> ObjectUtil.equals(annotation.annotationType(), annotationType));
-    }
-
-    /**
-     * <p>将指定注解及其元注解聚合为一个合成注解，并从聚合后的注解中查找指定的注解对象，
-     * 该注解对象的属性值将会根据被低层级注解中类型与名称完全一致的属性值覆盖。<br />
-     * 合成注解支持处理被{@link Link}注解的属性。
-     *
-     * @param annotationType 注解类型
-     * @param annotation 注解对象
-     * @return T
-     */
-    public static <T extends Annotation> T getSynthesizedAnnotation(Annotation annotation, Class<T> annotationType) {
-        return aggregatingFromAnnotationWithMeta(Collections.singletonList(annotation))
-            .synthesize(annotationType);
-    }
-
-    /**
-     * <p>将指定的注解聚合为合成注解，并从聚合后的注解中查找指定的注解对象，
-     * 该注解对象的属性值将会根据被低层级注解中类型与名称完全一致的属性值覆盖。<br />
-     * 合成注解支持处理被{@link Link}注解的属性。
-     *
-     * @param annotationType 注解类型
-     * @param annotations 注解对象
-     * @return T
-     */
-    public static <T extends Annotation> T getSynthesizedAnnotation(Annotation[] annotations, Class<T> annotationType) {
-        return aggregatingFromAnnotationWithMeta(Arrays.asList(annotations))
-            .synthesize(annotationType);
     }
 
     /**
@@ -347,6 +322,13 @@ public class AnnotatedElementUtils {
     // ============================ 私有方法 ============================
 
     /**
+     * 使用扫描器扫描器注解
+     */
+    private static List<Annotation> scanByScanner(AnnotatedElement annotatedElement, AnnotationScanner scanner) {
+        return ObjectUtil.isNull(annotatedElement) ? Collections.emptyList() : scanner.getAnnotations(annotatedElement);
+    }
+
+    /**
      * 对指定注解对象及其元注解进行聚合
      *
      * @param annotations 注解对象
@@ -364,13 +346,6 @@ public class AnnotatedElementUtils {
      */
     private static SynthesizedAggregateAnnotation aggregatingFromAnnotationWithMeta(List<Annotation> annotations) {
         return new GenericSynthesizedAggregateAnnotation(annotations, AnnotationScanner.DIRECTLY_AND_META_ANNOTATION);
-    }
-
-    /**
-     * 使用扫描器扫描器注解
-     */
-    private static List<Annotation> scanByScanner(AnnotatedElement annotatedElement, AnnotationScanner scanner) {
-        return ObjectUtil.isNull(annotatedElement) ? Collections.emptyList() : scanner.getAnnotations(annotatedElement);
     }
 
     /**
