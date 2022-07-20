@@ -200,27 +200,38 @@ public class GenericSynthesizedAggregateAnnotation
 		// 根注解默认水平坐标为0，根注解的元注解坐标从1开始
 		for (int i = 0; i < source.size(); i++) {
 			final Annotation sourceAnnotation = source.get(i);
-			Assert.isFalse(SynthesizedAnnotationUtils.isSynthesizedAnnotation(sourceAnnotation), "source [{}] has been synthesized");
-			annotationMap.put(sourceAnnotation.annotationType(), new MetaAnnotation(sourceAnnotation, sourceAnnotation, 0, i));
+			Assert.isFalse(AnnotatedElementUtils.isSynthesizedAnnotation(sourceAnnotation), "source [{}] has been synthesized");
+			if (!loadAnnotation(annotationMap, sourceAnnotation, 0, sourceAnnotation)) {
+				continue;
+			}
 			Assert.isTrue(
 				annotationScanner.support(sourceAnnotation.annotationType()),
 				"annotation scanner [{}] cannot support scan [{}]",
 				annotationScanner, sourceAnnotation.annotationType()
 			);
 			annotationScanner.scan(
-				(index, annotation) -> {
-					SynthesizedAnnotation oldAnnotation = annotationMap.get(annotation.annotationType());
-					SynthesizedAnnotation newAnnotation = new MetaAnnotation(sourceAnnotation, annotation, index + 1, annotationMap.size());
-					if (ObjectUtil.isNull(oldAnnotation)) {
-						annotationMap.put(annotation.annotationType(), newAnnotation);
-					} else {
-						annotationMap.put(annotation.annotationType(), annotationSelector.choose(oldAnnotation, newAnnotation));
-					}
-				},
+				(index, annotation) -> loadAnnotation(annotationMap, sourceAnnotation, index + 1, annotation),
 				sourceAnnotation.annotationType(), null
 			);
 		}
 		return annotationMap;
+	}
+
+	/**
+	 * 加载注解，若已有同类型的注解，则根据{@link SynthesizedAnnotationSelector}的选择结果更新 <br />
+	 * 当该类型的注解是首次被加载时返回{@code true}，否则返回{@code false}
+	 */
+	private boolean loadAnnotation(
+		Map<Class<? extends Annotation>, SynthesizedAnnotation> annotationMap,
+		Annotation sourceAnnotation, Integer index, Annotation annotation) {
+		SynthesizedAnnotation oldAnnotation = annotationMap.get(annotation.annotationType());
+		SynthesizedAnnotation newAnnotation = new MetaAnnotation(sourceAnnotation, annotation, index, annotationMap.size());
+		if (ObjectUtil.isNull(oldAnnotation)) {
+			annotationMap.put(annotation.annotationType(), newAnnotation);
+			return true;
+		}
+		annotationMap.put(annotation.annotationType(), annotationSelector.choose(oldAnnotation, newAnnotation));
+		return false;
 	}
 
 	/**
