@@ -4,7 +4,7 @@ import cn.hutool.core.lang.Assert;
 import cn.hutool.core.lang.Opt;
 import cn.hutool.core.util.ObjectUtil;
 import top.xiajibagao.powerfulannotation.annotation.Link;
-import top.xiajibagao.powerfulannotation.helper.SynthesizedAnnotationUtils;
+import top.xiajibagao.powerfulannotation.helper.AnnotatedElementUtils;
 import top.xiajibagao.powerfulannotation.scanner.AnnotationHierarchyScanner;
 import top.xiajibagao.powerfulannotation.scanner.AnnotationScanner;
 import top.xiajibagao.powerfulannotation.synthesis.attribute.AnnotationAttributeValueProvider;

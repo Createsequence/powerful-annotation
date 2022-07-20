@@ -15,13 +15,40 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 /**
- * 支持从层级结构中获取注解或合成注解的工具类
+ * <p>支持从层级结构中获取注解或合成注解的工具类
+ *
+ * <p>类中以<em>find</em>和<em>get</em>作为前缀的方法将查找{@link AnnotatedElement}的不同层级结构：
+ * <ul>
+ *     <li>find：表示从{@link AnnotatedElement}及其类层结构中寻找注解；</li>
+ *     <li>get：表示从{@link AnnotatedElement}本身寻找直接存在的注解；</li>
+ * </ul>
+ * 此外，本类中的所有的方法都支持在获取到{@link AnnotatedElement}上的注解后，
+ * 继续查找获得的注解的元注解层级结构，若不需要查找元注解，则应当使用{@link AnnotationUtils}中的方法。<br />
+ *
+ * <p>通过本类中的<em>findXXX</em>/<em>getXXX</em>方法获取到的合成注解，
+ * 都支持基于{@link Link}的属性别名机制，并且遵循元注解同名同类型属性会被子注解覆盖的原则。<br />
+ * 当使用合成注解对从层级结构中查找到的注解及其元注解进行合成时，
+ * 若存在多个同类的注解，则将仅保留第一个被查找到的注解，其余的同类型注解将被忽略。<br />
+ * 默认的查询顺序为：
+ * <ol>
+ *     <li>{@link AnnotatedElement}上直接声明的注解；</li>
+ *     <li>{@link AnnotatedElement}上直接声明的注解的元注解；</li>
+ *     <li>{@link AnnotatedElement}的上层结构中对应{@link AnnotatedElement}直接声明的注解；</li>
+ *     <li>{@link AnnotatedElement}的上层结构中对应{@link AnnotatedElement}直接声明的注解的元注解；</li>
+ * </ol>
+ *
+ * <p>当使用<em>getAllXXX</em>或<em>findAllXXX</em>方法时，
+ * {@link AnnotatedElement}的层级结构间的注解
  *
  * @author huangchengxing
+ * @see Link
+ * @see SynthesizedAggregateAnnotation
+ * @see SynthesizedAnnotation
+ * @see SynthesizedAnnotationInvocationHandler
  */
-public class SynthesizedAnnotationUtils {
+public class AnnotatedElementUtils {
 
-    private SynthesizedAnnotationUtils() {
+    private AnnotatedElementUtils() {
 
     }
 
@@ -352,7 +379,7 @@ public class SynthesizedAnnotationUtils {
     private static <T extends Annotation> List<T> synthesizeForEachAggregateAnnotation(Collection<Annotation> annotations, Class<T> annotationType) {
         return annotations.stream()
             .map(Collections::singletonList)
-            .map(SynthesizedAnnotationUtils::aggregatingFromAnnotationWithMeta)
+            .map(AnnotatedElementUtils::aggregatingFromAnnotationWithMeta)
             .map(a -> a.synthesize(annotationType))
             .filter(ObjectUtil::isNotNull)
             .collect(Collectors.toList());

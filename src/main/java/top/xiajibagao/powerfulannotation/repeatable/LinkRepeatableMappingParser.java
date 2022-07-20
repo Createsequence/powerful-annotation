@@ -4,7 +4,7 @@ import cn.hutool.core.lang.Assert;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.ReflectUtil;
 import top.xiajibagao.powerfulannotation.annotation.Link;
-import top.xiajibagao.powerfulannotation.helper.SynthesizedAnnotationUtils;
+import top.xiajibagao.powerfulannotation.helper.AnnotatedElementUtils;
 import top.xiajibagao.powerfulannotation.synthesis.RelationType;
 
 import java.lang.annotation.Annotation;
@@ -21,7 +21,7 @@ public class LinkRepeatableMappingParser implements RepeatableMappingParser {
 
 	@Override
 	public RepeatableMapping parse(Class<? extends Annotation> annotationType, RepeatableMappingRegistry registry) {
-		final Link link = SynthesizedAnnotationUtils.getSynthesizedAnnotation(annotationType, Link.class);
+		final Link link = AnnotatedElementUtils.getSynthesizedAnnotation(annotationType, Link.class);
 		if (ObjectUtil.isNull(link) || ObjectUtil.notEqual(RelationType.REPEATABLE_BY, link.type())) {
 			return null;
 		}
