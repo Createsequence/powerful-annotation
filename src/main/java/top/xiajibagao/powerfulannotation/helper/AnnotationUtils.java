@@ -1,6 +1,8 @@
 package top.xiajibagao.powerfulannotation.helper;
 
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.text.CharSequenceUtil;
+import cn.hutool.core.util.ReflectUtil;
 
 import java.lang.annotation.*;
 import java.lang.reflect.Method;
@@ -45,11 +47,16 @@ public class AnnotationUtils {
     /**
      * 方法是否为注解属性方法。 <br>
      * 方法无参数，且有返回值的方法认为是注解属性的方法。
+     * 不包括{@code toString}, {@code hashCode}与{@code annotationType}
      *
      * @param method 方法
      */
     public static boolean isAttributeMethod(Method method) {
-        return method.getParameterCount() == 0 && method.getReturnType() != void.class;
+        return method.getParameterCount() == 0
+            && method.getReturnType() != void.class
+            && !ReflectUtil.isHashCodeMethod(method)
+            && !ReflectUtil.isToStringMethod(method)
+            && !CharSequenceUtil.equals("annotationType", method.getName());
     }
 
 }
