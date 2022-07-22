@@ -1,15 +1,14 @@
 package top.xiajibagao.powerfulannotation.scanner;
 
-import cn.hutool.core.map.multi.ListValueMap;
 import cn.hutool.core.util.ObjectUtil;
 import top.xiajibagao.powerfulannotation.helper.FuncUtils;
+import top.xiajibagao.powerfulannotation.scanner.processor.AnnotationProcessor;
+import top.xiajibagao.powerfulannotation.scanner.processor.CombinedAnnotationProcessor;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Method;
 import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.function.BiConsumer;
 import java.util.function.Predicate;
 
 /**
@@ -93,27 +92,27 @@ public class GenericAnnotationScanner implements AnnotationScanner {
 	/**
 	 * 扫描注解元素的层级结构（若存在），然后对获取到的注解和注解对应的层级索引进行处理
 	 *
-	 * @param consumer     对获取到的注解和注解对应的层级索引的处理
+	 * @param processor     对获取到的注解和注解对应的层级索引的处理
 	 * @param element 被注解的元素
 	 * @param filter       注解过滤器，无法通过过滤器的注解不会被处理。该参数允许为空。
 	 */
 	@Override
-	public void scan(BiConsumer<Integer, Annotation> consumer, AnnotatedElement element, Predicate<Annotation> filter) {
+	public void scan(AnnotationProcessor processor, AnnotatedElement element, Predicate<Annotation> filter) {
 		filter = ObjectUtil.defaultIfNull(filter, FuncUtils.alwaysTrue());
 		if (ObjectUtil.isNull(element)) {
 			return;
 		}
 		// 注解元素是类
 		if (element instanceof Class) {
-			scanElement(typeHierarchyScanner, consumer, element, filter);
+			scanElement(typeHierarchyScanner, processor, element, filter);
 		}
 		// 注解元素是方法
 		else if (element instanceof Method) {
-			scanElement(typeMethodHierarchyScanner, consumer, element, filter);
+			scanElement(typeMethodHierarchyScanner, processor, element, filter);
 		}
 		// 注解元素是其他类型
 		else {
-			scanElement(flatElementScanner, consumer, element, filter);
+			scanElement(flatElementScanner, processor, element, filter);
 		}
 	}
 
@@ -122,20 +121,12 @@ public class GenericAnnotationScanner implements AnnotationScanner {
 	 */
 	private void scanElement(
 		AnnotationScanner scanner,
-		BiConsumer<Integer, Annotation> consumer,
+		AnnotationProcessor processor,
 		AnnotatedElement element,
 		Predicate<Annotation> filter) {
-		// 扫描类上注解
-		final ListValueMap<Integer, Annotation> classAnnotations = new ListValueMap<>(new LinkedHashMap<>());
-		scanner.scan(classAnnotations::putValue, element, filter);
 
-		// 扫描元注解
-		classAnnotations.forEach((index, annotations) ->
-			annotations.forEach(annotation -> {
-				consumer.accept(index, annotation);
-				annotationHierarchyScanner.scan(consumer, annotation.annotationType(), filter);
-			})
-		);
+		CombinedAnnotationProcessor combinedAnnotationProcessor = new CombinedAnnotationProcessor(processor, annotationHierarchyScanner, processor, filter);
+		scanner.scan(combinedAnnotationProcessor, element, filter);
 	}
 
 }

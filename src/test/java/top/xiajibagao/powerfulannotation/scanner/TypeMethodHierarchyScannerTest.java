@@ -63,7 +63,7 @@ public class TypeMethodHierarchyScannerTest {
 		// 不查找父类中具有相同方法签名的方法
 		Map<Integer, List<Annotation>> map = new HashMap<>();
 		new TypeMethodHierarchyScanner(false).scan(
-			(index, annotation) -> map.computeIfAbsent(index, i -> new ArrayList<>()).add(annotation),
+			(vIndex, hIndex, annotation) -> map.computeIfAbsent(vIndex, i -> new ArrayList<>()).add(annotation),
 			method, null
 		);
 		Assert.assertEquals(1, map.get(0).size());
@@ -72,7 +72,7 @@ public class TypeMethodHierarchyScannerTest {
 		// 查找父类中具有相同方法签名的方法
 		map.clear();
 		new TypeMethodHierarchyScanner(true).scan(
-			(index, annotation) -> map.computeIfAbsent(index, i -> new ArrayList<>()).add(annotation),
+			(vIndex, hIndex, annotation) -> map.computeIfAbsent(vIndex, i -> new ArrayList<>()).add(annotation),
 			method, null
 		);
 		Assert.assertEquals(3, map.size());
@@ -88,7 +88,7 @@ public class TypeMethodHierarchyScannerTest {
 		new TypeMethodHierarchyScanner(true)
 			.addExcludeTypes(SuperInterface.class)
 			.scan(
-				(index, annotation) -> map.computeIfAbsent(index, i -> new ArrayList<>()).add(annotation),
+				(vIndex, hIndex, annotation) -> map.computeIfAbsent(vIndex, i -> new ArrayList<>()).add(annotation),
 				method, null
 			);
 		Assert.assertEquals(2, map.size());
@@ -102,7 +102,7 @@ public class TypeMethodHierarchyScannerTest {
 		new TypeMethodHierarchyScanner(true)
 			.setFilter(t -> ClassUtil.isAssignable(SuperClass.class, t))
 			.scan(
-				(index, annotation) -> map.computeIfAbsent(index, i -> new ArrayList<>()).add(annotation),
+				(vIndex, hIndex, annotation) -> map.computeIfAbsent(vIndex, i -> new ArrayList<>()).add(annotation),
 				method, null
 			);
 		Assert.assertEquals(2, map.size());

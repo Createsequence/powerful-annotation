@@ -40,7 +40,7 @@ public class AnnotationHierarchyScannerTest {
 		AnnotationScanner scanner = new AnnotationHierarchyScanner();
 		Map<Integer, List<Annotation>> map = new HashMap<>();
 		scanner.scan(
-			(index, annotation) -> map.computeIfAbsent(index, i -> new ArrayList<>()).add(annotation),
+			(vIndex, hIndex, annotation) -> map.computeIfAbsent(vIndex, i -> new ArrayList<>()).add(annotation),
 			AnnotationForScannerTest3.class, null
 		);
 

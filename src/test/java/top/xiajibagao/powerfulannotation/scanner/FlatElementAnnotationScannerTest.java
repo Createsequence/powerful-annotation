@@ -40,7 +40,7 @@ public class FlatElementAnnotationScannerTest {
 		final Field field = ReflectUtil.getField(Example.class, "id");
 		final Map<Integer, List<Annotation>> map = new HashMap<>();
 		scanner.scan(
-			(index, annotation) -> map.computeIfAbsent(index, i -> new ArrayList<>()).add(annotation),
+			(vIndex, hIndex, annotation) -> map.computeIfAbsent(vIndex, i -> new ArrayList<>()).add(annotation),
 			field, null
 		);
 		Assert.assertEquals(1, map.size());

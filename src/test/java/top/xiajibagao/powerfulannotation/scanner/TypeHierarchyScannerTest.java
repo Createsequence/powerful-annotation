@@ -60,7 +60,7 @@ public class TypeHierarchyScannerTest {
 
 		// 查找父类与父接口
 		new TypeHierarchyScanner().scan(
-			(index, annotation) -> map.computeIfAbsent(index, i -> new ArrayList<>()).add(annotation),
+			(vIndex, hIndex, annotation) -> map.computeIfAbsent(vIndex, i -> new ArrayList<>()).add(annotation),
 			Example.class, null
 		);
 		Assert.assertEquals(3, map.size());
@@ -76,7 +76,7 @@ public class TypeHierarchyScannerTest {
 		new TypeHierarchyScanner()
 			.setIncludeInterfaces(false)
 			.scan(
-				(index, annotation) -> map.computeIfAbsent(index, i -> new ArrayList<>()).add(annotation),
+				(vIndex, hIndex, annotation) -> map.computeIfAbsent(vIndex, i -> new ArrayList<>()).add(annotation),
 				Example.class, null
 			);
 		Assert.assertEquals(2, map.size());
@@ -90,7 +90,7 @@ public class TypeHierarchyScannerTest {
 		new TypeHierarchyScanner()
 			.setIncludeSuperClass(false)
 			.scan(
-				(index, annotation) -> map.computeIfAbsent(index, i -> new ArrayList<>()).add(annotation),
+				(vIndex, hIndex, annotation) -> map.computeIfAbsent(vIndex, i -> new ArrayList<>()).add(annotation),
 				Example.class, null
 			);
 		Assert.assertEquals(1, map.size());
@@ -102,7 +102,7 @@ public class TypeHierarchyScannerTest {
 		new TypeHierarchyScanner()
 			.addExcludeTypes(ExampleSupplerClass.class)
 			.scan(
-				(index, annotation) -> map.computeIfAbsent(index, i -> new ArrayList<>()).add(annotation),
+				(vIndex, hIndex, annotation) -> map.computeIfAbsent(vIndex, i -> new ArrayList<>()).add(annotation),
 				Example.class, null
 			);
 		Assert.assertEquals(1, map.size());
@@ -114,7 +114,7 @@ public class TypeHierarchyScannerTest {
 		new TypeHierarchyScanner()
 			.setFilter(t -> ClassUtil.isAssignable(ExampleSupplerClass.class, t))
 			.scan(
-				(index, annotation) -> map.computeIfAbsent(index, i -> new ArrayList<>()).add(annotation),
+				(vIndex, hIndex, annotation) -> map.computeIfAbsent(vIndex, i -> new ArrayList<>()).add(annotation),
 				Example.class, null
 			);
 		Assert.assertEquals(2, map.size());

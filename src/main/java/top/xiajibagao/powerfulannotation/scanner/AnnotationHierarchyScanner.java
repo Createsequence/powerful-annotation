@@ -1,17 +1,14 @@
 package top.xiajibagao.powerfulannotation.scanner;
 
-import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.ClassUtil;
-import cn.hutool.core.util.ObjectUtil;
-import top.xiajibagao.powerfulannotation.helper.AnnotationUtils;
 import top.xiajibagao.powerfulannotation.helper.FuncUtils;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
-import java.util.*;
-import java.util.function.BiConsumer;
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -47,43 +44,6 @@ public class AnnotationHierarchyScanner extends AbstractHierarchyScanner<Annotat
 	@Override
 	public boolean support(AnnotatedElement element) {
 		return (element instanceof Class && ClassUtil.isAssignable(Annotation.class, (Class<?>)element));
-	}
-
-	/**
-	 * 按广度优先扫描指定注解上的元注解，对扫描到的注解与层级索引进行操作
-	 *
-	 * @param consumer     当前层级索引与操作
-	 * @param element 被注解的元素
-	 * @param filter       过滤器
-	 */
-	@SuppressWarnings("unchecked")
-	@Override
-	public void scan(BiConsumer<Integer, Annotation> consumer, AnnotatedElement element, Predicate<Annotation> filter) {
-		filter = ObjectUtil.defaultIfNull(filter, t -> true);
-		Set<Class<? extends Annotation>> accessed = new HashSet<>();
-		final Deque<List<Class<? extends Annotation>>> deque = CollUtil.newLinkedList(CollUtil.newArrayList((Class<? extends Annotation>)element));
-		int distance = 0;
-		do {
-			final List<Class<? extends Annotation>> annotationTypes = deque.removeFirst();
-			for (final Class<? extends Annotation> type : annotationTypes) {
-				final List<Annotation> metaAnnotations = Stream.of(type.getAnnotations())
-					.filter(a -> AnnotationUtils.isNotJdkAnnotation(a.annotationType()))
-					.filter(filter)
-					.collect(Collectors.toList());
-				for (final Annotation metaAnnotation : metaAnnotations) {
-					consumer.accept(distance, metaAnnotation);
-				}
-				accessed.add(type);
-				List<Class<? extends Annotation>> next = metaAnnotations.stream()
-					.map(Annotation::annotationType)
-					.filter(t -> !accessed.contains(t))
-					.collect(Collectors.toList());
-				if (CollUtil.isNotEmpty(next)) {
-					deque.addLast(next);
-				}
-			}
-			distance++;
-		} while (!deque.isEmpty());
 	}
 
 	@Override

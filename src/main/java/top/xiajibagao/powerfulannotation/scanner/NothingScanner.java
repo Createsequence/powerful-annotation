@@ -1,10 +1,11 @@
 package top.xiajibagao.powerfulannotation.scanner;
 
+import top.xiajibagao.powerfulannotation.scanner.processor.AnnotationProcessor;
+
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
 import java.util.Collections;
 import java.util.List;
-import java.util.function.BiConsumer;
 import java.util.function.Predicate;
 
 /**
@@ -25,7 +26,7 @@ public class NothingScanner implements AnnotationScanner {
 	}
 
 	@Override
-	public void scan(BiConsumer<Integer, Annotation> consumer, AnnotatedElement annotatedEle, Predicate<Annotation> filter) {
+	public void scan(AnnotationProcessor processor, AnnotatedElement annotatedEle, Predicate<Annotation> filter) {
 		// do nothing
 	}
 

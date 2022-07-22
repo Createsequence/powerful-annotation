@@ -97,7 +97,7 @@ public class MetaAnnotationAggregator implements AnnotationAggregator<Annotation
     private void refresh() {
         loadAnnotation(source, 0, 0);
         AnnotationScanner.DIRECTLY_AND_META_ANNOTATION.scan(
-            (index, annotation) -> loadAnnotation(annotation, index + 1, aggregatedAnnotationMap.size()),
+            (vIndex, hIndex, annotation) -> loadAnnotation(annotation, vIndex + 1, aggregatedAnnotationMap.size()),
             source.annotationType(), getAnnotationFilter()
         );
         aggregatedAnnotationMap.keySet().forEach(mappingRegistry::register);

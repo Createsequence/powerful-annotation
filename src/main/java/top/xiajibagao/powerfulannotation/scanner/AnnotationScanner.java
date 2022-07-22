@@ -1,15 +1,12 @@
 package top.xiajibagao.powerfulannotation.scanner;
 
-import cn.hutool.core.util.ObjectUtil;
-import top.xiajibagao.powerfulannotation.helper.AnnotationUtils;
+import top.xiajibagao.powerfulannotation.scanner.processor.AnnotationCollector;
+import top.xiajibagao.powerfulannotation.scanner.processor.AnnotationProcessor;
 
 import java.lang.annotation.Annotation;
 import java.lang.annotation.Inherited;
 import java.lang.reflect.AnnotatedElement;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.function.BiConsumer;
 import java.util.function.Predicate;
 
 /**
@@ -106,51 +103,19 @@ public interface AnnotationScanner {
 	 * @return 注解
 	 */
 	default List<Annotation> getAnnotations(AnnotatedElement element) {
-		final List<Annotation> annotations = new ArrayList<>();
-		scan((index, annotation) -> annotations.add(annotation), element, null);
-		return annotations;
-	}
-
-	/**
-	 * 若{@link #support(AnnotatedElement)}返回{@code true}，
-	 * 则调用并返回{@link #getAnnotations(AnnotatedElement)}结果，
-	 * 否则返回{@link Collections#emptyList()}
-	 *
-	 * @param element 被注解的元素
-	 * @return 注解
-	 */
-	default List<Annotation> getAnnotationsIfSupport(AnnotatedElement element) {
-		return support(element) ? getAnnotations(element) : Collections.emptyList();
+		final AnnotationCollector collector = new AnnotationCollector();
+		scan(collector, element, null);
+		return collector.getCollectedAnnotations();
 	}
 
 	/**
 	 * 扫描注解元素的层级结构（若存在），然后对获取到的注解和注解对应的层级索引进行处理。
 	 * 调用该方法前，需要确保调用{@link #support(AnnotatedElement)}返回为true
 	 *
-	 * @param consumer     对获取到的注解和注解对应的层级索引的处理
+	 * @param processor 注解处理器
 	 * @param element 被注解的元素
-	 * @param filter       注解过滤器，无法通过过滤器的注解不会被处理。该参数允许为空。
+	 * @param filter 注解过滤器，无法通过过滤器的注解不会被处理。该参数允许为空。
 	 */
-	default void scan(BiConsumer<Integer, Annotation> consumer, AnnotatedElement element, Predicate<Annotation> filter) {
-		filter = ObjectUtil.defaultIfNull(filter, annotation -> true);
-		for (final Annotation annotation : element.getAnnotations()) {
-			if (AnnotationUtils.isNotJdkAnnotation(annotation.annotationType()) && filter.test(annotation)) {
-				consumer.accept(0, annotation);
-			}
-		}
-	}
-
-	/**
-	 * 若{@link #support(AnnotatedElement)}返回{@code true}，则调用{@link #scan(BiConsumer, AnnotatedElement, Predicate)}
-	 *
-	 * @param consumer     对获取到的注解和注解对应的层级索引的处理
-	 * @param element 被注解的元素
-	 * @param filter       注解过滤器，无法通过过滤器的注解不会被处理。该参数允许为空。
-	 */
-	default void scanIfSupport(BiConsumer<Integer, Annotation> consumer, AnnotatedElement element, Predicate<Annotation> filter) {
-		if (support(element)) {
-			scan(consumer, element, filter);
-		}
-	}
+	void scan(AnnotationProcessor processor, AnnotatedElement element, Predicate<Annotation> filter);
 
 }
