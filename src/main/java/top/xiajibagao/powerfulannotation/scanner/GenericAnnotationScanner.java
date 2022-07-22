@@ -1,6 +1,7 @@
 package top.xiajibagao.powerfulannotation.scanner;
 
 import cn.hutool.core.util.ObjectUtil;
+import lombok.RequiredArgsConstructor;
 import top.xiajibagao.powerfulannotation.helper.FuncUtils;
 import top.xiajibagao.powerfulannotation.scanner.processor.AnnotationProcessor;
 import top.xiajibagao.powerfulannotation.scanner.processor.CombinedAnnotationProcessor;
@@ -9,6 +10,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Method;
 import java.util.Collections;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Predicate;
 
 /**
@@ -127,6 +129,32 @@ public class GenericAnnotationScanner implements AnnotationScanner {
 
 		CombinedAnnotationProcessor combinedAnnotationProcessor = new CombinedAnnotationProcessor(processor, annotationHierarchyScanner, processor, filter);
 		scanner.scan(combinedAnnotationProcessor, element, filter);
+	}
+
+
+
+	@RequiredArgsConstructor
+	private class SharedContextProcessor implements AnnotationProcessor {
+
+		private final int verticalIndex;
+		private final AtomicInteger horizontalIndex;
+		private final AnnotationProcessor processor;
+
+		public SharedContextProcessor(int verticalIndex, AnnotationProcessor processor) {
+			this.verticalIndex = verticalIndex + 1;
+			this.processor = processor;
+			this.horizontalIndex = new AtomicInteger(0);
+		}
+
+		@Override
+		public void process(int verticalIndex, int horizontalIndex, Annotation annotation) {
+			processor.process(this.verticalIndex + verticalIndex, this.horizontalIndex.getAndIncrement(), annotation);
+		}
+
+		@Override
+		public boolean interruptScanning() {
+			return processor.interruptScanning();
+		}
 	}
 
 }

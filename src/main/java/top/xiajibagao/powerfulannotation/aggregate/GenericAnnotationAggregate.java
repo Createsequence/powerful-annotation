@@ -1,9 +1,10 @@
 package top.xiajibagao.powerfulannotation.aggregate;
 
 import cn.hutool.core.lang.Assert;
+import cn.hutool.core.util.ObjectUtil;
 import lombok.Getter;
+import top.xiajibagao.powerfulannotation.helper.FuncUtils;
 import top.xiajibagao.powerfulannotation.repeatable.RepeatableMappingRegistry;
-import top.xiajibagao.powerfulannotation.scanner.AnnotationScanner;
 
 import java.lang.annotation.Annotation;
 import java.util.*;
@@ -11,13 +12,12 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 /**
- * {@link AnnotationAggregator}的基本实现，表示基于一个源注解，
- * 与该源注解的层级结构中的元注解聚合而来的聚合注解
+ * {@link AnnotationAggregate}的基本实现
  *
  * @author huangchengxing
  */
 @Getter
-public class MetaAnnotationAggregator implements AnnotationAggregator<Annotation>, Annotation {
+public class GenericAnnotationAggregate<T> implements AnnotationAggregate<T> {
 
     /**
      * 根对象
@@ -37,7 +37,7 @@ public class MetaAnnotationAggregator implements AnnotationAggregator<Annotation
     /**
      * 获取聚合注解的来源
      */
-    private final Annotation source;
+    private final T source;
 
     /**
      * 被聚合的注解
@@ -55,11 +55,6 @@ public class MetaAnnotationAggregator implements AnnotationAggregator<Annotation
     private final Predicate<Annotation> annotationFilter;
 
     /**
-     * 是否至少调用过一次{@link #refresh()}
-     */
-    private boolean refreshed;
-
-    /**
      * 创建一个聚合注解
      *
      * @param source 数据源
@@ -67,8 +62,8 @@ public class MetaAnnotationAggregator implements AnnotationAggregator<Annotation
      * @param verticalIndex 垂直坐标
      * @param horizontalIndex 水平坐标
      */
-    public MetaAnnotationAggregator(
-        Annotation source, Object root, int verticalIndex, int horizontalIndex, Predicate<Annotation> filter, RepeatableMappingRegistry mappingRegistry) {
+    public GenericAnnotationAggregate(
+        T source, Object root, int verticalIndex, int horizontalIndex, Predicate<Annotation> filter, RepeatableMappingRegistry mappingRegistry) {
         Assert.notNull(source, "source must not null");
         Assert.notNull(filter, "filter must not null");
         Assert.notNull(mappingRegistry, "mappingRegistry must not null");
@@ -76,39 +71,30 @@ public class MetaAnnotationAggregator implements AnnotationAggregator<Annotation
         this.root = root;
         this.verticalIndex = verticalIndex;
         this.horizontalIndex = horizontalIndex;
-        this.annotationFilter = filter;
+        this.annotationFilter = ObjectUtil.defaultIfNull(filter, FuncUtils.alwaysTrue());
         this.mappingRegistry = mappingRegistry;
         this.aggregatedAnnotationMap = new LinkedHashMap<>();
     }
 
     /**
-     * 加载聚合注解
+     * 将注解加载到当前聚合中
+     *
+     * @param verticalIndex 与被扫描对象的垂直距离
+     * @param horizontalIndex 与被扫描对象的水平距离
+     * @param annotation 注解对象
      */
-    private void loadAnnotation(Annotation annotation, int verticalIndex, int horizontalIndex) {
-        AggregatedAnnotation<? extends Annotation>  aggregatedAnnotation = new GenericAggregatedAnnotation<>(
-            annotation, source, verticalIndex, horizontalIndex
-        );
-        registerAggregatedAnnotation(aggregatedAnnotation);
-    }
-
-    /**
-     * 属性
-     */
-    private void refresh() {
-        loadAnnotation(source, 0, 0);
-        AnnotationScanner.DIRECTLY_AND_META_ANNOTATION.scan(
-            (vIndex, hIndex, annotation) -> loadAnnotation(annotation, vIndex + 1, aggregatedAnnotationMap.size()),
-            source.annotationType(), getAnnotationFilter()
-        );
-        aggregatedAnnotationMap.keySet().forEach(mappingRegistry::register);
+    @Override
+    public void process(int verticalIndex, int horizontalIndex, Annotation annotation) {
+        registerAggregatedAnnotation(verticalIndex, horizontalIndex , annotation);
     }
 
     /**
      * 向当前容器注册聚合注解
-     *
-     * @param aggregatedAnnotation 要聚合的注解
      */
-    protected void registerAggregatedAnnotation(AggregatedAnnotation<? extends Annotation> aggregatedAnnotation) {
+    protected void registerAggregatedAnnotation(int verticalIndex, int horizontalIndex, Annotation annotation) {
+        AggregatedAnnotation<? extends Annotation>  aggregatedAnnotation = new GenericAggregatedAnnotation<>(
+            annotation, source, verticalIndex, horizontalIndex
+        );
         aggregatedAnnotationMap.computeIfAbsent(aggregatedAnnotation.annotationType(), t -> new ArrayList<>())
             .add(aggregatedAnnotation);
     }
@@ -121,9 +107,6 @@ public class MetaAnnotationAggregator implements AnnotationAggregator<Annotation
      */
     @Override
     public boolean isPresent(Class<? extends Annotation> annotationType) {
-        if (!isRefreshed()) {
-            refresh();
-        }
         return aggregatedAnnotationMap.containsKey(annotationType);
     }
 
@@ -137,9 +120,6 @@ public class MetaAnnotationAggregator implements AnnotationAggregator<Annotation
     @SuppressWarnings("unchecked")
     @Override
     public <A extends Annotation> Collection<AggregatedAnnotation<A>> getAnnotationsByType(Class<A> annotationType) {
-        if (!isRefreshed()) {
-            refresh();
-        }
         return aggregatedAnnotationMap.get(annotationType).stream()
             .map(annotation -> (AggregatedAnnotation<A>)annotation)
             .collect(Collectors.toList());
@@ -152,9 +132,6 @@ public class MetaAnnotationAggregator implements AnnotationAggregator<Annotation
      */
     @Override
     public Collection<AggregatedAnnotation<? extends Annotation>> getAllAnnotations() {
-        if (!isRefreshed()) {
-            refresh();
-        }
         return aggregatedAnnotationMap.values().stream()
             .flatMap(Collection::stream)
             .collect(Collectors.toList());
@@ -168,9 +145,6 @@ public class MetaAnnotationAggregator implements AnnotationAggregator<Annotation
      */
     @Override
     public <A extends Annotation> Collection<A> getRepeatableAnnotations(Class<A> annotationType) {
-        if (!isRefreshed()) {
-            refresh();
-        }
         mappingRegistry.register(annotationType);
         List<A> annotations = getAnnotationsByType(annotationType).stream()
             .map(AggregatedAnnotation::getAnnotation)
@@ -180,14 +154,6 @@ public class MetaAnnotationAggregator implements AnnotationAggregator<Annotation
             .map(annotation -> mappingRegistry.getElementsFromContainer(annotation, annotationType))
             .forEach(annotations::addAll);
         return annotations;
-    }
-
-    /**
-     * 获取源注解类型
-     */
-    @Override
-    public Class<? extends Annotation> annotationType() {
-        return getSource().annotationType();
     }
 
 }

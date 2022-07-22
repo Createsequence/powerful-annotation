@@ -73,4 +73,5 @@ public class CombinedAnnotationProcessor implements AnnotationProcessor {
     public boolean interruptScanning() {
         return interrupted;
     }
+
 }
