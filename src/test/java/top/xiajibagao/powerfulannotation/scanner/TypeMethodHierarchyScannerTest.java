@@ -112,7 +112,7 @@ public class TypeMethodHierarchyScannerTest {
 		Assert.assertEquals("SuperClass", ((AnnotationForScannerTest) map.get(1).get(0)).value());
 	}
 
-	static class Example extends SuperClass {
+	private static class Example extends SuperClass {
 		private Integer id;
 
 		@Override
@@ -120,7 +120,7 @@ public class TypeMethodHierarchyScannerTest {
 		public List<?> test() { return Collections.emptyList(); }
 	}
 
-	static class SuperClass implements SuperInterface {
+	private static class SuperClass implements SuperInterface {
 
 		@Override
 		@AnnotationForScannerTest("SuperClass")
@@ -128,7 +128,7 @@ public class TypeMethodHierarchyScannerTest {
 
 	}
 
-	interface SuperInterface {
+	private interface SuperInterface {
 
 		@AnnotationForScannerTest("SuperInterface")
 		Object test();

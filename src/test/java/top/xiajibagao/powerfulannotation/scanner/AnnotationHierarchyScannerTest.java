@@ -65,15 +65,15 @@ public class AnnotationHierarchyScannerTest {
 	@AnnotationForScannerTest
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target({ ElementType.ANNOTATION_TYPE, ElementType.TYPE, ElementType.METHOD, ElementType.FIELD })
-	@interface AnnotationForScannerTest1 {}
+	private @interface AnnotationForScannerTest1 {}
 
 	@AnnotationForScannerTest1
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target({ ElementType.ANNOTATION_TYPE, ElementType.TYPE, ElementType.METHOD, ElementType.FIELD })
-	@interface AnnotationForScannerTest2 {}
+	private @interface AnnotationForScannerTest2 {}
 
 	@AnnotationForScannerTest2
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target({ ElementType.ANNOTATION_TYPE, ElementType.TYPE, ElementType.METHOD, ElementType.FIELD })
-	@interface AnnotationForScannerTest3 {}
+	private @interface AnnotationForScannerTest3 {}
 }

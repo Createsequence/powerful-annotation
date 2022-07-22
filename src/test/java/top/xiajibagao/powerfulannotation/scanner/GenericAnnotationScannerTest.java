@@ -66,20 +66,20 @@ public class GenericAnnotationScannerTest {
 
 	@Target({ElementType.ANNOTATION_TYPE, ElementType.TYPE, ElementType.METHOD})
 	@Retention(RetentionPolicy.RUNTIME)
-	public @interface MetaAnnotationForTest { }
+	private  @interface MetaAnnotationForTest { }
 
 	@MetaAnnotationForTest
 	@Target({ElementType.ANNOTATION_TYPE, ElementType.TYPE, ElementType.METHOD})
 	@Retention(RetentionPolicy.RUNTIME)
-	public @interface AnnotationForTest { }
+	private  @interface AnnotationForTest { }
 
 	@AnnotationForTest
-	static class ClassForTest extends SupperForTest implements InterfaceForTest { }
+	private static class ClassForTest extends SupperForTest implements InterfaceForTest { }
 
 	@AnnotationForTest
-	static class SupperForTest { }
+	private static class SupperForTest { }
 
 	@AnnotationForTest
-	interface InterfaceForTest { }
+	private interface InterfaceForTest { }
 
 }

@@ -1,15 +1,30 @@
 package top.xiajibagao.powerfulannotation.aggregate;
 
+import cn.hutool.core.util.ObjectUtil;
+import top.xiajibagao.powerfulannotation.scanner.AnnotationScanner;
+import top.xiajibagao.powerfulannotation.scanner.processor.AnnotationProcessor;
+
 import java.lang.annotation.Annotation;
 import java.util.Collection;
+import java.util.stream.Collectors;
 
 /**
- * {@link AggregatedAnnotation}的聚合
+ * <p>{@link AggregatedAnnotation}的聚合体。<br />
+ * 通常情况下，表示一组直接或间接来自于{@link #getRoot()}返回对象的注解，
+ * 这些注解在聚合体中根据一定的索引排序并保持层级结构，
+ * 并以{@link AggregatedAnnotation}的形式存在于该聚合体中。<br />
+ * 此外，聚合体支持直接从聚合中获取可重复注解。
+ *
+ * <p>注解聚合体可作为{@link AnnotationProcessor}使用，
+ * 当将其传入{@link AnnotationScanner}中时，
+ * 应当允许将扫描到的注解注册到当前聚合中。
  *
  * @param <T> 数据源类型
  * @author huangchengxing
+ * @see AggregatedAnnotation
+ * @see AnnotationProcessor
  */
-public interface AnnotationAggregator<T> extends RepeatableContainer, Hierarchical {
+public interface AnnotationAggregate<T> extends RepeatableContainer, Hierarchical, AnnotationProcessor {
 
     /**
      * 获取聚合注解的来源
@@ -55,6 +70,18 @@ public interface AnnotationAggregator<T> extends RepeatableContainer, Hierarchic
         return getAnnotationsByType(annotationType).stream()
             .reduce(selector::choose)
             .orElse(null);
+    }
+
+    /**
+     * 获取与{@link #getRoot()}返回对象具有指定垂直距离的聚合注解
+     *
+     * @param verticalIndex 垂直索引
+     * @return java.util.Collection<top.xiajibagao.powerfulannotation.aggregate.AggregatedAnnotation<? extends java.lang.annotation.Annotation>>
+     */
+    default Collection<AggregatedAnnotation<? extends Annotation>> getAnnotation(int verticalIndex) {
+        return getAllAnnotations().stream()
+            .filter(annotation -> ObjectUtil.equals(annotation.getVerticalIndex(), verticalIndex))
+            .collect(Collectors.toList());
     }
 
 }

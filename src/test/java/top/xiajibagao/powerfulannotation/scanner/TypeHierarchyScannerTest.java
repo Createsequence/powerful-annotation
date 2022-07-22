@@ -125,13 +125,13 @@ public class TypeHierarchyScannerTest {
 	}
 
 	@AnnotationForScannerTest("ExampleSupplerClass")
-	static class ExampleSupplerClass implements ExampleInterface {}
+	private static class ExampleSupplerClass implements ExampleInterface {}
 
 	@AnnotationForScannerTest("ExampleInterface")
-	interface ExampleInterface {}
+	private interface ExampleInterface {}
 
 	@AnnotationForScannerTest("Example")
-	static class Example extends ExampleSupplerClass {
+	private static class Example extends ExampleSupplerClass {
 		private Integer id;
 		public Integer getId() {
 			return id;

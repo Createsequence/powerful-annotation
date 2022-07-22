@@ -1,6 +1,6 @@
 package top.xiajibagao.powerfulannotation.aggerate;
 
-public class MetaAnnotationAggregatorTest {
+public class GenericAnnotationAggregateTest {
 
 
 

@@ -38,7 +38,7 @@ public class GenericAggregatedAnnotationTest {
 
     @Target(ElementType.TYPE)
     @Retention(RetentionPolicy.RUNTIME)
-    @interface AnnotationForTest {
+    private @interface AnnotationForTest {
         String value() default "";
         int id() default 0;
     }

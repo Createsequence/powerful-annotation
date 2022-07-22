@@ -117,7 +117,7 @@ public class SimpleRepeatableMappingRegistryTest {
 	@Repeatable(AnnotationForTest2.class)
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target({ ElementType.METHOD, ElementType.TYPE })
-	@interface AnnotationForTest1 {
+	private @interface AnnotationForTest1 {
 		String value() default "";
 		String name() default "";
 	}
@@ -125,19 +125,19 @@ public class SimpleRepeatableMappingRegistryTest {
 	@RepeatableBy(annotation = AnnotationForTest3.class, attribute = "annotations")
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target({ ElementType.METHOD, ElementType.TYPE })
-	@interface AnnotationForTest2 {
+	private @interface AnnotationForTest2 {
 		AnnotationForTest1[] value() default {};
 	}
 
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target({ ElementType.METHOD, ElementType.TYPE })
-	@interface AnnotationForTest3 {
+	private @interface AnnotationForTest3 {
 		AnnotationForTest2[] annotations() default {};
 	}
 
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target({ ElementType.METHOD, ElementType.TYPE })
-	@interface AnnotationForTest4 {
+	private @interface AnnotationForTest4 {
 		String value() default "";
 	}
 
@@ -152,6 +152,6 @@ public class SimpleRepeatableMappingRegistryTest {
 			@AnnotationForTest1("4")
 		})
 	})
-	static class ClassForTest{}
+	private static class ClassForTest{}
 
 }

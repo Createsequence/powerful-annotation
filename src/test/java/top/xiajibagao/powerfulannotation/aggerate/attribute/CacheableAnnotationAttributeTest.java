@@ -49,14 +49,14 @@ public class CacheableAnnotationAttributeTest {
 
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target({ ElementType.METHOD, ElementType.TYPE })
-	@interface AnnotationForTest {
+	private @interface AnnotationForTest {
 		String value() default "";
 	}
 
 	@AnnotationForTest("")
-	static class ClassForTest1 {}
+	private static class ClassForTest1 {}
 
 	@AnnotationForTest("test")
-	static class ClassForTest2 {}
+	private static class ClassForTest2 {}
 
 }

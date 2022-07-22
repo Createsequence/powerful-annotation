@@ -48,7 +48,7 @@ public class FlatElementAnnotationScannerTest {
 		Assert.assertEquals(AnnotationForScannerTest.class, map.get(0).get(0).annotationType());
 	}
 
-	public static class Example {
+	private static class Example {
 		@AnnotationForScannerTest
 		private Integer id;
 

@@ -27,13 +27,13 @@ public class RepeatableAnnotationMappingTest {
 
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target({ ElementType.METHOD, ElementType.TYPE })
-	@interface AnnotationForTest1 {
+	private @interface AnnotationForTest1 {
 		String value() default "";
 	}
 
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target({ ElementType.METHOD, ElementType.TYPE })
-	@interface AnnotationForTest2 {
+	private @interface AnnotationForTest2 {
 		AnnotationForTest1[] value() default {};
 	}
 
@@ -42,7 +42,7 @@ public class RepeatableAnnotationMappingTest {
 		@AnnotationForTest1("2"),
 		@AnnotationForTest1("3")
 	})
-	static class ClassForTest {}
+	private static class ClassForTest {}
 
 
 }

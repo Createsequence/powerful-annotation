@@ -77,7 +77,7 @@ public class HierarchySelectorTest {
 	}
 
 	@Getter
-	static class TestHierarchy implements Hierarchical {
+	private static class TestHierarchy implements Hierarchical {
 
 		private final Object root;
 		private final int verticalIndex;

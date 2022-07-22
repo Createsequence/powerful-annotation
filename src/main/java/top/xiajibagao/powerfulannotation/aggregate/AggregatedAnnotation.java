@@ -7,7 +7,7 @@ import java.util.Collection;
 import java.util.function.UnaryOperator;
 
 /**
- * 表示一个处于聚合状态的注解对象，该注解对象通常可通过{@link AnnotationAggregator}访问
+ * 表示一个处于聚合状态的注解对象，该注解对象通常可通过{@link AnnotationAggregate}访问
  *
  * @param <T> 注解类型
  * @author huangchengxing
