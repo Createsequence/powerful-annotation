@@ -1,7 +1,6 @@
 package top.xiajibagao.powerfulannotation.scanner.processor;
 
 import cn.hutool.core.lang.Assert;
-import cn.hutool.core.util.ObjectUtil;
 import lombok.Getter;
 import top.xiajibagao.powerfulannotation.scanner.AnnotationScanner;
 
@@ -39,7 +38,7 @@ public class AnnotationFinder implements AnnotationProcessor {
      */
     public AnnotationFinder(Predicate<Annotation> predicate) {
         Assert.notNull(predicate, "annotationFilter must not null");
-        this.predicate = predicate.negate();
+        this.predicate = predicate;
         this.found = false;
     }
     
@@ -67,7 +66,7 @@ public class AnnotationFinder implements AnnotationProcessor {
      * @return 是否
      */
     public boolean isFound() {
-        return ObjectUtil.isNotNull(target);
+        return found;
     }
     
     /**
