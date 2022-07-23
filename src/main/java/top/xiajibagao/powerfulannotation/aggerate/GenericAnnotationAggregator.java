@@ -1,8 +1,11 @@
 package top.xiajibagao.powerfulannotation.aggerate;
 
+import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.lang.Assert;
 import cn.hutool.core.util.ObjectUtil;
 import lombok.AccessLevel;
 import lombok.Getter;
+import top.xiajibagao.powerfulannotation.repeatable.RepeatableMappingRegistry;
 
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
@@ -36,10 +39,20 @@ public class GenericAnnotationAggregator<T> implements AnnotationAggregator<T> {
     protected final int horizontalIndex;
 
     /**
+     * 可重复注解映射关系注册表
+     */
+    protected final RepeatableMappingRegistry repeatableMappingRegistry;
+
+    /**
      * 被聚合的注解
      */
     @Getter(AccessLevel.PROTECTED)
     protected final Map<Class<? extends Annotation>, Collection<AggregatedAnnotation<Annotation>>> aggregatedAnnotationMap;
+
+    /**
+     * 聚合注解是否已经注册到可重复注解映射表中
+     */
+    private boolean repeatableAggregatedAnnotationRegistered;
 
     /**
      * 创建一个聚合注解
@@ -48,12 +61,25 @@ public class GenericAnnotationAggregator<T> implements AnnotationAggregator<T> {
      * @param verticalIndex 垂直坐标
      * @param horizontalIndex 水平坐标
      */
+    public GenericAnnotationAggregator(T root, int verticalIndex, int horizontalIndex) {
+        this(root, verticalIndex, horizontalIndex, null);
+    }
+
+    /**
+     * 创建一个聚合注解
+     *
+     * @param root 根对象
+     * @param verticalIndex 垂直坐标
+     * @param horizontalIndex 水平坐标
+     * @param repeatableMappingRegistry 可重复注解映射表
+     */
     public GenericAnnotationAggregator(
-        T root, int verticalIndex, int horizontalIndex) {
+        T root, int verticalIndex, int horizontalIndex, RepeatableMappingRegistry repeatableMappingRegistry) {
         this.root = root;
         this.verticalIndex = verticalIndex;
         this.horizontalIndex = horizontalIndex;
         this.aggregatedAnnotationMap = new LinkedHashMap<>();
+        this.repeatableMappingRegistry = repeatableMappingRegistry;
     }
 
     /**
@@ -65,6 +91,9 @@ public class GenericAnnotationAggregator<T> implements AnnotationAggregator<T> {
      */
     @Override
     public void accept(int verticalIndex, int horizontalIndex, Annotation annotation) {
+        if (repeatableAggregatedAnnotationRegistered) {
+            repeatableAggregatedAnnotationRegistered = false;
+        }
         AggregatedAnnotation<Annotation> aggregatedAnnotation = new GenericAggregatedAnnotation<>(
             annotation, this, verticalIndex, horizontalIndex
         );
@@ -121,6 +150,44 @@ public class GenericAnnotationAggregator<T> implements AnnotationAggregator<T> {
         return getAllAnnotations().stream()
             .filter(annotation -> ObjectUtil.equals(annotation.getVerticalIndex(), verticalIndex))
             .collect(Collectors.toList());
+    }
+
+    /**
+     * 获取聚合中的全部可重复注解，包括该类型的注解对象，以及被嵌套在其他容器注解中的该类型注解对象
+     *
+     * @param annotationType 注解类型
+     * @return 可重复注解对象
+     * @throws IllegalArgumentException 当{@link #repeatableMappingRegistry}为空时抛出
+     */
+    @Override
+    public <A extends Annotation> Collection<A> getRepeatableAnnotations(Class<A> annotationType) {
+        Assert.notNull(repeatableMappingRegistry, "no repeatable mapping registry available");
+        // 注册未解析聚合注解
+        Collection<AggregatedAnnotation<Annotation>> annotations = getAllAnnotations();
+        registerRepeatableAggregatedAnnotationIfNecessary(annotations);
+        repeatableMappingRegistry.register(annotationType);
+        // 通过映射表将聚合注解转换为指定的元素注解
+        return annotations.stream()
+            .filter(annotation -> repeatableMappingRegistry.isContainerOf(annotationType, annotation.annotationType())
+                || ObjectUtil.equals(annotationType, annotation.annotationType()))
+            .map(AggregatedAnnotation::getAnnotation)
+            .map(annotation -> repeatableMappingRegistry.getElementsFromContainer(annotation, annotationType))
+            .filter(CollUtil::isNotEmpty)
+            .flatMap(Collection::stream)
+            .collect(Collectors.toList());
+    }
+    
+    /**
+     * 若{@link #repeatableAggregatedAnnotationRegistered}为{@code false}，
+     * 则将目前{@link #aggregatedAnnotationMap}中全部可重复注解注册到关系映射注册表中
+     */
+    private void registerRepeatableAggregatedAnnotationIfNecessary(Collection<AggregatedAnnotation<Annotation>> annotations) {
+        if (!repeatableAggregatedAnnotationRegistered) {
+            repeatableAggregatedAnnotationRegistered = true;
+            annotations.stream()
+                .map(AggregatedAnnotation::annotationType)
+                .forEach(repeatableMappingRegistry::register);
+        }
     }
 
 }

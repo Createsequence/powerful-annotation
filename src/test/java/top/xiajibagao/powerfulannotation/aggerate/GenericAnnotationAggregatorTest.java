@@ -4,6 +4,8 @@ import cn.hutool.core.collection.CollUtil;
 import org.junit.Assert;
 import org.junit.Test;
 import top.xiajibagao.powerfulannotation.helper.HierarchySelector;
+import top.xiajibagao.powerfulannotation.repeatable.RepeatableBy;
+import top.xiajibagao.powerfulannotation.repeatable.RepeatableMappingRegistry;
 import top.xiajibagao.powerfulannotation.scanner.AnnotationFilter;
 import top.xiajibagao.powerfulannotation.scanner.AnnotationScanner;
 
@@ -139,5 +141,67 @@ public class GenericAnnotationAggregatorTest {
     @AnnotationForTest2
     @AnnotationForTest3
     private static class ClassForTest{}
+
+
+
+    // ================================= repeatable =================================
+
+    @Test
+    public void testGetRepeatableAnnotation() {
+        GenericAnnotationAggregator<Class<RepeatableClassForTest>> aggregator = new GenericAnnotationAggregator<>(
+            RepeatableClassForTest.class, 0, 0, RepeatableMappingRegistry.create()
+        );
+        AnnotationScanner.TYPE_HIERARCHY_AND_META_ANNOTATION.scan(RepeatableClassForTest.class, aggregator, AnnotationFilter.NOT_JDK_ANNOTATION);
+        Assert.assertEquals(2, aggregator.getAllAnnotations().size());
+
+        Collection<RepeatableAnnotationForTest1> annotation1s = aggregator.getRepeatableAnnotations(RepeatableAnnotationForTest1.class);
+        Assert.assertEquals(4, annotation1s.size());
+        Collection<RepeatableAnnotationForTest2> annotation2s = aggregator.getRepeatableAnnotations(RepeatableAnnotationForTest2.class);
+        Assert.assertEquals(2, annotation2s.size());
+        Collection<RepeatableAnnotationForTest3> annotation3s = aggregator.getRepeatableAnnotations(RepeatableAnnotationForTest3.class);
+        Assert.assertEquals(1, annotation3s.size());
+        Collection<RepeatableAnnotationForTest4> annotation4s = aggregator.getRepeatableAnnotations(RepeatableAnnotationForTest4.class);
+        Assert.assertEquals(1, annotation4s.size());
+    }
+
+    @Repeatable(RepeatableAnnotationForTest2.class)
+    @Retention(RetentionPolicy.RUNTIME)
+    @Target({ ElementType.METHOD, ElementType.TYPE })
+    private @interface RepeatableAnnotationForTest1 {
+        String value() default "";
+        String name() default "";
+    }
+
+    @RepeatableBy(annotation = RepeatableAnnotationForTest3.class, attribute = "annotations")
+    @Retention(RetentionPolicy.RUNTIME)
+    @Target({ ElementType.METHOD, ElementType.TYPE })
+    private @interface RepeatableAnnotationForTest2 {
+        RepeatableAnnotationForTest1[] value() default {};
+    }
+
+    @Retention(RetentionPolicy.RUNTIME)
+    @Target({ ElementType.METHOD, ElementType.TYPE })
+    private @interface RepeatableAnnotationForTest3 {
+        RepeatableAnnotationForTest2[] annotations() default {};
+    }
+
+    @Retention(RetentionPolicy.RUNTIME)
+    @Target({ ElementType.METHOD, ElementType.TYPE })
+    private @interface RepeatableAnnotationForTest4 {
+        String value() default "";
+    }
+
+    @RepeatableAnnotationForTest4
+    @RepeatableAnnotationForTest3(annotations = {
+        @RepeatableAnnotationForTest2({
+            @RepeatableAnnotationForTest1("1"),
+            @RepeatableAnnotationForTest1("2")
+        }),
+        @RepeatableAnnotationForTest2({
+            @RepeatableAnnotationForTest1("3"),
+            @RepeatableAnnotationForTest1("4")
+        })
+    })
+    private static class RepeatableClassForTest {}
 
 }
