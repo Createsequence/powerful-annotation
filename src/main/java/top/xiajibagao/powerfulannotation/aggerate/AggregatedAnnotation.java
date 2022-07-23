@@ -1,8 +1,8 @@
 package top.xiajibagao.powerfulannotation.aggerate;
 
 import top.xiajibagao.powerfulannotation.aggerate.attribute.AnnotationAttribute;
-import top.xiajibagao.powerfulannotation.aggerate.attribute.AnnotationAttributeValueProvider;
 import top.xiajibagao.powerfulannotation.helper.Hierarchical;
+import top.xiajibagao.powerfulannotation.proxy.AnnotationAttributeValueProvider;
 
 import java.lang.annotation.Annotation;
 import java.util.Collection;
