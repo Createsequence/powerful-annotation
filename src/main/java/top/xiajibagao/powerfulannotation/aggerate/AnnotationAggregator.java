@@ -20,7 +20,8 @@ import java.util.Collection;
  * @param <T> 数据源类型
  * @author huangchengxing
  */
-public interface AnnotationAggregator<T> extends Hierarchical, AnnotationProcessor, RepeatableContainer {
+public interface AnnotationAggregator<T>
+    extends Hierarchical, AnnotationProcessor, RepeatableContainer {
 
     /**
      * 获取聚合注解的来源
