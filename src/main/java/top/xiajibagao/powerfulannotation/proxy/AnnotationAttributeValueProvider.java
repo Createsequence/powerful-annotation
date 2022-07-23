@@ -1,4 +1,4 @@
-package top.xiajibagao.powerfulannotation.aggerate.attribute;
+package top.xiajibagao.powerfulannotation.proxy;
 
 /**
  * 表示一个可以从当前接口的实现类中，获得特定的属性值
