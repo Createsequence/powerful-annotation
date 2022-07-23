@@ -1,10 +1,9 @@
 package top.xiajibagao.powerfulannotation.helper;
 
-import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.util.ObjectUtil;
 
-import java.lang.annotation.*;
-import java.util.Collections;
-import java.util.Set;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.AnnotatedElement;
 
 /**
  * 注解工具类
@@ -16,29 +15,35 @@ public class AnnotationUtils {
     private AnnotationUtils() {
     }
 
-    private static final Set<Class<? extends Annotation>> JDK_ANNOTATIONS = Collections.unmodifiableSet(CollUtil.newHashSet(
-        Target.class, Retention.class, Inherited.class, Documented.class,
-        SuppressWarnings.class, Override.class, Deprecated.class
-    ));
-
     /**
-     * 是否为Jdk自带的元注解
+     * 获取直接声明的注解
      *
-     * @param annotationType 注解类型
-     * @return boolean
+     * @param element 注解元素
+     * @return 直接声明的注解
      */
-    public static boolean isJdkAnnotation(Class<? extends Annotation> annotationType) {
-        return JDK_ANNOTATIONS.contains(annotationType);
+    public static Annotation[] getDeclaredAnnotations(AnnotatedElement element) {
+        return ObjectUtil.isNotNull(element) ? element.getDeclaredAnnotations() : emptyAnnotations();
+    }
+    
+    /**
+     * 获取直接声明的注解
+     *
+     * @param element 注解元素
+     * @param annotationType 注解类型
+     * @return 获取直接声明的注解
+     */
+    public static <T extends Annotation> T getDeclaredAnnotation(AnnotatedElement element, Class<T> annotationType) {
+        return ObjectUtil.isNull(element) ? null : element.getDeclaredAnnotation(annotationType);
     }
 
     /**
-     * 是否不为Jdk自带的元注解
+     * 获取一个空注解数组
      *
-     * @param annotationType 注解类型
-     * @return boolean
+     * @return 空注解数组
      */
-    public static boolean isNotJdkAnnotation(Class<? extends Annotation> annotationType) {
-        return !isJdkAnnotation(annotationType);
+    @SuppressWarnings("unchecked")
+    public static <T extends Annotation> T[] emptyAnnotations() {
+        return (T[])new Annotation[0];
     }
 
 }

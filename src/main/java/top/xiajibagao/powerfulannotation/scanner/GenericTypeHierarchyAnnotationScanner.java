@@ -6,6 +6,7 @@ import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.ClassUtil;
 import cn.hutool.core.util.ObjectUtil;
 import lombok.Getter;
+import top.xiajibagao.powerfulannotation.helper.AnnotationUtils;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
@@ -116,7 +117,7 @@ public class GenericTypeHierarchyAnnotationScanner extends AbstractTypeHierarchy
         if (!enableScanMetaAnnotation) {
             return;
         }
-        Stream.of(type.getDeclaredAnnotations())
+        Stream.of(AnnotationUtils.getDeclaredAnnotations(type))
             .map(Annotation::annotationType)
             .forEach(nextTypeHierarchies::add);
     }
@@ -193,7 +194,7 @@ public class GenericTypeHierarchyAnnotationScanner extends AbstractTypeHierarchy
         AnnotatedElement element = context.getSource();
         // 扫描的元素是类
         if (element instanceof Class) {
-            return type.getDeclaredAnnotations();
+            return AnnotationUtils.getDeclaredAnnotations(type);
         }
         // 扫描的元素是方法
         if (element instanceof Method) {
@@ -201,7 +202,7 @@ public class GenericTypeHierarchyAnnotationScanner extends AbstractTypeHierarchy
             return Stream.of(ClassUtil.getDeclaredMethods(type))
                 .filter(superMethod -> !superMethod.isBridge())
                 .filter(superMethod -> hasSameMethodSignature(sourceMethod, superMethod))
-                .map(Method::getDeclaredAnnotations)
+                .map(AnnotationUtils::getDeclaredAnnotations)
                 .flatMap(Stream::of)
                 .toArray(Annotation[]::new);
         }
@@ -210,7 +211,7 @@ public class GenericTypeHierarchyAnnotationScanner extends AbstractTypeHierarchy
             Field sourceField = (Field)element;
             return Stream.of(ClassUtil.getDeclaredFields(type))
                 .filter(supperField -> hasSameFieldSignature(sourceField, supperField))
-                .map(Field::getDeclaredAnnotations)
+                .map(AnnotationUtils::getDeclaredAnnotations)
                 .flatMap(Stream::of)
                 .toArray(Annotation[]::new);
         }
