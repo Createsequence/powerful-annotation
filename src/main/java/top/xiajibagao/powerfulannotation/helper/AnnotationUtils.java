@@ -1,9 +1,12 @@
 package top.xiajibagao.powerfulannotation.helper;
 
+import cn.hutool.core.text.CharSequenceUtil;
 import cn.hutool.core.util.ObjectUtil;
+import cn.hutool.core.util.ReflectUtil;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
+import java.lang.reflect.Method;
 
 /**
  * 注解工具类
@@ -44,6 +47,21 @@ public class AnnotationUtils {
     @SuppressWarnings("unchecked")
     public static <T extends Annotation> T[] emptyAnnotations() {
         return (T[])new Annotation[0];
+    }
+
+    /**
+     * 方法是否为注解属性方法。 <br>
+     * 方法无参数，且有返回值的方法认为是注解属性的方法。
+     * 不包括{@code toString}, {@code hashCode}与{@code annotationType}
+     *
+     * @param method 方法
+     */
+    public static boolean isAttributeMethod(Method method) {
+        return method.getParameterCount() == 0
+            && method.getReturnType() != void.class
+            && !ReflectUtil.isHashCodeMethod(method)
+            && !ReflectUtil.isToStringMethod(method)
+            && !CharSequenceUtil.equals("annotationType", method.getName());
     }
 
 }
