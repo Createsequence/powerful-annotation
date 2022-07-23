@@ -6,6 +6,7 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import top.xiajibagao.powerfulannotation.helper.Hierarchical;
 import top.xiajibagao.powerfulannotation.scanner.processor.AnnotationProcessor;
 
 import java.lang.annotation.Annotation;
@@ -39,7 +40,10 @@ public abstract class AbstractTypeHierarchyScanner implements AnnotationScanner 
             return;
         }
         filter = ObjectUtil.defaultIfNull(filter, annotation -> true);
-        scanForElement(new Context(element, 1, 1, false), element, processor, filter);
+        Context context = new Context(
+            element, Hierarchical.VERTICAL_INDEX_START_POINT, Hierarchical.HORIZONTAL_INDEX_START_POINT, false
+        );
+        scanForElement(context, element, processor, filter);
     }
 
     /**

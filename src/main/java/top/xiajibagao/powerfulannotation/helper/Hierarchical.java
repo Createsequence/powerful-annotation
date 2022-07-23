@@ -13,9 +13,33 @@ import java.util.Comparator;
  * 当在同时处理一批具有相同{@link #getRoot()}的{@link Hierarchical}实例时，
  * 可以根据“距离”确定它们被处理的先后顺序。
  *
+ * <p>规定，任何{@link Hierarchical}的实现类，索引的递增递减都应该遵循下述原则：
+ * <ul>
+ *     <li>
+ *         居于{@link #getRoot()}上方的对象，即该对象的父层级：
+ *         水平索引从{@link #VERTICAL_INDEX_START_POINT}开始递增，
+ *         垂直索引从{@link #HORIZONTAL_INDEX_START_POINT}开始递增
+ *     </li>
+ *     <li>
+ *         居于{@link #getRoot()}下方的对象，即该对象的子层级：
+ *         水平索引从-{@link #VERTICAL_INDEX_START_POINT}开始递减，
+ *         垂直索引从{@link #HORIZONTAL_INDEX_START_POINT}开始递减
+ *     </li>
+ * </ul>
+ *
  * @author huangchengxing
  */
 public interface Hierarchical {
+
+    /**
+     * 垂直索引起始点
+     */
+    int VERTICAL_INDEX_START_POINT = 1;
+
+    /**
+     * 水平索引起始点
+     */
+    int HORIZONTAL_INDEX_START_POINT = 0;
 
     // ====================== compare  ======================
 
