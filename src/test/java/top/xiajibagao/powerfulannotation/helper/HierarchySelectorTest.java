@@ -4,10 +4,13 @@ import lombok.Getter;
 import org.junit.Assert;
 import org.junit.Test;
 
+/**
+ * test for {@link HierarchySelector}
+ */
 public class HierarchySelectorTest {
 
     @Test
-    public void chooseTest() {
+    public void testChoose() {
         final HierarchySelector<TestHierarchy> selector = HierarchySelector.nearestAndOldestPriority();
 
         TestHierarchy annotation1 = new TestHierarchy(0, 0);
