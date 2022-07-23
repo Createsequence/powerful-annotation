@@ -2,6 +2,7 @@ package top.xiajibagao.powerfulannotation.repeatable;
 
 
 import java.lang.annotation.Annotation;
+import java.lang.annotation.Repeatable;
 import java.util.List;
 
 /**
@@ -12,6 +13,17 @@ import java.util.List;
  * @see RepeatableMapping
  */
 public interface RepeatableMappingRegistry {
+
+	/**
+	 * 创建一个默认的映射关系注册表，支持处理原生的{@link Repeatable}注解与{@link RepeatableBy}注解
+	 *
+	 * @return 映射关系注册表
+	 */
+	static RepeatableMappingRegistry create() {
+		return new SimpleRepeatableMappingRegistry(
+			RepeatableMappingParser.STANDARD_REPEATABLE_MAPPING_PARSER, RepeatableMappingParser.REPEATABLE_BY_MAPPING_PARSER
+		);
+	}
 
 	/**
 	 * 获取关系解析器

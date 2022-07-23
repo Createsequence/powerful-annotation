@@ -2,18 +2,25 @@ package top.xiajibagao.powerfulannotation.aggerate;
 
 import top.xiajibagao.powerfulannotation.helper.Hierarchical;
 import top.xiajibagao.powerfulannotation.helper.HierarchySelector;
+import top.xiajibagao.powerfulannotation.scanner.AnnotationScanner;
 import top.xiajibagao.powerfulannotation.scanner.processor.AnnotationProcessor;
 
 import java.lang.annotation.Annotation;
 import java.util.Collection;
 
 /**
- * {@link AggregatedAnnotation}的聚合体，表示一组具有一定关联关系的聚合注解。
+ * <p>{@link AggregatedAnnotation}的聚合器，用于聚合具一组相关的聚合注解，并提供一些批量操作的方法。
+ *
+ * <p>注解聚合器可以通过{@link #accept(int, int, Annotation)}方法向其注册注解，
+ * 或直接作为{@link AnnotationProcessor}通过{@link AnnotationScanner}快速对指定元素的相关注解进行聚合。<br />
+ * 聚合器还允许被作为{@link RepeatableContainer}使用，
+ * 当从聚合器中获得可重复的注解时，聚合器将遍历已聚合的注解中所有直接或间接与指定注解相关的注解，
+ * 并最终提取出所需的可重复注解对象。该操作支持处理多集嵌套的注解容器。
  *
  * @param <T> 数据源类型
  * @author huangchengxing
  */
-public interface AnnotationAggregator<T> extends Hierarchical, AnnotationProcessor {
+public interface AnnotationAggregator<T> extends Hierarchical, AnnotationProcessor, RepeatableContainer {
 
     /**
      * 获取聚合注解的来源
