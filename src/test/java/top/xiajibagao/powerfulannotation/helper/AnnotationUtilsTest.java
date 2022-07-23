@@ -1,5 +1,6 @@
 package top.xiajibagao.powerfulannotation.helper;
 
+import cn.hutool.core.util.ReflectUtil;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -7,6 +8,10 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import java.lang.reflect.Method;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * test for {@link AnnotationUtils}
@@ -36,9 +41,20 @@ public class AnnotationUtilsTest {
         Assert.assertEquals(0, AnnotationUtils.emptyAnnotations().length);
     }
 
+    @Test
+    public void testIsAttributeMethod() {
+        List<Method> attributes = Stream.of(MetaAnnotationForTest.class.getDeclaredMethods())
+            .filter(AnnotationUtils::isAttributeMethod)
+            .collect(Collectors.toList());
+        Assert.assertEquals(1, attributes.size());
+        Assert.assertEquals(ReflectUtil.getMethod(MetaAnnotationForTest.class, "value"), attributes.get(0));
+    }
+
     @Target({ElementType.ANNOTATION_TYPE, ElementType.TYPE, ElementType.METHOD})
     @Retention(RetentionPolicy.RUNTIME)
-    private @interface MetaAnnotationForTest { }
+    private @interface MetaAnnotationForTest {
+        String value() default "";
+    }
 
     @MetaAnnotationForTest
     @Target({ElementType.ANNOTATION_TYPE, ElementType.TYPE, ElementType.METHOD})
