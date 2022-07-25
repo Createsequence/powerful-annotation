@@ -13,6 +13,7 @@ import top.xiajibagao.powerfulannotation.synthesis.Link;
 import top.xiajibagao.powerfulannotation.synthesis.RelationType;
 
 import java.lang.annotation.Annotation;
+import java.util.Comparator;
 import java.util.function.BinaryOperator;
 
 /**
@@ -30,6 +31,27 @@ import java.util.function.BinaryOperator;
 public class AliasAttributeResolver extends AbstractDynamicAttributeResolver {
 
 	private static final RelationType[] PROCESSED_RELATION_TYPES = new RelationType[]{ RelationType.ALIAS_FOR, RelationType.FORCE_ALIAS_FOR };
+
+	/**
+	 * 合成注解排序器，只有靠前的注解属性允许覆盖靠后的注解属性，当为空时将不限制
+	 */
+	private final Comparator<HierarchicalAnnotation<Annotation>> comparator;
+
+	/**
+	 * 创建一个别名字段处理器
+	 *
+	 * @param comparator 比较器，若为空则不对别名字段的优先级做出校验
+	 */
+	public AliasAttributeResolver(Comparator<HierarchicalAnnotation<Annotation>> comparator) {
+		this.comparator = comparator;
+	}
+
+	/**
+	 * 创建一个别名字段处理器
+	 */
+	public AliasAttributeResolver() {
+		this(null);
+	}
 
 	@Override
 	public int order() {
@@ -66,6 +88,14 @@ public class AliasAttributeResolver extends AbstractDynamicAttributeResolver {
 		HierarchicalAnnotation<Annotation> linkedAnnotation, AnnotationAttribute linkedAttribute) {
 		// 校验别名关系
 		checkAliasRelation(annotation, originalAttribute, linkedAttribute);
+		// 若指定了排序，则需要保证元素属性所属的注解优先级必须大于等于关联属性
+		Assert.isTrue(
+			ObjectUtil.isNull(comparator)
+				|| ObjectUtil.equals(originalAnnotation, linkedAnnotation)
+				|| comparator.compare(originalAnnotation, linkedAnnotation) <= 0,
+			"link attribute [{}] priority cannot be higher than original attribute [{}]",
+			linkedAttribute, originalAttribute
+		);
 		// 处理aliasFor类型的关系
 		if (RelationType.ALIAS_FOR.equals(annotation.type())) {
 			wrappingLinkedAttribute(synthesizer, originalAttribute, linkedAttribute, AliasedAnnotationAttribute::new);
