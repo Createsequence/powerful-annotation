@@ -1,7 +1,9 @@
 package top.xiajibagao.powerfulannotation.aggerate;
 
+import top.xiajibagao.powerfulannotation.annotation.HierarchicalAnnotation;
 import top.xiajibagao.powerfulannotation.helper.Hierarchical;
 import top.xiajibagao.powerfulannotation.helper.HierarchySelector;
+import top.xiajibagao.powerfulannotation.repeatable.RepeatableContainer;
 import top.xiajibagao.powerfulannotation.scanner.AnnotationScanner;
 import top.xiajibagao.powerfulannotation.scanner.processor.AnnotationProcessor;
 
@@ -9,7 +11,7 @@ import java.lang.annotation.Annotation;
 import java.util.Collection;
 
 /**
- * <p>{@link AggregatedAnnotation}的聚合器，用于聚合具一组相关的聚合注解，并提供一些批量操作的方法。
+ * <p>{@link HierarchicalAnnotation}的聚合器，用于聚合具一组相关的注解，并提供一些批量操作的方法。
  *
  * <p>注解聚合器可以通过{@link #accept(int, int, Annotation)}方法向其注册注解，
  * 或直接作为{@link AnnotationProcessor}通过{@link AnnotationScanner}快速对指定元素的相关注解进行聚合。<br />
@@ -24,7 +26,7 @@ public interface AnnotationAggregator<T>
     extends Hierarchical, AnnotationProcessor, RepeatableContainer {
 
     /**
-     * 获取聚合注解的来源
+     * 获取注解的来源
      *
      * @return 注解的来源
      */
@@ -40,39 +42,39 @@ public interface AnnotationAggregator<T>
     boolean isPresent(Class<? extends Annotation> annotationType);
 
     /**
-     * 获取全部聚合注解
+     * 获取全部注解
      *
-     * @return 全部的聚合注解
+     * @return 全部的注解
      */
-    Collection<AggregatedAnnotation<Annotation>> getAllAnnotations();
+    Collection<HierarchicalAnnotation<Annotation>> getAllAnnotations();
 
     /**
-     * 获取指定层级中的聚合注解
+     * 获取指定层级中的注解
      *
      * @param verticalIndex 垂直索引
-     * @return 聚合注解
+     * @return 注解
      */
-    Collection<AggregatedAnnotation<Annotation>> getAnnotationByVerticalIndex(int verticalIndex);
+    Collection<HierarchicalAnnotation<Annotation>> getAnnotationByVerticalIndex(int verticalIndex);
 
     /**
-     * 获取指定类型的聚合注解
+     * 获取指定类型的注解
      *
      * @param annotationType 注解类型
      * @param <A> 注解类型
-     * @return 聚合注解
+     * @return 注解
      */
-    <A extends Annotation> Collection<AggregatedAnnotation<A>> getAnnotationsByType(Class<A> annotationType);
+    <A extends Annotation> Collection<HierarchicalAnnotation<A>> getAnnotationsByType(Class<A> annotationType);
 
     /**
-     * 获取指定类型的聚合注解
+     * 获取指定类型的注解
      *
      * @param annotationType 注解类型
      * @param selector 选择器
      * @param <A> 注解类型
-     * @return 聚合注解
+     * @return 注解
      */
-    default <A extends Annotation> AggregatedAnnotation<A> getAnnotation(
-        Class<A> annotationType, HierarchySelector<AggregatedAnnotation<A>> selector) {
+    default <A extends Annotation> HierarchicalAnnotation<A> getAnnotation(
+        Class<A> annotationType, HierarchySelector<HierarchicalAnnotation<A>> selector) {
         return getAnnotationsByType(annotationType).stream()
             .reduce(selector::choose)
             .orElse(null);

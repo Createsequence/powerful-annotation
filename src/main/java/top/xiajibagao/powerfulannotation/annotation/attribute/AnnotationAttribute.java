@@ -1,13 +1,13 @@
-package top.xiajibagao.powerfulannotation.aggerate.attribute;
+package top.xiajibagao.powerfulannotation.annotation.attribute;
 
 import cn.hutool.core.util.ReflectUtil;
-import top.xiajibagao.powerfulannotation.aggerate.AggregatedAnnotation;
+import top.xiajibagao.powerfulannotation.annotation.HierarchicalAnnotation;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 
 /**
- * <p>用于在{@link AggregatedAnnotation}中表示注解的某个特定属性，
+ * <p>用于在{@link HierarchicalAnnotation}中表示注解的某个特定属性，
  * 等同于绑定了调用对象的{@link Method}方法。<br>
  * 提供了默认实现{@link CacheableAnnotationAttribute},
  * 与扩展接口{@link WrappedAnnotationAttribute}。

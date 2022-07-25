@@ -1,13 +1,12 @@
-package top.xiajibagao.powerfulannotation.aggerate;
+package top.xiajibagao.powerfulannotation.annotation;
 
 import cn.hutool.core.lang.Opt;
 import cn.hutool.core.util.ClassUtil;
-import cn.hutool.core.util.ObjectUtil;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import top.xiajibagao.powerfulannotation.aggerate.attribute.AnnotationAttribute;
-import top.xiajibagao.powerfulannotation.aggerate.attribute.CacheableAnnotationAttribute;
+import top.xiajibagao.powerfulannotation.annotation.attribute.AnnotationAttribute;
+import top.xiajibagao.powerfulannotation.annotation.attribute.CacheableAnnotationAttribute;
 import top.xiajibagao.powerfulannotation.helper.AnnotationUtils;
 
 import java.lang.annotation.Annotation;
@@ -19,13 +18,13 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
- * {@link AggregatedAnnotation}的基本实现
+ * {@link HierarchicalAnnotation}的基本实现
  *
  * @author huangchengxing
  */
 @Getter
 @EqualsAndHashCode(cacheStrategy = EqualsAndHashCode.CacheStrategy.LAZY)
-public class GenericAggregatedAnnotation<T extends Annotation> implements AggregatedAnnotation<T> {
+public class GenericHierarchicalAnnotation<T extends Annotation> implements HierarchicalAnnotation<T> {
 
     /**
      * 根对象
@@ -55,17 +54,30 @@ public class GenericAggregatedAnnotation<T extends Annotation> implements Aggreg
     private final Map<String, AnnotationAttribute> attributeMap;
 
     /**
-     * 创建一个通用聚合注解
+     * 创建一个通用注解
      *
      * @param annotation 注解对象
      * @param root 根对象
      * @param verticalIndex 垂直索引
      * @param horizontalIndex 水平索引
      */
-    public GenericAggregatedAnnotation(T annotation, Object root, int verticalIndex, int horizontalIndex) {
+    public GenericHierarchicalAnnotation(T annotation, Object root, int verticalIndex, int horizontalIndex) {
         this.root = root;
         this.verticalIndex = verticalIndex;
         this.horizontalIndex = horizontalIndex;
+        this.annotation = annotation;
+        this.attributeMap = loadAnnotationAttributes(annotation);
+    }
+
+    /**
+     * 创建一个通用注解
+     *
+     * @param annotation 注解对象
+     */
+    public GenericHierarchicalAnnotation(T annotation) {
+        this.root = this;
+        this.verticalIndex = 0;
+        this.horizontalIndex = 0;
         this.annotation = annotation;
         this.attributeMap = loadAnnotationAttributes(annotation);
     }
@@ -100,7 +112,7 @@ public class GenericAggregatedAnnotation<T extends Annotation> implements Aggreg
      * 获取注解属性
      *
      * @param attributeName 注解属性
-     * @return top.xiajibagao.powerfulannotation.aggregate.attribute.AnnotationAttribute
+     * @return 注解属性
      */
     @Override
     public AnnotationAttribute getAttribute(String attributeName) {
@@ -108,9 +120,9 @@ public class GenericAggregatedAnnotation<T extends Annotation> implements Aggreg
     }
 
     /**
-     * 获取全部的属性值
+     * 获取全部的注解射弩了
      *
-     * @return java.util.Collection<top.xiajibagao.powerfulannotation.aggregate.attribute.AnnotationAttribute>
+     * @return 注解属性
      */
     @Override
     public Collection<AnnotationAttribute> getAllAttribute() {
@@ -126,9 +138,7 @@ public class GenericAggregatedAnnotation<T extends Annotation> implements Aggreg
     @Override
     public void replaceAttribute(String attributeName, UnaryOperator<AnnotationAttribute> operator) {
         final AnnotationAttribute old = attributeMap.get(attributeName);
-        if (ObjectUtil.isNotNull(old)) {
-            attributeMap.put(attributeName, operator.apply(old));
-        }
+        attributeMap.put(attributeName, operator.apply(old));
     }
 
 }

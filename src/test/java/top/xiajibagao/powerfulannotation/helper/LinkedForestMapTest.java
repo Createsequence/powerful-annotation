@@ -10,7 +10,10 @@ import top.xiajibagao.powerfulannotation.helper.ForestMap;
 import top.xiajibagao.powerfulannotation.helper.LinkedForestMap;
 import top.xiajibagao.powerfulannotation.helper.TreeEntry;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
 
 public class LinkedForestMapTest {
 
@@ -170,7 +173,6 @@ public class LinkedForestMapTest {
             .put("pid", "b")
             .put("id", "c")
             .build();
-        map.putAllNode(Arrays.asList(aMap, bMap, cMap), m -> m.get("id"), m -> m.get("pid"), true);
 
         final TreeEntry<String, Map<String, String>> a = map.get("a");
         Assert.assertNotNull(a);

@@ -1,4 +1,6 @@
-package top.xiajibagao.powerfulannotation.aggerate;
+package top.xiajibagao.powerfulannotation.repeatable;
+
+import top.xiajibagao.powerfulannotation.aggerate.AnnotationAggregator;
 
 import java.lang.annotation.Annotation;
 import java.util.Collection;

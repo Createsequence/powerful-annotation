@@ -3,6 +3,7 @@ package top.xiajibagao.powerfulannotation.aggerate;
 import cn.hutool.core.collection.CollUtil;
 import org.junit.Assert;
 import org.junit.Test;
+import top.xiajibagao.powerfulannotation.annotation.HierarchicalAnnotation;
 import top.xiajibagao.powerfulannotation.helper.HierarchySelector;
 import top.xiajibagao.powerfulannotation.repeatable.RepeatableBy;
 import top.xiajibagao.powerfulannotation.repeatable.RepeatableMappingRegistry;
@@ -62,7 +63,7 @@ public class GenericAnnotationAggregatorTest {
         Function<Integer, List<Annotation>> getAnnotationFromAggregator = index -> aggregator
             .getAnnotationByVerticalIndex(index).stream()
             .sorted(Comparator.comparing(annotation -> annotation.getAnnotation().annotationType().getSimpleName()))
-            .map(AggregatedAnnotation::getAnnotation)
+            .map(HierarchicalAnnotation::getAnnotation)
             .collect(Collectors.toList());
 
         // 第一层
@@ -87,13 +88,13 @@ public class GenericAnnotationAggregatorTest {
         GenericAnnotationAggregator<Class<ClassForTest>> aggregator = new GenericAnnotationAggregator<>(ClassForTest.class, 0, 0);
         AnnotatedElementScanStrategy.TYPE_HIERARCHY_AND_META_ANNOTATION.scan(ClassForTest.class, aggregator, AnnotationFilter.NOT_JDK_ANNOTATION);
 
-        Collection<AggregatedAnnotation<AnnotationForTest1>> annotation1s = aggregator.getAnnotationsByType(AnnotationForTest1.class);
+        Collection<HierarchicalAnnotation<AnnotationForTest1>> annotation1s = aggregator.getAnnotationsByType(AnnotationForTest1.class);
         Assert.assertEquals(3, annotation1s.size());
-        Collection<AggregatedAnnotation<AnnotationForTest2>> annotation2s = aggregator.getAnnotationsByType(AnnotationForTest2.class);
+        Collection<HierarchicalAnnotation<AnnotationForTest2>> annotation2s = aggregator.getAnnotationsByType(AnnotationForTest2.class);
         Assert.assertEquals(2, annotation2s.size());
-        Collection<AggregatedAnnotation<AnnotationForTest3>> annotation3s = aggregator.getAnnotationsByType(AnnotationForTest3.class);
+        Collection<HierarchicalAnnotation<AnnotationForTest3>> annotation3s = aggregator.getAnnotationsByType(AnnotationForTest3.class);
         Assert.assertEquals(1, annotation3s.size());
-        Collection<AggregatedAnnotation<AnnotationForTest4>> annotation4s = aggregator.getAnnotationsByType(AnnotationForTest4.class);
+        Collection<HierarchicalAnnotation<AnnotationForTest4>> annotation4s = aggregator.getAnnotationsByType(AnnotationForTest4.class);
         Assert.assertEquals(1, annotation4s.size());
     }
 
@@ -109,7 +110,7 @@ public class GenericAnnotationAggregatorTest {
         GenericAnnotationAggregator<Class<ClassForTest>> aggregator = new GenericAnnotationAggregator<>(ClassForTest.class, 0, 0);
         AnnotatedElementScanStrategy.TYPE_HIERARCHY_AND_META_ANNOTATION.scan(ClassForTest.class, aggregator, AnnotationFilter.NOT_JDK_ANNOTATION);
 
-        AggregatedAnnotation<AnnotationForTest1> annotation = aggregator.getAnnotation(AnnotationForTest1.class, HierarchySelector.nearestAndOldestPriority());
+        HierarchicalAnnotation<AnnotationForTest1> annotation = aggregator.getAnnotation(AnnotationForTest1.class, HierarchySelector.nearestAndOldestPriority());
         AnnotationForTest1 original = ClassForTest.class.getAnnotation(AnnotationForTest1.class);
         Assert.assertEquals(original, annotation.getAnnotation());
 

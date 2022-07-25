@@ -1,16 +1,17 @@
-package top.xiajibagao.powerfulannotation.aggerate;
+package top.xiajibagao.powerfulannotation.annotation;
 
-import top.xiajibagao.powerfulannotation.aggerate.attribute.AnnotationAttribute;
+import top.xiajibagao.powerfulannotation.annotation.attribute.AnnotationAttribute;
 import top.xiajibagao.powerfulannotation.helper.Hierarchical;
-import top.xiajibagao.powerfulannotation.proxy.AnnotationAttributeValueProvider;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.AnnotatedElement;
 import java.util.Collection;
 import java.util.function.UnaryOperator;
 
 /**
- * <p>表示一个处于聚合状态的注解对象，该注解对象的属性以{@link AnnotationAttribute}的形式存在，
- * 通过替换{@link AnnotationAttribute}可以使该聚合注解返回与原始注解不一样的属性值。
+ * <p>表示一个处于{@link AnnotatedElement}层级结构中的注解对象，
+ * 该注解对象的属性以{@link AnnotationAttribute}的形式存在，
+ * 通过替换该对象可以使该实例返回与原始注解不一样的属性值。
  *
  * @param <T> 注解类型
  * @author huangchengxing
@@ -18,7 +19,7 @@ import java.util.function.UnaryOperator;
  * @see AnnotationAttributeValueProvider
  * @see Hierarchical
  */
-public interface AggregatedAnnotation<T extends Annotation>
+public interface HierarchicalAnnotation<T extends Annotation>
     extends Annotation, Hierarchical, AnnotationAttributeValueProvider {
 
     /**

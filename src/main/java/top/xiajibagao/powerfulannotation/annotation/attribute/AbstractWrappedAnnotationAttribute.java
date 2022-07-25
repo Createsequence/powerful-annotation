@@ -1,7 +1,10 @@
-package top.xiajibagao.powerfulannotation.aggerate.attribute;
+package top.xiajibagao.powerfulannotation.annotation.attribute;
 
-import cn.hutool.core.lang.Assert;
 import cn.hutool.core.util.ObjectUtil;
+import lombok.Getter;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
+import lombok.ToString;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -12,26 +15,15 @@ import java.util.List;
  *
  * @author huangchengxing
  */
+@ToString
+@RequiredArgsConstructor
+@Getter
 public abstract class AbstractWrappedAnnotationAttribute implements WrappedAnnotationAttribute {
 
+    @NonNull
     protected final AnnotationAttribute original;
+
     protected final AnnotationAttribute linked;
-
-    protected AbstractWrappedAnnotationAttribute(AnnotationAttribute original, AnnotationAttribute linked) {
-        Assert.notNull(original, "target must not null");
-        this.original = original;
-        this.linked = linked;
-    }
-
-    @Override
-    public AnnotationAttribute getOriginal() {
-        return original;
-    }
-
-    @Override
-    public AnnotationAttribute getLinked() {
-        return linked;
-    }
 
     @Override
     public AnnotationAttribute getNonWrappedOriginal() {

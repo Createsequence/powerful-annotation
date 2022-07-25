@@ -1,4 +1,4 @@
-package top.xiajibagao.powerfulannotation.aggerate;
+package top.xiajibagao.powerfulannotation.annotation;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -8,12 +8,12 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-public class GenericAggregatedAnnotationTest {
+public class GenericHierarchicalAnnotationTest {
 
     @Test
     public void testGetAnnotation() {
         AnnotationForTest annotation = ClassForTest.class.getAnnotation(AnnotationForTest.class);
-        GenericAggregatedAnnotation<AnnotationForTest> aggregatedAnnotation = new GenericAggregatedAnnotation<>(
+        GenericHierarchicalAnnotation<AnnotationForTest> aggregatedAnnotation = new GenericHierarchicalAnnotation<>(
             annotation, ClassForTest.class, 0, 0
         );
 

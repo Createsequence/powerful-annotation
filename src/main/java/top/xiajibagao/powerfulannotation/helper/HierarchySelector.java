@@ -13,6 +13,7 @@ package top.xiajibagao.powerfulannotation.helper;
  * </ul>
  *
  * @author huangchengxing
+ * @see Hierarchical
  */
 @FunctionalInterface
 public interface HierarchySelector<H extends Hierarchical> {

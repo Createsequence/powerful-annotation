@@ -1,4 +1,4 @@
-package top.xiajibagao.powerfulannotation.aggerate.attribute;
+package top.xiajibagao.powerfulannotation.annotation.attribute;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;

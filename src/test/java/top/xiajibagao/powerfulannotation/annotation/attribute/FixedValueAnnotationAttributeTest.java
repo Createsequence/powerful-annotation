@@ -1,4 +1,4 @@
-package top.xiajibagao.powerfulannotation.aggerate.attribute;
+package top.xiajibagao.powerfulannotation.annotation.attribute;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.ReflectUtil;
