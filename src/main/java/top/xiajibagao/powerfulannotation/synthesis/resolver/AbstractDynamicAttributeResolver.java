@@ -16,12 +16,12 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
- * {@link SynthesizedAnnotationResolver}的基本实现，
+ * {@link SyntheticAnnotationResolver}的基本实现，
  * 用于处理注解中带有{@link Link}注解的属性。
  *
  * @author huangchengxing
  */
-public abstract class AbstractDynamicAttributeResolver implements SynthesizedAnnotationResolver {
+public abstract class AbstractDynamicAttributeResolver implements SyntheticAnnotationResolver {
 
 	/**
 	 * 若一个注解属性上存在{@link Link}注解，注解的{@link Link#type()}返回值在{@link #processTypes()}中存在，

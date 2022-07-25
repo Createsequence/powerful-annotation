@@ -8,7 +8,7 @@ import top.xiajibagao.powerfulannotation.annotation.GenericHierarchicalAnnotatio
 import top.xiajibagao.powerfulannotation.annotation.HierarchicalAnnotation;
 import top.xiajibagao.powerfulannotation.annotation.proxy.AnnotationProxyFactory;
 import top.xiajibagao.powerfulannotation.helper.HierarchySelector;
-import top.xiajibagao.powerfulannotation.synthesis.resolver.SynthesizedAnnotationResolver;
+import top.xiajibagao.powerfulannotation.synthesis.resolver.SyntheticAnnotationResolver;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
@@ -20,13 +20,13 @@ import java.util.*;
  *
  * <p>一个可用的注解处理器通常需要经过下述过程完成初始化：
  * <ol>
- *     <li>创建一个实例，并为其指定选择器{@link HierarchySelector}与注解解析器{@link SynthesizedAnnotationResolver}；</li>
+ *     <li>创建一个实例，并为其指定选择器{@link HierarchySelector}与注解解析器{@link SyntheticAnnotationResolver}；</li>
  *     <li>使用方法{@link #accept(int, int, Annotation)}或{@link #accept(HierarchicalAnnotation)}方法向实例注册注解对象；</li>
  *     <li>
  *         若存在多个类型相同的注解对象，则会经过{@link HierarchySelector}的筛选，保留唯一一个有效的注解，
  *         并注册到{@link #synthesizedAnnotationMap}中，该集合一种注解类型有且仅有一个对应的注解对象；
  *     </li>
- *     <li>使用{@link SynthesizedAnnotationResolver}对注册了的注解对象进行解析，这个过程通常用于完成注解的各种别名属性的处理；</li>
+ *     <li>使用{@link SyntheticAnnotationResolver}对注册了的注解对象进行解析，这个过程通常用于完成注解的各种别名属性的处理；</li>
  * </ol>
  *
  * <p>完成上述初始化后，即可通过{@link #synthesize(Class)}获取指定类型的合成注解。<br />
@@ -35,7 +35,7 @@ import java.util.*;
  * 它们可能会根据指定的规则返回与原始属性不一样的值。
  *
  * @author huangchengxing
- * @see SynthesizedAnnotationResolver
+ * @see SyntheticAnnotationResolver
  */
 @Getter(AccessLevel.PROTECTED)
 public class GenericAnnotationSynthesizer implements AnnotationSynthesizer {
@@ -43,7 +43,7 @@ public class GenericAnnotationSynthesizer implements AnnotationSynthesizer {
     /**
      * 注解解析器
      */
-    private final List<SynthesizedAnnotationResolver> resolvers;
+    private final List<SyntheticAnnotationResolver> resolvers;
 
     /**
      * 待合成的注解
@@ -62,9 +62,9 @@ public class GenericAnnotationSynthesizer implements AnnotationSynthesizer {
      * @param selector 注解选择器
      */
     public GenericAnnotationSynthesizer(
-        Collection<SynthesizedAnnotationResolver> resolvers,
+        Collection<SyntheticAnnotationResolver> resolvers,
         HierarchySelector<HierarchicalAnnotation<Annotation>> selector) {
-        this.resolvers = CollUtil.sort(resolvers, Comparator.comparing(SynthesizedAnnotationResolver::order));
+        this.resolvers = CollUtil.sort(resolvers, Comparator.comparing(SyntheticAnnotationResolver::order));
         this.synthesizedAnnotationMap = new LinkedHashMap<>();
         this.selector = selector;
     }

@@ -14,7 +14,7 @@ import java.lang.annotation.Annotation;
  * @see MirrorAttributeResolver
  * @see CoveredAttributeResolver
  */
-public interface SynthesizedAnnotationResolver {
+public interface SyntheticAnnotationResolver {
 
     /**
      * 处理注解

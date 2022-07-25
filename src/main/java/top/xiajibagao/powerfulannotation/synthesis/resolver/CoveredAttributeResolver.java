@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
  * @see ForceAliasedAnnotationAttribute
  */
 @RequiredArgsConstructor
-public class CoveredAttributeResolver implements SynthesizedAnnotationResolver {
+public class CoveredAttributeResolver implements SyntheticAnnotationResolver {
 
     /**
      * 合成注解排序器，靠前的注解属性将覆盖靠后的注解属性

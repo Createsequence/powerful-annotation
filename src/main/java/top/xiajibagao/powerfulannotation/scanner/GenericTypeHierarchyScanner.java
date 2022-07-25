@@ -41,7 +41,7 @@ import java.util.stream.Stream;
  * @author huangchengxing
  */
 @Getter
-public class GenericTypeHierarchyAnnotationScanner extends AbstractTypeHierarchyScanner {
+public class GenericTypeHierarchyScanner extends AbstractTypeHierarchyScanner {
 
     /**
      * 是否支持扫描父类
@@ -65,7 +65,7 @@ public class GenericTypeHierarchyAnnotationScanner extends AbstractTypeHierarchy
      * @param enableScanInterface 是否支持扫描接口
      * @param enableScanMetaAnnotation 是否支持扫描父类
      */
-    public GenericTypeHierarchyAnnotationScanner(
+    public GenericTypeHierarchyScanner(
         boolean enableScanSuperClass, boolean enableScanInterface, boolean enableScanMetaAnnotation) {
         this(
             enableScanSuperClass, enableScanInterface, enableScanMetaAnnotation,
@@ -81,7 +81,7 @@ public class GenericTypeHierarchyAnnotationScanner extends AbstractTypeHierarchy
      * @param enableScanMetaAnnotation 是否支持扫描父类
      * @param typeFilter 类型过滤器，若该类型无法通过过滤器，则不会被扫描器扫描
      */
-    public GenericTypeHierarchyAnnotationScanner(
+    public GenericTypeHierarchyScanner(
         boolean enableScanSuperClass,
         boolean enableScanInterface,
         boolean enableScanMetaAnnotation,

@@ -44,7 +44,7 @@ import java.util.function.Predicate;
  */
 @Getter
 @RequiredArgsConstructor
-public enum AnnotatedElementScanStrategy implements AnnotationScanner {
+public enum AnnotationSearchStrategy implements AnnotationScanner {
 
     /**
      * 不扫描任何注解
@@ -54,42 +54,42 @@ public enum AnnotatedElementScanStrategy implements AnnotationScanner {
     /**
      * 扫描元素本身直接声明的注解，包括父类带有{@link Inherited}、被传递到元素上的注解
      */
-    DIRECTLY(new GenericTypeHierarchyAnnotationScanner(false, false, false)),
+    DIRECTLY(new GenericTypeHierarchyScanner(false, false, false)),
 
     /**
      * 扫描元素本身直接声明的注解，包括父类带有{@link Inherited}、被传递到元素上的注解，以及这些注解的元注解
      */
-    DIRECTLY_AND_META_ANNOTATION(new GenericTypeHierarchyAnnotationScanner(false, false, true)),
+    DIRECTLY_AND_META_ANNOTATION(new GenericTypeHierarchyScanner(false, false, true)),
 
     /**
      * 扫描元素本身以及父类的层级结构中声明的注解
      */
-    SUPERCLASS(new GenericTypeHierarchyAnnotationScanner(true, false, false)),
+    SUPERCLASS(new GenericTypeHierarchyScanner(true, false, false)),
 
     /**
      * 扫描元素本身以及父类的层级结构中声明的注解，以及这些注解的元注解
      */
-    SUPERCLASS_AND_META_ANNOTATION(new GenericTypeHierarchyAnnotationScanner(true, false, true)),
+    SUPERCLASS_AND_META_ANNOTATION(new GenericTypeHierarchyScanner(true, false, true)),
 
     /**
      * 扫描元素本身以及父接口的层级结构中声明的注解
      */
-    INTERFACE(new GenericTypeHierarchyAnnotationScanner(false, true, false)),
+    INTERFACE(new GenericTypeHierarchyScanner(false, true, false)),
 
     /**
      * 扫描元素本身以及父接口的层级结构中声明的注解，以及这些注解的元注解
      */
-    INTERFACE_AND_META_ANNOTATION(new GenericTypeHierarchyAnnotationScanner(false, true, true)),
+    INTERFACE_AND_META_ANNOTATION(new GenericTypeHierarchyScanner(false, true, true)),
 
     /**
      * 扫描元素本身以及父类、父接口的层级结构中声明的注解
      */
-    TYPE_HIERARCHY(new GenericTypeHierarchyAnnotationScanner(true, true, false)),
+    TYPE_HIERARCHY(new GenericTypeHierarchyScanner(true, true, false)),
 
     /**
      * 扫描元素本身以及父接口、父接口的层级结构中声明的注解，以及这些注解的元注解
      */
-    TYPE_HIERARCHY_AND_META_ANNOTATION(new GenericTypeHierarchyAnnotationScanner(true, true, true));
+    TYPE_HIERARCHY_AND_META_ANNOTATION(new GenericTypeHierarchyScanner(true, true, true));
     
     /**
      * 注解扫描器

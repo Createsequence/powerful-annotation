@@ -8,15 +8,15 @@ import java.lang.annotation.*;
 import java.util.List;
 
 /**
- * test for {@link GenericTypeHierarchyAnnotationScanner}
+ * test for {@link GenericTypeHierarchyScanner}
  *
  * @author huangchengxing
  */
-public class GenericTypeHierarchyAnnotationScannerTest {
+public class GenericTypeHierarchyScannerTest {
 
 	@Test
 	public void testScanDirectly() {
-		final GenericTypeHierarchyAnnotationScanner scanner = new GenericTypeHierarchyAnnotationScanner(false, false, false);
+		final GenericTypeHierarchyScanner scanner = new GenericTypeHierarchyScanner(false, false, false);
 		AnnotationCollector processor = new AnnotationCollector();
 		scanner.scan(ClassForTest.class, processor, AnnotationFilter.NOT_JDK_ANNOTATION);
 		final List<Annotation> annotations = processor.getAnnotations();
@@ -25,7 +25,7 @@ public class GenericTypeHierarchyAnnotationScannerTest {
 
 	@Test
 	public void testScanDirectlyAndMetaAnnotation() {
-		final GenericTypeHierarchyAnnotationScanner scanner = new GenericTypeHierarchyAnnotationScanner(false, false, true);
+		final GenericTypeHierarchyScanner scanner = new GenericTypeHierarchyScanner(false, false, true);
 		AnnotationCollector processor = new AnnotationCollector();
 		scanner.scan(ClassForTest.class, processor, AnnotationFilter.NOT_JDK_ANNOTATION);
 		final List<Annotation> annotations = processor.getAnnotations();
@@ -34,7 +34,7 @@ public class GenericTypeHierarchyAnnotationScannerTest {
 
 	@Test
 	public void testScanSuperclass() {
-		final GenericTypeHierarchyAnnotationScanner scanner = new GenericTypeHierarchyAnnotationScanner(true, false, false);
+		final GenericTypeHierarchyScanner scanner = new GenericTypeHierarchyScanner(true, false, false);
 		AnnotationCollector processor = new AnnotationCollector();
 		scanner.scan(ClassForTest.class, processor, AnnotationFilter.NOT_JDK_ANNOTATION);
 		final List<Annotation> annotations = processor.getAnnotations();
@@ -43,7 +43,7 @@ public class GenericTypeHierarchyAnnotationScannerTest {
 
 	@Test
 	public void testScanSuperclassAndMetaAnnotation() {
-		final GenericTypeHierarchyAnnotationScanner scanner = new GenericTypeHierarchyAnnotationScanner(true, false, true);
+		final GenericTypeHierarchyScanner scanner = new GenericTypeHierarchyScanner(true, false, true);
 		AnnotationCollector processor = new AnnotationCollector();
 		scanner.scan(ClassForTest.class, processor, AnnotationFilter.NOT_JDK_ANNOTATION);
 		final List<Annotation> annotations = processor.getAnnotations();
@@ -52,7 +52,7 @@ public class GenericTypeHierarchyAnnotationScannerTest {
 
 	@Test
 	public void testScanInterface() {
-		final GenericTypeHierarchyAnnotationScanner scanner = new GenericTypeHierarchyAnnotationScanner(false, true, false);
+		final GenericTypeHierarchyScanner scanner = new GenericTypeHierarchyScanner(false, true, false);
 		AnnotationCollector processor = new AnnotationCollector();
 		scanner.scan(ClassForTest.class, processor, AnnotationFilter.NOT_JDK_ANNOTATION);
 		final List<Annotation> annotations = processor.getAnnotations();
@@ -61,7 +61,7 @@ public class GenericTypeHierarchyAnnotationScannerTest {
 
 	@Test
 	public void testScanInterfaceAndMetaAnnotation() {
-		final GenericTypeHierarchyAnnotationScanner scanner = new GenericTypeHierarchyAnnotationScanner(true, true, true);
+		final GenericTypeHierarchyScanner scanner = new GenericTypeHierarchyScanner(true, true, true);
 		AnnotationCollector processor = new AnnotationCollector();
 		scanner.scan(ClassForTest.class, processor, AnnotationFilter.NOT_JDK_ANNOTATION);
 		final List<Annotation> annotations = processor.getAnnotations();
@@ -70,7 +70,7 @@ public class GenericTypeHierarchyAnnotationScannerTest {
 
 	@Test
 	public void testScanTypeHierarchy() {
-		final GenericTypeHierarchyAnnotationScanner scanner = new GenericTypeHierarchyAnnotationScanner(true, true, false);
+		final GenericTypeHierarchyScanner scanner = new GenericTypeHierarchyScanner(true, true, false);
 		AnnotationCollector processor = new AnnotationCollector();
 		scanner.scan(ClassForTest.class, processor, AnnotationFilter.NOT_JDK_ANNOTATION);
 		final List<Annotation> annotations = processor.getAnnotations();
@@ -79,7 +79,7 @@ public class GenericTypeHierarchyAnnotationScannerTest {
 
 	@Test
 	public void testScanTypeHierarchyAndMetaAnnotation() {
-		final GenericTypeHierarchyAnnotationScanner scanner = new GenericTypeHierarchyAnnotationScanner(true, true, true);
+		final GenericTypeHierarchyScanner scanner = new GenericTypeHierarchyScanner(true, true, true);
 		AnnotationCollector processor = new AnnotationCollector();
 		scanner.scan(ClassForTest.class, processor, AnnotationFilter.NOT_JDK_ANNOTATION);
 		final List<Annotation> annotations = processor.getAnnotations();
