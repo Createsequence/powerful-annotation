@@ -9,7 +9,6 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.BiConsumer;
-import java.util.function.Function;
 
 /**
  * 基于多个{@link TreeEntry}构成的、彼此平行的树结构构成的森林集合。
@@ -83,49 +82,6 @@ public interface ForestMap<K, V> extends Map<K, TreeEntry<K, V>> {
 	void clear();
 
 	// ===================== 节点操作 =====================
-
-	/**
-	 * 批量添加节点
-	 *
-	 * @param <C>                集合类型
-	 * @param values             要添加的值
-	 * @param keyGenerator       从值中获取key的方法
-	 * @param parentKeyGenerator 从值中获取父节点key的方法
-	 * @param ignoreNullNode     是否获取到的key为null的子节点/父节点
-	 */
-	default <C extends Collection<V>> void putAllNode(
-			C values, Function<V, K> keyGenerator, Function<V, K> parentKeyGenerator, boolean ignoreNullNode) {
-		if (CollUtil.isEmpty(values)) {
-			return;
-		}
-		values.forEach(v -> {
-			final K key = keyGenerator.apply(v);
-			final K parentKey = parentKeyGenerator.apply(v);
-
-			// 不忽略keu为null节点
-			final boolean hasKey = ObjectUtil.isNotNull(key);
-			final boolean hasParentKey = ObjectUtil.isNotNull(parentKey);
-			if (!ignoreNullNode || (hasKey && hasParentKey)) {
-				linkNodes(parentKey, key);
-				get(key).setValue(v);
-				return;
-			}
-
-			// 父子节点的key都为null
-			if (!hasKey && !hasParentKey) {
-				return;
-			}
-
-			// 父节点key为null
-			if (hasKey) {
-				putNode(key, v);
-				return;
-			}
-
-			// 子节点key为null
-			putNode(parentKey, null);
-		});
-	}
 
 	/**
 	 * 添加一个节点

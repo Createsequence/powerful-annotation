@@ -25,9 +25,14 @@ import java.util.Comparator;
  *         水平索引从-{@link #VERTICAL_INDEX_START_POINT}开始递减，
  *         垂直索引从{@link #HORIZONTAL_INDEX_START_POINT}开始递减
  *     </li>
+ *     <li>
+ *         {@link #getRoot()}为本身，即自身即为自己的根节点：
+ *         水平索引、垂直索引皆为{@code 0}；
+ *     </li>
  * </ul>
  *
  * @author huangchengxing
+ * @see HierarchySelector
  */
 public interface Hierarchical {
 

@@ -8,7 +8,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 
 /**
- * {@link RepeatableMapping}的简单实现
+ * {@link RepeatableMapping}的基本实现
  *
  * @author huangchengxing
  */

@@ -5,6 +5,8 @@ import cn.hutool.core.lang.Assert;
 import cn.hutool.core.util.ObjectUtil;
 import lombok.AccessLevel;
 import lombok.Getter;
+import top.xiajibagao.powerfulannotation.annotation.GenericHierarchicalAnnotation;
+import top.xiajibagao.powerfulannotation.annotation.HierarchicalAnnotation;
 import top.xiajibagao.powerfulannotation.repeatable.RepeatableMappingRegistry;
 
 import java.lang.annotation.Annotation;
@@ -47,15 +49,15 @@ public class GenericAnnotationAggregator<T> implements AnnotationAggregator<T> {
      * 被聚合的注解
      */
     @Getter(AccessLevel.PROTECTED)
-    protected final Map<Class<? extends Annotation>, Collection<AggregatedAnnotation<Annotation>>> aggregatedAnnotationMap;
+    protected final Map<Class<? extends Annotation>, Collection<HierarchicalAnnotation<Annotation>>> aggregatedAnnotationMap;
 
     /**
-     * 聚合注解是否已经注册到可重复注解映射表中
+     * 注解是否已经注册到可重复注解映射表中
      */
     private boolean repeatableAggregatedAnnotationRegistered;
 
     /**
-     * 创建一个聚合注解
+     * 创建一个注解
      *
      * @param root 根对象
      * @param verticalIndex 垂直坐标
@@ -66,7 +68,7 @@ public class GenericAnnotationAggregator<T> implements AnnotationAggregator<T> {
     }
 
     /**
-     * 创建一个聚合注解
+     * 创建一个注解
      *
      * @param root 根对象
      * @param verticalIndex 垂直坐标
@@ -94,11 +96,11 @@ public class GenericAnnotationAggregator<T> implements AnnotationAggregator<T> {
         if (repeatableAggregatedAnnotationRegistered) {
             repeatableAggregatedAnnotationRegistered = false;
         }
-        AggregatedAnnotation<Annotation> aggregatedAnnotation = new GenericAggregatedAnnotation<>(
+        HierarchicalAnnotation<Annotation> hierarchicalAnnotation = new GenericHierarchicalAnnotation<>(
             annotation, this, verticalIndex, horizontalIndex
         );
-        aggregatedAnnotationMap.computeIfAbsent(aggregatedAnnotation.annotationType(), t -> new ArrayList<>())
-            .add(aggregatedAnnotation);
+        aggregatedAnnotationMap.computeIfAbsent(hierarchicalAnnotation.annotationType(), t -> new ArrayList<>())
+            .add(hierarchicalAnnotation);
     }
 
     /**
@@ -113,40 +115,40 @@ public class GenericAnnotationAggregator<T> implements AnnotationAggregator<T> {
     }
 
     /**
-     * 获取全部聚合注解
+     * 获取全部注解
      *
-     * @return 全部的聚合注解
+     * @return 全部的注解
      */
     @Override
-    public Collection<AggregatedAnnotation<Annotation>> getAllAnnotations() {
+    public Collection<HierarchicalAnnotation<Annotation>> getAllAnnotations() {
         return aggregatedAnnotationMap.values().stream()
             .flatMap(Collection::stream)
             .collect(Collectors.toList());
     }
 
     /**
-     * 获取指定类型的聚合注解
+     * 获取指定类型的注解
      *
      * @param annotationType 注解类型
      * @param <A> 注解类型
-     * @return 聚合注解
+     * @return 注解
      */
     @SuppressWarnings("unchecked")
     @Override
-    public <A extends Annotation> Collection<AggregatedAnnotation<A>> getAnnotationsByType(Class<A> annotationType) {
+    public <A extends Annotation> Collection<HierarchicalAnnotation<A>> getAnnotationsByType(Class<A> annotationType) {
         return aggregatedAnnotationMap.get(annotationType).stream()
-            .map(annotation -> (AggregatedAnnotation<A>)annotation)
+            .map(annotation -> (HierarchicalAnnotation<A>)annotation)
             .collect(Collectors.toList());
     }
 
     /**
-     * 获取指定层级中的聚合注解
+     * 获取指定层级中的注解
      *
      * @param verticalIndex 垂直索引
-     * @return 聚合注解
+     * @return 注解
      */
     @Override
-    public Collection<AggregatedAnnotation<Annotation>> getAnnotationByVerticalIndex(int verticalIndex) {
+    public Collection<HierarchicalAnnotation<Annotation>> getAnnotationByVerticalIndex(int verticalIndex) {
         return getAllAnnotations().stream()
             .filter(annotation -> ObjectUtil.equals(annotation.getVerticalIndex(), verticalIndex))
             .collect(Collectors.toList());
@@ -162,15 +164,15 @@ public class GenericAnnotationAggregator<T> implements AnnotationAggregator<T> {
     @Override
     public <A extends Annotation> Collection<A> getRepeatableAnnotations(Class<A> annotationType) {
         Assert.notNull(repeatableMappingRegistry, "no repeatable mapping registry available");
-        // 注册未解析聚合注解
-        Collection<AggregatedAnnotation<Annotation>> annotations = getAllAnnotations();
+        // 注册未解析注解
+        Collection<HierarchicalAnnotation<Annotation>> annotations = getAllAnnotations();
         registerRepeatableAggregatedAnnotationIfNecessary(annotations);
         repeatableMappingRegistry.register(annotationType);
-        // 通过映射表将聚合注解转换为指定的元素注解
+        // 通过映射表将注解转换为指定的元素注解
         return annotations.stream()
             .filter(annotation -> repeatableMappingRegistry.isContainerOf(annotationType, annotation.annotationType())
                 || ObjectUtil.equals(annotationType, annotation.annotationType()))
-            .map(AggregatedAnnotation::getAnnotation)
+            .map(HierarchicalAnnotation::getAnnotation)
             .map(annotation -> repeatableMappingRegistry.getElementsFromContainer(annotation, annotationType))
             .filter(CollUtil::isNotEmpty)
             .flatMap(Collection::stream)
@@ -181,11 +183,11 @@ public class GenericAnnotationAggregator<T> implements AnnotationAggregator<T> {
      * 若{@link #repeatableAggregatedAnnotationRegistered}为{@code false}，
      * 则将目前{@link #aggregatedAnnotationMap}中全部可重复注解注册到关系映射注册表中
      */
-    private void registerRepeatableAggregatedAnnotationIfNecessary(Collection<AggregatedAnnotation<Annotation>> annotations) {
+    private void registerRepeatableAggregatedAnnotationIfNecessary(Collection<HierarchicalAnnotation<Annotation>> annotations) {
         if (!repeatableAggregatedAnnotationRegistered) {
             repeatableAggregatedAnnotationRegistered = true;
             annotations.stream()
-                .map(AggregatedAnnotation::annotationType)
+                .map(HierarchicalAnnotation::annotationType)
                 .forEach(repeatableMappingRegistry::register);
         }
     }

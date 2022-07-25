@@ -12,12 +12,12 @@ import java.lang.reflect.AnnotatedElement;
  * 并令垂直索引从{@link Hierarchical#VERTICAL_INDEX_START_POINT}开始递增，
  * 而水平索引从{@link Hierarchical#HORIZONTAL_INDEX_START_POINT}开始递增。
  *
- * <p>默认提供了{@link AnnotatedElementScanStrategy}用于封装一些常用的预置扫描器。
+ * <p>默认提供了{@link AnnotationSearchStrategy}用于封装一些常用的预置扫描器。
  *
  * @author huangchengxing
  * @see AnnotationProcessor
  * @see AnnotationFilter
- * @see AnnotatedElementScanStrategy
+ * @see AnnotationSearchStrategy
  */
 public interface AnnotationScanner {
 
