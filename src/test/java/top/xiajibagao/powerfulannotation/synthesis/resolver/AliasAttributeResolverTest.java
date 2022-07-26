@@ -24,7 +24,7 @@ import java.util.Comparator;
 public class AliasAttributeResolverTest {
 
 	@Test
-	public void testResolveForceAliasFor() {
+	public void processForceAliasForTest() {
 		AliasAttributeResolver processor = new AliasAttributeResolver();
 
 		HierarchicalAnnotation<Annotation> annotation = new GenericHierarchicalAnnotation<>(ClassForTest.class.getAnnotation(AnnotationForTest1.class));
@@ -45,7 +45,7 @@ public class AliasAttributeResolverTest {
 	}
 
 	@Test
-	public void testResolveAliasFor() {
+	public void processAliasForTest() {
 		AliasAttributeResolver processor = new AliasAttributeResolver();
 		HierarchicalAnnotation<Annotation> annotation = new GenericHierarchicalAnnotation<>(ClassForTest.class.getAnnotation(AnnotationForTest1.class));
 		AnnotationSynthesizer synthesizer = new GenericAnnotationSynthesizer(Collections.singletonList(processor), HierarchySelector.nearestAndOldestPriority());
@@ -90,6 +90,10 @@ public class AliasAttributeResolverTest {
 		@Link(attribute = "name", type = RelationType.FORCE_ALIAS_FOR)
 		String value() default "";
 		String name() default "";
+
+		@Link(attribute = "name2", type = RelationType.ALIAS_FOR)
+		String value2() default "";
+		String name2() default "";
 	}
 
 	@Retention(RetentionPolicy.RUNTIME)
