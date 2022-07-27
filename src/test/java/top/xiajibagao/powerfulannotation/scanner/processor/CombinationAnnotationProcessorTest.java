@@ -16,8 +16,8 @@ public class CombinationAnnotationProcessorTest {
 
     @Test
     public void testAccept() {
-        GenericAnnotationCollector<Annotation> collector = GenericAnnotationCollector.create();
-        GenericAnnotationFinder<Annotation> finder = GenericAnnotationFinder.create(annotation -> ObjectUtil.equals(annotation.annotationType(), AnnotationForTest2.class));
+        AnnotationCollector<Annotation> collector = AnnotationCollector.create();
+        AnnotationFinder<Annotation> finder = AnnotationFinder.create(annotation -> ObjectUtil.equals(annotation.annotationType(), AnnotationForTest2.class));
         CombinationAnnotationProcessor processor = new CombinationAnnotationProcessor(collector, finder);
 
         AnnotationForTest1 annotationForTest1 = ClassForTest.class.getAnnotation(AnnotationForTest1.class);

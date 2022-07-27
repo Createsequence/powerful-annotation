@@ -4,9 +4,9 @@ import cn.hutool.core.util.ObjectUtil;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import top.xiajibagao.powerfulannotation.helper.Function3;
+import top.xiajibagao.powerfulannotation.scanner.processor.AnnotationCollector;
+import top.xiajibagao.powerfulannotation.scanner.processor.AnnotationFinder;
 import top.xiajibagao.powerfulannotation.scanner.processor.AnnotationProcessor;
-import top.xiajibagao.powerfulannotation.scanner.processor.GenericAnnotationCollector;
-import top.xiajibagao.powerfulannotation.scanner.processor.GenericAnnotationFinder;
 
 import java.lang.annotation.Annotation;
 import java.lang.annotation.Inherited;
@@ -41,7 +41,9 @@ import java.util.function.Predicate;
  * </ul>
  *
  * @author huangchengxing
- * @see AnnotationScanner
+ * @see GenericTypeHierarchyScanner
+ * @see AnnotationCollector
+ * @see AnnotationFinder
  */
 @Getter
 @RequiredArgsConstructor
@@ -110,7 +112,7 @@ public enum AnnotationSearchStrategy implements AnnotationScanner {
         if (ObjectUtil.isNull(element)) {
             return Collections.emptyList();
         }
-        GenericAnnotationCollector<T> collector = GenericAnnotationCollector.create(function);
+        AnnotationCollector<T> collector = AnnotationCollector.create(function);
         getScanner().scan(element, collector, filter);
         return collector.getTargets();
     }
@@ -126,7 +128,7 @@ public enum AnnotationSearchStrategy implements AnnotationScanner {
         if (ObjectUtil.isNull(element)) {
             return Collections.emptyList();
         }
-        GenericAnnotationCollector<Annotation> collector = GenericAnnotationCollector.create();
+        AnnotationCollector<Annotation> collector = AnnotationCollector.create();
         getScanner().scan(element, collector, filter);
         return collector.getTargets();
     }
@@ -145,7 +147,7 @@ public enum AnnotationSearchStrategy implements AnnotationScanner {
         if (ObjectUtil.isNull(element)) {
             return null;
         }
-        GenericAnnotationFinder<T> finder = GenericAnnotationFinder.create(function, predicate);
+        AnnotationFinder<T> finder = AnnotationFinder.create(function, predicate);
         getScanner().scan(element, finder, filter);
         return finder.getTarget();
     }
@@ -163,7 +165,7 @@ public enum AnnotationSearchStrategy implements AnnotationScanner {
         if (ObjectUtil.isNull(element)) {
             return null;
         }
-        GenericAnnotationFinder<Annotation> finder = GenericAnnotationFinder.create(annotation -> ObjectUtil.equals(annotation.annotationType(), annotationType));
+        AnnotationFinder<Annotation> finder = AnnotationFinder.create(annotation -> ObjectUtil.equals(annotation.annotationType(), annotationType));
         getScanner().scan(element, finder, filter);
         return (T)finder.getTarget();
     }

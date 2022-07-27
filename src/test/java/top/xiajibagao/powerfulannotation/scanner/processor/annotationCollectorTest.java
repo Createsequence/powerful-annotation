@@ -1,39 +1,33 @@
 package top.xiajibagao.powerfulannotation.scanner.processor;
 
-import cn.hutool.core.util.ObjectUtil;
+import cn.hutool.core.collection.CollUtil;
 import org.junit.Assert;
 import org.junit.Test;
 
 import java.lang.annotation.*;
 
 /**
- * test for {@link GenericAnnotationFinder}
+ * test for {@link AnnotationCollector}
  *
- * @author huangchengxing
+ * @author huangcehngxing
  */
-public class GenericAnnotationFinderTest {
+public class annotationCollectorTest {
 
     @Test
-    public void testAccept() {
-        GenericAnnotationFinder<Annotation> finder = GenericAnnotationFinder.create(annotation -> ObjectUtil.equals(annotation.annotationType(), AnnotationForTest2.class));
+    public void testApply() {
+        AnnotationCollector<Annotation> collector = AnnotationCollector.create();
 
         AnnotationForTest1 annotationForTest1 = ClassForTest.class.getAnnotation(AnnotationForTest1.class);
-        finder.accept(0, 0, annotationForTest1);
-        Assert.assertFalse(finder.isFound());
-        Assert.assertFalse(finder.interrupted());
-        Assert.assertNull(finder.getTarget());
-
+        collector.accept(0, 0, annotationForTest1);
         AnnotationForTest2 annotationForTest2 = ClassForTest.class.getAnnotation(AnnotationForTest2.class);
-        finder.accept(0, 0, annotationForTest2);
-        Assert.assertTrue(finder.isFound());
-        Assert.assertTrue(finder.interrupted());
-        Assert.assertEquals(annotationForTest2, finder.getTarget());
-
+        collector.accept(0, 0, annotationForTest2);
         AnnotationForTest3 annotationForTest3 = ClassForTest.class.getAnnotation(AnnotationForTest3.class);
-        finder.accept(0, 0, annotationForTest3);
-        Assert.assertTrue(finder.isFound());
-        Assert.assertTrue(finder.interrupted());
-        Assert.assertEquals(annotationForTest2, finder.getTarget());
+        collector.accept(0, 0, annotationForTest3);
+
+        Assert.assertEquals(
+            CollUtil.newArrayList(annotationForTest1, annotationForTest2, annotationForTest3),
+            collector.getTargets()
+        );
     }
 
     @Retention(RetentionPolicy.RUNTIME)
