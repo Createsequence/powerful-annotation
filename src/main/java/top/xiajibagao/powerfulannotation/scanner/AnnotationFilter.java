@@ -6,7 +6,12 @@ import java.lang.annotation.Annotation;
 import java.util.function.Predicate;
 
 /**
- * 注解过滤器
+ * 注解过滤器，默认提供了三种实现：
+ * <ul>
+ *     <li>{@link #NOT_JDK_ANNOTATION}：过滤{@link java.lang}, 与{@link javax}还有{@link com.sun}包下的注解；</li>
+ *     <li>{@link #FILTER_NOTHING}：不过滤任何注解；</li>
+ *     <li>{@link #FILTER_ANYTHING}：过滤任何注解；</li>
+ * </ul>
  *
  * @author huangchengxing
  */

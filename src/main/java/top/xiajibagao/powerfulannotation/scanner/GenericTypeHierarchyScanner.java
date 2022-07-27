@@ -5,7 +5,6 @@ import cn.hutool.core.text.CharSequenceUtil;
 import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.ClassUtil;
 import cn.hutool.core.util.ObjectUtil;
-import lombok.Getter;
 import top.xiajibagao.powerfulannotation.helper.AnnotationUtils;
 
 import java.lang.annotation.Annotation;
@@ -14,7 +13,6 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.util.List;
-import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 /**
@@ -39,32 +37,15 @@ import java.util.stream.Stream;
  * 此外，扫描器支持在获取到层级结构中的注解对象后，再对注解对象的元注解进行扫描。
  *
  * @author huangchengxing
+ * @see AbstractTypeHierarchyScanner
+ * @see ScanOptions
  */
-@Getter
 public class GenericTypeHierarchyScanner extends AbstractTypeHierarchyScanner {
 
     /**
-     * 空注解对象数组
-     */
-    private static final Annotation[] EMPTY_ANNOTATIONS = new Annotation[0];
-
-    /**
-     * 是否支持扫描父类
-     */
-    private final boolean enableScanSuperClass;
-
-    /**
-     * 是否支持扫描接口
-     */
-    private final boolean enableScanInterface;
-
-    /**
-     * 是否支持扫描父类
-     */
-    private final boolean enableScanMetaAnnotation;
-
-    /**
-     * 构造一个通用注解扫描器，默认不处理包括{@link java.lang}, 与{@link javax}还有{@link com.sun}包下的类
+     * 构造一个通用注解扫描器，
+     * 默认不处理包括{@link java.lang}, 与{@link javax}还有{@link com.sun}包下的类,
+     * 并允许重复访问注解类
      *
      * @param enableScanSuperClass 是否支持扫描父类
      * @param enableScanInterface 是否支持扫描接口
@@ -73,28 +54,23 @@ public class GenericTypeHierarchyScanner extends AbstractTypeHierarchyScanner {
     public GenericTypeHierarchyScanner(
         boolean enableScanSuperClass, boolean enableScanInterface, boolean enableScanMetaAnnotation) {
         this(
-            enableScanSuperClass, enableScanInterface, enableScanMetaAnnotation,
-            t -> !CharSequenceUtil.startWithAny(t.getName(), "java.lang", "javax", "com.sum")
+            new ScanOptions()
+                .setEnableScanSuperClass(enableScanSuperClass)
+                .setEnableScanInterface(enableScanInterface)
+                .setEnableScanMetaAnnotation(enableScanMetaAnnotation)
+                .setEnableScanAccessedType(false)
+                .setEnableScanAccessedAnnotationType(true)
+                .setTypeFilter(t -> !CharSequenceUtil.startWithAny(t.getName(), "java.lang", "javax", "com.sum"))
         );
     }
 
     /**
      * 构造一个通用注解扫描器
      *
-     * @param enableScanSuperClass 是否支持扫描父类
-     * @param enableScanInterface 是否支持扫描接口
-     * @param enableScanMetaAnnotation 是否支持扫描父类
-     * @param typeFilter 类型过滤器，若该类型无法通过过滤器，则不会被扫描器扫描
+     * @param scanOptions 扫描配置
      */
-    public GenericTypeHierarchyScanner(
-        boolean enableScanSuperClass,
-        boolean enableScanInterface,
-        boolean enableScanMetaAnnotation,
-        Predicate<Class<?>> typeFilter) {
-        super(typeFilter);
-        this.enableScanSuperClass = enableScanSuperClass;
-        this.enableScanInterface = enableScanInterface;
-        this.enableScanMetaAnnotation = enableScanMetaAnnotation;
+    public GenericTypeHierarchyScanner(ScanOptions scanOptions) {
+        super(scanOptions);
     }
 
     // ======================== 扫描注解 ========================
@@ -113,13 +89,13 @@ public class GenericTypeHierarchyScanner extends AbstractTypeHierarchyScanner {
     }
 
     /**
-     * 若{@link #enableScanMetaAnnotation}为{@code true}，则将目标类的父接口也添加到nextClasses
+     * 若{@link ScanOptions#isEnableScanMetaAnnotation}为{@code true}，则将目标类的父接口也添加到nextClasses
      *
      * @param nextTypeHierarchies 下一个类集合
      * @param type 目标类型
      */
     protected void scanMetaAnnotationIfNecessary(List<Class<?>> nextTypeHierarchies, Class<?> type) {
-        if (!enableScanMetaAnnotation) {
+        if (!scanOptions.isEnableScanMetaAnnotation()) {
             return;
         }
         Stream.of(AnnotationUtils.getDeclaredAnnotations(type))
@@ -128,13 +104,13 @@ public class GenericTypeHierarchyScanner extends AbstractTypeHierarchyScanner {
     }
 
     /**
-     * 若{@link #enableScanInterface}为{@code true}，则将目标类的父接口也添加到nextClasses
+     * 若{@link ScanOptions#isEnableScanInterface}为{@code true}，则将目标类的父接口也添加到nextClasses
      *
      * @param nextTypeHierarchies 下一个类集合
      * @param type 目标类型
      */
     protected void scanInterfaceIfNecessary(List<Class<?>> nextTypeHierarchies, Class<?> type) {
-        if (!enableScanInterface) {
+        if (!scanOptions.isEnableScanInterface()) {
             return;
         }
         final Class<?>[] interfaces = type.getInterfaces();
@@ -144,13 +120,13 @@ public class GenericTypeHierarchyScanner extends AbstractTypeHierarchyScanner {
     }
 
     /**
-     * 若{@link #enableScanSuperClass}为{@code true}，则将目标类的父类也添加到nextClasses
+     * 若{@link ScanOptions#isEnableScanSuperClass}为{@code true}，则将目标类的父类也添加到nextClasses
      *
      * @param nextTypeHierarchies 下一个类队列
      * @param type    目标类型
      */
     protected void scanSuperClassIfNecessary(List<Class<?>> nextTypeHierarchies, Class<?> type) {
-        if (!enableScanSuperClass) {
+        if (!scanOptions.isEnableScanSuperClass()) {
             return;
         }
         final Class<?> superClass = type.getSuperclass();
