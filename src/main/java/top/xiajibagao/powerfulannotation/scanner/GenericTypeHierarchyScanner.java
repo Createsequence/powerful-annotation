@@ -173,8 +173,8 @@ public class GenericTypeHierarchyScanner extends AbstractTypeHierarchyScanner {
     @Override
     protected Annotation[] getAnnotationsFromType(Context context, Class<?> type) {
         AnnotatedElement element = context.getSource();
-        // 扫描的元素是类
-        if (element instanceof Class) {
+        // 扫描的元素是类，或者正在处理的类型是注解类
+        if (element instanceof Class || type.isAnnotation()) {
             return AnnotationUtils.getDeclaredAnnotations(type);
         }
         // 扫描的元素是方法
