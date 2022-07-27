@@ -25,7 +25,13 @@ import java.util.Collections;
 public class MirrorAttributeResolverTest {
 
 	@Test
-	public void processTest() {
+	public void testOrder() {
+		MirrorAttributeResolver processor = new MirrorAttributeResolver();
+		Assert.assertEquals(SyntheticAnnotationResolver.MIRROR_ATTRIBUTE_RESOLVER_ORDER, processor.order());
+	}
+
+	@Test
+	public void testResolve() {
 		MirrorAttributeResolver processor = new MirrorAttributeResolver();
 		HierarchicalAnnotation<Annotation> annotation = new GenericHierarchicalAnnotation<>(ClassForTest.class.getAnnotation(AnnotationForTest.class));
 		AnnotationSynthesizer synthesizer = new GenericAnnotationSynthesizer(Collections.singletonList(processor), HierarchySelector.nearestAndOldestPriority());

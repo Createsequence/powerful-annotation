@@ -3,14 +3,12 @@ package top.xiajibagao.powerfulannotation.annotation.attribute;
 import cn.hutool.core.lang.Assert;
 import cn.hutool.core.util.ClassUtil;
 import cn.hutool.core.util.ObjectUtil;
-import lombok.ToString;
 
 /**
  * 总是返回固定值的注解属性
  *
  * @author huangchengxing
  */
-@ToString(callSuper = true)
 public class FixedValueAnnotationAttribute extends AbstractWrappedAnnotationAttribute  {
 
     private final Object value;

@@ -1,6 +1,5 @@
 package top.xiajibagao.powerfulannotation.annotation.attribute;
 
-import cn.hutool.core.util.ReflectUtil;
 import top.xiajibagao.powerfulannotation.annotation.HierarchicalAnnotation;
 
 import java.lang.annotation.Annotation;
@@ -54,9 +53,7 @@ public interface AnnotationAttribute {
      *
      * @return 注解属性
      */
-    default Object getValue() {
-        return ReflectUtil.invoke(getAnnotation(), getAttribute());
-    }
+    Object getValue();
 
     /**
      * 该注解属性的值是否等于默认值
@@ -72,17 +69,6 @@ public interface AnnotationAttribute {
      */
     default Class<?> getAttributeType() {
         return getAttribute().getReturnType();
-    }
-
-    /**
-     * 获取属性上的注解
-     *
-     * @param <T> 注解类型
-     * @param annotationType 注解类型
-     * @return 注解对象
-     */
-    default <T extends Annotation> T getAnnotation(Class<T> annotationType) {
-        return getAttribute().getAnnotation(annotationType);
     }
 
     /**

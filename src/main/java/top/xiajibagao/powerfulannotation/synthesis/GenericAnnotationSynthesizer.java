@@ -37,7 +37,6 @@ import java.util.*;
  * @author huangchengxing
  * @see SyntheticAnnotationResolver
  */
-@Getter(AccessLevel.PROTECTED)
 public class GenericAnnotationSynthesizer implements AnnotationSynthesizer {
 
     /**
@@ -48,6 +47,7 @@ public class GenericAnnotationSynthesizer implements AnnotationSynthesizer {
     /**
      * 待合成的注解
      */
+    @Getter(AccessLevel.PROTECTED)
     private final Map<Class<? extends Annotation>, HierarchicalAnnotation<Annotation>> synthesizedAnnotationMap;
     
     /**

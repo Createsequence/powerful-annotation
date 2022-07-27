@@ -111,91 +111,90 @@ public enum AnnotationSearchStrategy implements AnnotationScanner {
     private final AnnotationScanner scanner;
 
     /**
-     * 扫描元素并获得相关注解对象
+     * 从元素获取全部注解并将其转为指定类型
      *
      * @param element 要扫描的元素
      * @param filter 注解过滤器
+     * @param converter 转换器
+     * @param <T> 转换类型
      * @return 注解对象
      */
     public <T> List<T> getAnnotations(
         AnnotatedElement element, AnnotationFilter filter,
-        Function3<Integer, Integer, Annotation, T> function) {
+        Function3<Integer, Integer, Annotation, T> converter) {
         if (ObjectUtil.isNull(element)) {
             return Collections.emptyList();
         }
-        AnnotationCollector<T> collector = AnnotationCollector.create(function);
-        getScanner().scan(element, collector, filter);
+        AnnotationCollector<T> collector = AnnotationCollector.create(converter);
+        scan(element, collector, filter);
         return collector.getTargets();
     }
 
     /**
-     * 扫描元素并获得相关注解对象
+     * 从元素获取全部注解
      *
      * @param element 要扫描的元素
      * @param filter 注解过滤器
      * @return 注解对象
      */
     public List<Annotation> getAnnotations(AnnotatedElement element, AnnotationFilter filter) {
-        if (ObjectUtil.isNull(element)) {
-            return Collections.emptyList();
-        }
-        AnnotationCollector<Annotation> collector = AnnotationCollector.create();
-        getScanner().scan(element, collector, filter);
-        return collector.getTargets();
+        return getAnnotations(element, filter, (vi, hi, annotation) -> annotation);
     }
 
     /**
-     * 获取元素上全部指定类型的注解，该方法无法获得{@link java.lang}, 与{@link javax}还有{@link com.sun}包下的注解
+     * 从元素获取全部指定类型的注解
      *
      * @param element 要扫描的元素
-     * @param annotationType 注解过滤器
+     * @param annotationType 注解类型
+     * @param <T> 注解类型
      * @return 注解对象
      */
     public <T extends Annotation> List<T> getAnnotationsByType(AnnotatedElement element, Class<T> annotationType) {
-        return getAnnotations(element, AnnotationFilter.NOT_JDK_ANNOTATION).stream()
+        return getAnnotations(element, AnnotationFilter.FILTER_NOTHING).stream()
             .filter(annotation -> ObjectUtil.equals(annotation.annotationType(), annotationType))
             .map(annotationType::cast)
             .collect(Collectors.toList());
     }
 
     /**
-     * 扫描元素并获得指定注解
+     * 从元素获取注解并将其转为指定类型对象，若符合条件则返回该指定类型对象
      *
-     * @param element   要扫描的元素
-     * @param filter    注解过滤器
+     * @param element 要扫描的元素
+     * @param filter 注解过滤器
      * @param predicate 目标的判断条件
+     * @param converter 转换器
+     * @param <T> 转换类型
      * @return 注解对象
      */
     public <T> T getAnnotation(
         AnnotatedElement element, AnnotationFilter filter, Predicate<T> predicate,
-        Function3<Integer, Integer, Annotation, T> function) {
+        Function3<Integer, Integer, Annotation, T> converter) {
         if (ObjectUtil.isNull(element)) {
             return null;
         }
-        AnnotationFinder<T> finder = AnnotationFinder.create(function, predicate);
-        getScanner().scan(element, finder, filter);
+        AnnotationFinder<T> finder = AnnotationFinder.create(converter, predicate);
+        scan(element, finder, filter);
         return finder.getTarget();
     }
 
     /**
-     * 扫描元素并获得指定注解，该方法无法获得{@link java.lang}, 与{@link javax}还有{@link com.sun}包下的注解
+     * 从元素获取类型注解
      *
      * @param element 要扫描的元素
      * @param annotationType 注解类型
      * @return 注解对象
      */
     @SuppressWarnings("unchecked")
-    public <T extends Annotation> T getAnnotationByType(AnnotatedElement element, Class<T> annotationType) {
-        if (ObjectUtil.isNull(element)) {
-            return null;
-        }
-        AnnotationFinder<Annotation> finder = AnnotationFinder.create(annotation -> ObjectUtil.equals(annotation.annotationType(), annotationType));
-        getScanner().scan(element, finder, AnnotationFilter.NOT_JDK_ANNOTATION);
-        return (T)finder.getTarget();
+    public <T extends Annotation> T getAnnotation(AnnotatedElement element, Class<T> annotationType) {
+        return (T) getAnnotation(
+            element, AnnotationFilter.FILTER_NOTHING,
+            annotation -> ObjectUtil.equals(annotation.annotationType(), annotationType),
+            (vi, hi, annotation) -> annotation
+        );
     }
 
     /**
-     * 扫描与指定具有关联的注解，并对其进行处理
+     * 扫描与指定元素具有关联的注解，并对其进行处理
      *
      * @param element 元素
      * @param processor 注解处理器

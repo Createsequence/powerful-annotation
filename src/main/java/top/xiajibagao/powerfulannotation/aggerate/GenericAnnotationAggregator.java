@@ -22,22 +22,24 @@ import java.util.stream.Collectors;
  * @param <T> 数据源类型
  * @author huangchengxing
  */
-@Getter
 public class GenericAnnotationAggregator<T> implements AnnotationAggregator<T> {
 
     /**
      * 根对象
      */
+    @Getter
     protected final T root;
 
     /**
      * 与根对象的垂直距离
      */
+    @Getter
     protected final int verticalIndex;
 
     /**
      * 与根对象的水平距离
      */
+    @Getter
     protected final int horizontalIndex;
 
     /**

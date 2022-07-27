@@ -24,7 +24,13 @@ import java.util.Comparator;
 public class AliasAttributeResolverTest {
 
 	@Test
-	public void processForceAliasForTest() {
+	public void testOrder() {
+		AliasAttributeResolver processor = new AliasAttributeResolver();
+		Assert.assertEquals(SyntheticAnnotationResolver.ALIAS_ATTRIBUTE_RESOLVER_ORDER, processor.order());
+	}
+
+	@Test
+	public void testResolveForceAliasFor() {
 		AliasAttributeResolver processor = new AliasAttributeResolver();
 
 		HierarchicalAnnotation<Annotation> annotation = new GenericHierarchicalAnnotation<>(ClassForTest.class.getAnnotation(AnnotationForTest1.class));
@@ -45,7 +51,7 @@ public class AliasAttributeResolverTest {
 	}
 
 	@Test
-	public void processAliasForTest() {
+	public void testResolveAliasFor() {
 		AliasAttributeResolver processor = new AliasAttributeResolver();
 		HierarchicalAnnotation<Annotation> annotation = new GenericHierarchicalAnnotation<>(ClassForTest.class.getAnnotation(AnnotationForTest1.class));
 		AnnotationSynthesizer synthesizer = new GenericAnnotationSynthesizer(Collections.singletonList(processor), HierarchySelector.nearestAndOldestPriority());

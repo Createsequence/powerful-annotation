@@ -32,6 +32,16 @@ public class CoveredAttributeResolver implements SyntheticAnnotationResolver {
     private final boolean isForceConverted;
 
     /**
+     * 排序值，固定返回{@link SyntheticAnnotationResolver#COVERED_ATTRIBUTE_RESOLVER_ORDER}
+     *
+     * @return 排序值
+     */
+    @Override
+    public int order() {
+        return SyntheticAnnotationResolver.COVERED_ATTRIBUTE_RESOLVER_ORDER;
+    }
+
+    /**
      * 筛选出合成器中排序小于当前注解的注解，若其中存在注解属性与当前注解名称类型皆一致，则使用该属性覆盖当前注解中的同名属性
      *
      * @param annotation 待处理的注解

@@ -1,6 +1,5 @@
 package top.xiajibagao.powerfulannotation.annotation.attribute;
 
-import lombok.ToString;
 import top.xiajibagao.powerfulannotation.synthesis.RelationType;
 
 /**
@@ -10,7 +9,6 @@ import top.xiajibagao.powerfulannotation.synthesis.RelationType;
  * @see RelationType#ALIAS_FOR
  * @see RelationType#FORCE_ALIAS_FOR
  */
-@ToString(callSuper = true)
 public class ForceAliasedAnnotationAttribute extends AbstractWrappedAnnotationAttribute {
 
 	public ForceAliasedAnnotationAttribute(AnnotationAttribute origin, AnnotationAttribute linked) {

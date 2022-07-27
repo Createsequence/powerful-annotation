@@ -4,7 +4,6 @@ import cn.hutool.core.util.ObjectUtil;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import lombok.ToString;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -15,7 +14,6 @@ import java.util.List;
  *
  * @author huangchengxing
  */
-@ToString
 @RequiredArgsConstructor
 @Getter
 public abstract class AbstractWrappedAnnotationAttribute implements WrappedAnnotationAttribute {

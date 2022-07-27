@@ -7,7 +7,6 @@ import cn.hutool.core.lang.Opt;
 import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.ObjectUtil;
 import top.xiajibagao.powerfulannotation.helper.ForestMap;
-import top.xiajibagao.powerfulannotation.helper.FuncUtils;
 import top.xiajibagao.powerfulannotation.helper.LinkedForestMap;
 import top.xiajibagao.powerfulannotation.helper.TreeEntry;
 
@@ -46,20 +45,9 @@ public class SimpleRepeatableMappingRegistry implements RepeatableMappingRegistr
 	 * @param parsers 要使用的解析器
 	 */
 	public SimpleRepeatableMappingRegistry(RepeatableMappingParser... parsers) {
-		Assert.notEmpty(parsers, "registry requires at least one parser");
 		this.mappingForestMap = new LinkedForestMap<>(false);
 		this.mappingParsers = new ArrayList<>();
 		CollUtil.addAll(this.mappingParsers, parsers);
-	}
-
-	/**
-	 * 获取关系解析器
-	 *
-	 * @return 关系解析器
-	 */
-	@Override
-	public List<RepeatableMappingParser> getMappingParser() {
-		return mappingParsers;
 	}
 
 	/**
@@ -220,7 +208,7 @@ public class SimpleRepeatableMappingRegistry implements RepeatableMappingRegistr
 			return Collections.emptyList();
 		}
 		// 将容器注解一层一层的兑换为元素注解
-		List<Annotation> results = forEachElements(container, elementType, containerMapping, FuncUtils.doNothing());
+		List<Annotation> results = forEachElements(container, elementType, containerMapping, t -> {});
 		return (List<T>)results;
 	}
 

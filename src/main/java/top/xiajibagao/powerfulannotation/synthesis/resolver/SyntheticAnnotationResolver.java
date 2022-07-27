@@ -10,11 +10,26 @@ import java.lang.annotation.Annotation;
  *
  * @author huangchengxing
  * @see AnnotationSynthesizer
- * @see AliasAttributeResolver
  * @see MirrorAttributeResolver
+ * @see AliasAttributeResolver
  * @see CoveredAttributeResolver
  */
 public interface SyntheticAnnotationResolver {
+
+    /**
+     * {@link MirrorAttributeResolver}的排序值
+     */
+    int MIRROR_ATTRIBUTE_RESOLVER_ORDER = Integer.MIN_VALUE + 1;
+
+    /**
+     * {@link AliasAttributeResolver}的排序值
+     */
+    int ALIAS_ATTRIBUTE_RESOLVER_ORDER = Integer.MIN_VALUE + 2;
+
+    /**
+     * {@link CoveredAttributeResolver}的排序值
+     */
+    int COVERED_ATTRIBUTE_RESOLVER_ORDER = Integer.MIN_VALUE + 3;
 
     /**
      * 处理注解
@@ -29,8 +44,6 @@ public interface SyntheticAnnotationResolver {
      *
      * @return 排序值
      */
-    default int order() {
-        return Integer.MAX_VALUE;
-    }
+    int order();
 
 }

@@ -17,6 +17,7 @@ public class GenericHierarchicalAnnotationTest {
             annotation, ClassForTest.class, 0, 0
         );
 
+        Assert.assertEquals(2, aggregatedAnnotation.getAttributeMap().size());
         Assert.assertEquals(annotation, aggregatedAnnotation.getAnnotation());
         Assert.assertEquals(ClassForTest.class, aggregatedAnnotation.getRoot());
         Assert.assertEquals(AnnotationForTest.class, aggregatedAnnotation.annotationType());

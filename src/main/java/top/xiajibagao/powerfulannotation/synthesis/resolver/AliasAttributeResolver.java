@@ -53,9 +53,14 @@ public class AliasAttributeResolver extends AbstractDynamicAttributeResolver {
 		this(null);
 	}
 
+	/**
+	 * 排序值，固定返回{@link SyntheticAnnotationResolver#ALIAS_ATTRIBUTE_RESOLVER_ORDER}
+	 *
+	 * @return 排序值
+	 */
 	@Override
 	public int order() {
-		return Integer.MIN_VALUE + 2;
+		return SyntheticAnnotationResolver.ALIAS_ATTRIBUTE_RESOLVER_ORDER;
 	}
 
 	/**
