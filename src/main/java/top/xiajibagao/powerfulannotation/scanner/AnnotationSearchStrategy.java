@@ -14,11 +14,17 @@ import java.lang.reflect.AnnotatedElement;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 /**
- * <p>对{@link AnnotatedElement}上注解的搜索策略
+ * <p>用于从{@link AnnotatedElement}上搜索注解的策略，用于提供一些常用扫描操作的封装。<br />
+ * 可以作为一个{@link AnnotationScanner}使用，此外还提供了一些额外的方法：
+ * <ul>
+ *     <li>{@code getAnnotationsXXX}: 用于批量获取注解；</li>
+ *     <li>{@code getAnnotationXXX}: 用于获取单个注解，当扫描并获取到第一个符合条件的注解后，将直接返回并停止扫描；</li>
+ * </ul>
  *
- * <p>默认提供了以下策略：
+ * <p><strong>可选的扫描策略：</strong>
  * <ul>
  *     <li>{@link #NOTHING}：什么都不做，什么注解都不扫描；</li>
  *     <li>{@link #DIRECTLY}：扫描元素本身直接声明的注解，包括父类带有{@link Inherited}、被传递到元素上的注解；</li>
@@ -36,8 +42,13 @@ import java.util.function.Predicate;
  *
  * <p><strong>注意：</strong>
  * <ul>
- *     <li>上述扫描器皆不处理{@link com.sun}，{@link java.lang}及{@link javax}包下注解的元注解；</li>
- *     <li>扫描器可能无法正确处理注解与其元注解之间潜在的循环依赖关系，比如：<code>{@code a -> b -> a}</code>；</li>
+ *     <li>提供扫描策略皆不会处理{@link com.sun}，{@link java.lang}及{@link javax}包下的注解；</li>
+ *     <li>提供扫描策略皆不会重复访问一个已经访问过的非注解类，即使它们在出现在不同层级；</li>
+ *     <li>
+ *         若扫描对象的层级结构中存在多个类型一致的注解对象，则扫描策略会重复处理该对象。<br />
+ *         该设置是为了保证即使相同的注解被重复注解在元素的不同层级结构中时，它们依然可以被正确的扫描到。 <br />
+ *         <strong>但是若注解与其元注解若存在直接或间接的循环引用，将有可能引发{@link StackOverflowError}</strong>；
+ *     </li>
  * </ul>
  *
  * @author huangchengxing
@@ -134,6 +145,20 @@ public enum AnnotationSearchStrategy implements AnnotationScanner {
     }
 
     /**
+     * 获取元素上全部指定类型的注解，该方法无法获得{@link java.lang}, 与{@link javax}还有{@link com.sun}包下的注解
+     *
+     * @param element 要扫描的元素
+     * @param annotationType 注解过滤器
+     * @return 注解对象
+     */
+    public <T extends Annotation> List<T> getAnnotationsByType(AnnotatedElement element, Class<T> annotationType) {
+        return getAnnotations(element, AnnotationFilter.NOT_JDK_ANNOTATION).stream()
+            .filter(annotation -> ObjectUtil.equals(annotation.annotationType(), annotationType))
+            .map(annotationType::cast)
+            .collect(Collectors.toList());
+    }
+
+    /**
      * 扫描元素并获得指定注解
      *
      * @param element   要扫描的元素
@@ -141,7 +166,7 @@ public enum AnnotationSearchStrategy implements AnnotationScanner {
      * @param predicate 目标的判断条件
      * @return 注解对象
      */
-    public <T> T findAnnotation(
+    public <T> T getAnnotation(
         AnnotatedElement element, AnnotationFilter filter, Predicate<T> predicate,
         Function3<Integer, Integer, Annotation, T> function) {
         if (ObjectUtil.isNull(element)) {
@@ -153,20 +178,19 @@ public enum AnnotationSearchStrategy implements AnnotationScanner {
     }
 
     /**
-     * 扫描元素并获得指定注解
+     * 扫描元素并获得指定注解，该方法无法获得{@link java.lang}, 与{@link javax}还有{@link com.sun}包下的注解
      *
      * @param element 要扫描的元素
-     * @param filter 注解过滤器
      * @param annotationType 注解类型
      * @return 注解对象
      */
     @SuppressWarnings("unchecked")
-    public <T extends Annotation> T findAnnotation(AnnotatedElement element, AnnotationFilter filter, Class<T> annotationType) {
+    public <T extends Annotation> T getAnnotationByType(AnnotatedElement element, Class<T> annotationType) {
         if (ObjectUtil.isNull(element)) {
             return null;
         }
         AnnotationFinder<Annotation> finder = AnnotationFinder.create(annotation -> ObjectUtil.equals(annotation.annotationType(), annotationType));
-        getScanner().scan(element, finder, filter);
+        getScanner().scan(element, finder, AnnotationFilter.NOT_JDK_ANNOTATION);
         return (T)finder.getTarget();
     }
 

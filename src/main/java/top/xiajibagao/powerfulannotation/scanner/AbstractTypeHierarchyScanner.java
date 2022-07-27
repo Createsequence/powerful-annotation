@@ -12,22 +12,23 @@ import top.xiajibagao.powerfulannotation.scanner.processor.AnnotationProcessor;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
 import java.util.*;
-import java.util.function.Predicate;
 
 /**
- * <p>用于为支持从具备层级结构中的元素扫描注解的扫描器提供基本实现。
+ * <p>用于为支持从具备层级结构中的元素扫描注解的扫描器提供基本实现。<br />
  * 该抽象类定义了针对对象层级结构中注解进行扫描的基本流程，
- * 实现类允许重写所有的非私有方法从而调整部分环节的执行逻辑。
+ * 并支持根据{@link ScanOptions}对各项参数进行配置。<br />
+ * 实现类可以重写所需的非私有方法从而调整部分环节的执行逻辑。
  *
  * @author huangchengxing
+ * @see ScanOptions
  */
 @RequiredArgsConstructor
 public abstract class AbstractTypeHierarchyScanner implements AnnotationScanner {
 
     /**
-     * 类型过滤器，若该类型无法通过过滤器，则不会被扫描器扫描
+     * 扫描配置
      */
-    private final Predicate<Class<?>> typeFilter;
+    protected final ScanOptions scanOptions;
 
     /**
      * 扫描指定元素上的注解
@@ -136,26 +137,28 @@ public abstract class AbstractTypeHierarchyScanner implements AnnotationScanner 
     }
 
     /**
-     * <p>是否处理当前类。
-     *
-     * <p>不处理为空，或未通过{@link #typeFilter}校验的类型对象。
-     * 并且也不处理已经访问过的普通类对象，
-     * 但是若类对象为注解类则不再磁力
-     *
-     * 默认仅限制针对普通类的重复访问，
-     * 但是不并限制对注解类的重复访问，因此若注解出现循环引用，
-     * 则有可能引起{@link StackOverflowError}。
-     * 若有必要，可针对该方法进行重写。
+     * 是否处理当前类 <br />
+     * 当在下述情况下时，将不处理指定的类对象：
+     * <ul>
+     *     <li>类对象为空；</li>
+     *     <li>类对象未通过{@link ScanOptions#getTypeFilter()}校验；</li>
+     *     <li>类对象是已被访问过注解类，且{@link ScanOptions#isEnableScanAccessedAnnotationType()}为{@code false}；</li>
+     *     <li>类对象是已被访问过非注解类，且{@link ScanOptions#isEnableScanAccessedType()}为{@code false}；</li>
+     * </ul>
      *
      * @param type 目标类型
      * @param accessedTypes 已经访问过的类型
      * @return 是否不需要处理
      */
     protected boolean isNeedProcess(Class<?> type, Set<Class<?>> accessedTypes) {
-        if (ObjectUtil.isNull(type) || !typeFilter.test(type)) {
+        if (ObjectUtil.isNull(type) || !scanOptions.getTypeFilter().test(type)) {
             return false;
         }
-        return type.isAnnotation() || !accessedTypes.contains(type);
+        if (!accessedTypes.contains(type)) {
+            return true;
+        }
+        return type.isAnnotation() ?
+            scanOptions.isEnableScanAccessedAnnotationType() : scanOptions.isEnableScanAccessedType();
     }
 
     /**

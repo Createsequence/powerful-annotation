@@ -11,7 +11,7 @@ import java.lang.annotation.*;
  *
  * @author huangcehngxing
  */
-public class annotationCollectorTest {
+public class AnnotationCollectorTest {
 
     @Test
     public void testApply() {
