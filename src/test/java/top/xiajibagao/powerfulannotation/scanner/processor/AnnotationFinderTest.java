@@ -1,33 +1,39 @@
 package top.xiajibagao.powerfulannotation.scanner.processor;
 
-import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.util.ObjectUtil;
 import org.junit.Assert;
 import org.junit.Test;
 
 import java.lang.annotation.*;
 
 /**
- * test for {@link GenericAnnotationCollector}
+ * test for {@link AnnotationFinder}
  *
- * @author huangcehngxing
+ * @author huangchengxing
  */
-public class GenericAnnotationCollectorTest {
+public class AnnotationFinderTest {
 
     @Test
-    public void testApply() {
-        GenericAnnotationCollector<Annotation> collector = GenericAnnotationCollector.create();
+    public void testAccept() {
+        AnnotationFinder<Annotation> finder = AnnotationFinder.create(annotation -> ObjectUtil.equals(annotation.annotationType(), AnnotationForTest2.class));
 
         AnnotationForTest1 annotationForTest1 = ClassForTest.class.getAnnotation(AnnotationForTest1.class);
-        collector.accept(0, 0, annotationForTest1);
-        AnnotationForTest2 annotationForTest2 = ClassForTest.class.getAnnotation(AnnotationForTest2.class);
-        collector.accept(0, 0, annotationForTest2);
-        AnnotationForTest3 annotationForTest3 = ClassForTest.class.getAnnotation(AnnotationForTest3.class);
-        collector.accept(0, 0, annotationForTest3);
+        finder.accept(0, 0, annotationForTest1);
+        Assert.assertFalse(finder.isFound());
+        Assert.assertFalse(finder.interrupted());
+        Assert.assertNull(finder.getTarget());
 
-        Assert.assertEquals(
-            CollUtil.newArrayList(annotationForTest1, annotationForTest2, annotationForTest3),
-            collector.getTargets()
-        );
+        AnnotationForTest2 annotationForTest2 = ClassForTest.class.getAnnotation(AnnotationForTest2.class);
+        finder.accept(0, 0, annotationForTest2);
+        Assert.assertTrue(finder.isFound());
+        Assert.assertTrue(finder.interrupted());
+        Assert.assertEquals(annotationForTest2, finder.getTarget());
+
+        AnnotationForTest3 annotationForTest3 = ClassForTest.class.getAnnotation(AnnotationForTest3.class);
+        finder.accept(0, 0, annotationForTest3);
+        Assert.assertTrue(finder.isFound());
+        Assert.assertTrue(finder.interrupted());
+        Assert.assertEquals(annotationForTest2, finder.getTarget());
     }
 
     @Retention(RetentionPolicy.RUNTIME)

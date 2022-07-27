@@ -14,29 +14,42 @@ import java.util.List;
  * <p>用于在{@link AnnotationScanner}扫描过程中收集注解的注解处理器，
  * 完成扫描后，用户可以通过{@link #getTargets()}获得按照被扫描的顺序排序的注解对象
  *
+ * @param <T> 收集的对象类型
  * @author huangchengxing
  */
 @RequiredArgsConstructor
-@Getter
-public class GenericAnnotationCollector<T> implements AnnotationProcessor {
+public class AnnotationCollector<T> implements AnnotationProcessor {
 
-    public static <T> GenericAnnotationCollector<T> create(Function3<Integer, Integer, Annotation, T> function) {
-        return new GenericAnnotationCollector<>(function);
+    /**
+     * 创建一个注解收集器，收集器将收集经过{@code converter}转换后的对象
+     *
+     * @param converter 转换器
+     * @param <T> {@code converter}返回值类型
+     * @return 注解收集器
+     */
+    public static <T> AnnotationCollector<T> create(Function3<Integer, Integer, Annotation, T> converter) {
+        return new AnnotationCollector<>(converter);
     }
 
-    public static GenericAnnotationCollector<Annotation> create() {
-        return new GenericAnnotationCollector<>((vi, hi, a) -> a);
+    /**
+     * 创建一个注解收集器
+     *
+     * @return 注解收集器
+     */
+    public static AnnotationCollector<Annotation> create() {
+        return new AnnotationCollector<>((vi, hi, a) -> a);
     }
 
     /**
      * 目标对象
      */
+    @Getter
     private final List<T> targets = new ArrayList<>();
 
     /**
-     * 转换操作
+     * 转换器
      */
-    private final Function3<Integer, Integer, Annotation, T> function;
+    private final Function3<Integer, Integer, Annotation, T> converter;
 
     /**
      * 处理注解，将其添加到{@link #targets}中
@@ -47,7 +60,7 @@ public class GenericAnnotationCollector<T> implements AnnotationProcessor {
      */
     @Override
     public void accept(int verticalIndex, int horizontalIndex, Annotation annotation) {
-        targets.add(function.accept(verticalIndex, horizontalIndex, annotation));
+        targets.add(converter.accept(verticalIndex, horizontalIndex, annotation));
     }
 
 }

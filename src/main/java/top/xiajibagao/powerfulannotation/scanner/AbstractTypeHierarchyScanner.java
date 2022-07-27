@@ -15,7 +15,9 @@ import java.util.*;
 import java.util.function.Predicate;
 
 /**
- * 支持对类层次结构进行扫描的扫描器基本实现
+ * <p>用于为支持从具备层级结构中的元素扫描注解的扫描器提供基本实现。
+ * 该抽象类定义了针对对象层级结构中注解进行扫描的基本流程，
+ * 实现类允许重写所有的非私有方法从而调整部分环节的执行逻辑。
  *
  * @author huangchengxing
  */
@@ -39,7 +41,7 @@ public abstract class AbstractTypeHierarchyScanner implements AnnotationScanner 
         if (ObjectUtil.isNull(element)) {
             return;
         }
-        filter = ObjectUtil.defaultIfNull(filter, annotation -> true);
+        filter = ObjectUtil.defaultIfNull(filter, AnnotationFilter.FILTER_NOTHING);
         Context context = new Context(
             element, Hierarchical.VERTICAL_INDEX_START_POINT, Hierarchical.HORIZONTAL_INDEX_START_POINT, false
         );
@@ -134,10 +136,19 @@ public abstract class AbstractTypeHierarchyScanner implements AnnotationScanner 
     }
 
     /**
-     * 当前类是否需要处理，此处不并限制对注解类的重复访问
+     * <p>是否处理当前类。
      *
-     * @param accessedTypes 访问类型
-     * @param type   目标类型
+     * <p>不处理为空，或未通过{@link #typeFilter}校验的类型对象。
+     * 并且也不处理已经访问过的普通类对象，
+     * 但是若类对象为注解类则不再磁力
+     *
+     * 默认仅限制针对普通类的重复访问，
+     * 但是不并限制对注解类的重复访问，因此若注解出现循环引用，
+     * 则有可能引起{@link StackOverflowError}。
+     * 若有必要，可针对该方法进行重写。
+     *
+     * @param type 目标类型
+     * @param accessedTypes 已经访问过的类型
      * @return 是否不需要处理
      */
     protected boolean isNeedProcess(Class<?> type, Set<Class<?>> accessedTypes) {

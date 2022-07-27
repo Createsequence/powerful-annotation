@@ -34,7 +34,7 @@ import java.util.stream.Stream;
  *         当元素为{@link Field}时，此处层级结构指声明属性的类的层级结构，
  *         扫描器将从层级结构中寻找与该属性具有相同类型与名称的属性，并对其注解进行扫描；
  *     </li>
- *     <li>当元素不为{@link Method}或{@link Class}时，则其层级结构仅有其本身一层；</li>
+ *     <li>当元素不为上述三者时，则认为其层级结构仅有其本身一层，将只直接扫描器该元素上的注解；</li>
  * </ul>
  * 此外，扫描器支持在获取到层级结构中的注解对象后，再对注解对象的元注解进行扫描。
  *
@@ -42,6 +42,11 @@ import java.util.stream.Stream;
  */
 @Getter
 public class GenericTypeHierarchyScanner extends AbstractTypeHierarchyScanner {
+
+    /**
+     * 空注解对象数组
+     */
+    private static final Annotation[] EMPTY_ANNOTATIONS = new Annotation[0];
 
     /**
      * 是否支持扫描父类
@@ -182,7 +187,7 @@ public class GenericTypeHierarchyScanner extends AbstractTypeHierarchyScanner {
      *     <li>若根元素是{@link Class}，则直接返回{@code type}上直接声明的注解；</li>
      *     <li>若根元素是{@link Method}，则返回{@code type}中，与根元素具有完全一致的签名的非桥接方法上直接声明的注解；</li>
      *     <li>若元素是{@link Field}，则返回{@code type}中，与跟原生具有一致的名称与类型的属性上直接声明的注解;</li>
-     *     <li>若元素不为上述三者中的任意一种，则将直接抛出{@link IllegalArgumentException}异常；</li>
+     *     <li>若元素不为上述三者中的任意一种，则将返回空数组；</li>
      * </ul>
      *
      * @param context 所有
@@ -215,9 +220,7 @@ public class GenericTypeHierarchyScanner extends AbstractTypeHierarchyScanner {
                 .flatMap(Stream::of)
                 .toArray(Annotation[]::new);
         }
-        throw new IllegalArgumentException(CharSequenceUtil.format(
-            "cannot get annotations from type [{}], because scanning source element type is [{}]", type, element
-        ));
+        return AnnotationUtils.emptyAnnotations();
     }
 
     /**

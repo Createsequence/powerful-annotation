@@ -13,19 +13,33 @@ import java.util.function.Predicate;
  * <p>用于在{@link AnnotationScanner}扫描过程中查找指定注解的注解处理器。
  * 当查找到第一个符合给定条件的注解后，扫描器将中断扫描，不再继续向后查找
  *
+ * @param <T> 查找的对象类型
  * @author huangchengxing
  */
 @RequiredArgsConstructor
-@Getter
-public class GenericAnnotationFinder<T> implements AnnotationProcessor {
+public class AnnotationFinder<T> implements AnnotationProcessor {
 
-    public static <T> GenericAnnotationFinder<T> create(
-        Function3<Integer, Integer, Annotation, T> function, Predicate<T> predicate) {
-        return new GenericAnnotationFinder<>(predicate, function);
+    /**
+     * 创建一个注解查找器，用于查找符合条件的、经过{@code converter}转换后的对象
+     *
+     * @param converter 转换器
+     * @param predicate 判断条件
+     * @param <T> {@code converter}返回值类型
+     * @return 注解查找器
+     */
+    public static <T> AnnotationFinder<T> create(
+        Function3<Integer, Integer, Annotation, T> converter, Predicate<T> predicate) {
+        return new AnnotationFinder<>(predicate, converter);
     }
 
-    public static GenericAnnotationFinder<Annotation> create(Predicate<Annotation> predicate) {
-        return new GenericAnnotationFinder<>(predicate, (vi, hi, a) -> a);
+    /**
+     * 创建一个注解查找器，用于查找符合条件的注解
+     *
+     * @param predicate 判断条件
+     * @return 注解查找器
+     */
+    public static AnnotationFinder<Annotation> create(Predicate<Annotation> predicate) {
+        return new AnnotationFinder<>(predicate, (vi, hi, a) -> a);
     }
 
     /**
@@ -36,16 +50,18 @@ public class GenericAnnotationFinder<T> implements AnnotationProcessor {
     /**
      * 转换操作
      */
-    private final Function3<Integer, Integer, Annotation, T> function;
+    private final Function3<Integer, Integer, Annotation, T> converter;
 
     /**
      * 目标注解
      */
+    @Getter
     private T target;
 
     /**
      * 是否已经找到目标注解
      */
+    @Getter
     private boolean found;
 
     /**
@@ -61,7 +77,7 @@ public class GenericAnnotationFinder<T> implements AnnotationProcessor {
         if (found) {
             return;
         }
-        T converted = function.accept(verticalIndex, horizontalIndex, annotation);
+        T converted = converter.accept(verticalIndex, horizontalIndex, annotation);
         if (predicate.test(converted)) {
             target = converted;
             found = true;
