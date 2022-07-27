@@ -3,9 +3,10 @@ package top.xiajibagao.powerfulannotation.scanner;
 import cn.hutool.core.util.ObjectUtil;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import top.xiajibagao.powerfulannotation.scanner.processor.AnnotationCollector;
-import top.xiajibagao.powerfulannotation.scanner.processor.AnnotationFinder;
+import top.xiajibagao.powerfulannotation.helper.Function3;
 import top.xiajibagao.powerfulannotation.scanner.processor.AnnotationProcessor;
+import top.xiajibagao.powerfulannotation.scanner.processor.GenericAnnotationCollector;
+import top.xiajibagao.powerfulannotation.scanner.processor.GenericAnnotationFinder;
 
 import java.lang.annotation.Annotation;
 import java.lang.annotation.Inherited;
@@ -103,28 +104,48 @@ public enum AnnotationSearchStrategy implements AnnotationScanner {
      * @param filter 注解过滤器
      * @return 注解对象
      */
+    public <T> List<T> getAnnotations(
+        AnnotatedElement element, AnnotationFilter filter,
+        Function3<Integer, Integer, Annotation, T> function) {
+        if (ObjectUtil.isNull(element)) {
+            return Collections.emptyList();
+        }
+        GenericAnnotationCollector<T> collector = GenericAnnotationCollector.create(function);
+        getScanner().scan(element, collector, filter);
+        return collector.getTargets();
+    }
+
+    /**
+     * 扫描元素并获得相关注解对象
+     *
+     * @param element 要扫描的元素
+     * @param filter 注解过滤器
+     * @return 注解对象
+     */
     public List<Annotation> getAnnotations(AnnotatedElement element, AnnotationFilter filter) {
         if (ObjectUtil.isNull(element)) {
             return Collections.emptyList();
         }
-        AnnotationCollector collector = new AnnotationCollector();
+        GenericAnnotationCollector<Annotation> collector = GenericAnnotationCollector.create();
         getScanner().scan(element, collector, filter);
-        return collector.getAnnotations();
+        return collector.getTargets();
     }
 
     /**
      * 扫描元素并获得指定注解
      *
-     * @param element 要扫描的元素
-     * @param filter 注解过滤器
+     * @param element   要扫描的元素
+     * @param filter    注解过滤器
      * @param predicate 目标的判断条件
      * @return 注解对象
      */
-    public Annotation findAnnotation(AnnotatedElement element, AnnotationFilter filter, Predicate<Annotation> predicate) {
+    public <T> T findAnnotation(
+        AnnotatedElement element, AnnotationFilter filter, Predicate<T> predicate,
+        Function3<Integer, Integer, Annotation, T> function) {
         if (ObjectUtil.isNull(element)) {
             return null;
         }
-        AnnotationFinder finder = new AnnotationFinder(predicate);
+        GenericAnnotationFinder<T> finder = GenericAnnotationFinder.create(function, predicate);
         getScanner().scan(element, finder, filter);
         return finder.getTarget();
     }
@@ -139,7 +160,12 @@ public enum AnnotationSearchStrategy implements AnnotationScanner {
      */
     @SuppressWarnings("unchecked")
     public <T extends Annotation> T findAnnotation(AnnotatedElement element, AnnotationFilter filter, Class<T> annotationType) {
-        return (T)findAnnotation(element, filter, annotation -> ObjectUtil.equals(annotation.annotationType(), annotationType));
+        if (ObjectUtil.isNull(element)) {
+            return null;
+        }
+        GenericAnnotationFinder<Annotation> finder = GenericAnnotationFinder.create(annotation -> ObjectUtil.equals(annotation.annotationType(), annotationType));
+        getScanner().scan(element, finder, filter);
+        return (T)finder.getTarget();
     }
 
     /**
