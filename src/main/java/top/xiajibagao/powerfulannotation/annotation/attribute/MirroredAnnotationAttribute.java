@@ -1,7 +1,6 @@
 package top.xiajibagao.powerfulannotation.annotation.attribute;
 
 import cn.hutool.core.lang.Assert;
-import lombok.ToString;
 import top.xiajibagao.powerfulannotation.synthesis.RelationType;
 
 /**
@@ -10,7 +9,6 @@ import top.xiajibagao.powerfulannotation.synthesis.RelationType;
  * @author huangchengxing
  * @see RelationType#MIRROR_FOR
  */
-@ToString(callSuper = true)
 public class MirroredAnnotationAttribute extends AbstractWrappedAnnotationAttribute {
 
 	public MirroredAnnotationAttribute(AnnotationAttribute origin, AnnotationAttribute linked) {

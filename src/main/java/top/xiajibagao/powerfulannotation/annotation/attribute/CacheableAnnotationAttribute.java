@@ -3,7 +3,6 @@ package top.xiajibagao.powerfulannotation.annotation.attribute;
 import cn.hutool.core.lang.Assert;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.ReflectUtil;
-import lombok.ToString;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
@@ -13,7 +12,6 @@ import java.lang.reflect.Method;
  *
  * @author huangchengxing
  */
-@ToString(onlyExplicitlyIncluded = true)
 public class CacheableAnnotationAttribute implements AnnotationAttribute {
 
     private boolean valueInvoked;
@@ -22,9 +20,7 @@ public class CacheableAnnotationAttribute implements AnnotationAttribute {
     private boolean defaultValueInvoked;
     private Object defaultValue;
 
-    @ToString.Include
     private final Annotation annotation;
-    @ToString.Include
     private final Method attribute;
 
     public CacheableAnnotationAttribute(Annotation annotation, Method attribute) {

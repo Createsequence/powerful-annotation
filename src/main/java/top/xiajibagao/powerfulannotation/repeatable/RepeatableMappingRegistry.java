@@ -26,13 +26,6 @@ public interface RepeatableMappingRegistry {
 	}
 
 	/**
-	 * 获取关系解析器
-	 *
-	 * @return 关系解析器
-	 */
-	List<RepeatableMappingParser> getMappingParser();
-
-	/**
 	 * 注册关系解析器
 	 *
 	 * @param mappingParser 关系解析器

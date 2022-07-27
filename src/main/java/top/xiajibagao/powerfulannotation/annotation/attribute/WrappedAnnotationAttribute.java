@@ -96,17 +96,6 @@ public interface WrappedAnnotationAttribute extends AnnotationAttribute {
     }
 
     /**
-     * 获取属性上的注解
-     *
-     * @param annotationType 注解类型
-     * @return 注解对象
-     */
-    @Override
-    default <T extends Annotation> T getAnnotation(Class<T> annotationType) {
-        return getOriginal().getAnnotation(annotationType);
-    }
-
-    /**
      * 当前注解属性是否已经被{@link WrappedAnnotationAttribute}包装
      *
      * @return boolean

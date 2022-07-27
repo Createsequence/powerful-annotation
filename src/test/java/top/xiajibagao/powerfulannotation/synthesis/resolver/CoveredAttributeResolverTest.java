@@ -20,6 +20,16 @@ import java.util.Comparator;
 public class CoveredAttributeResolverTest {
 
     @Test
+    public void testOrder() {
+        CoveredAttributeResolver processor = new CoveredAttributeResolver(
+            Comparator.comparing(HierarchicalAnnotation<Annotation>::getVerticalIndex)
+                .thenComparing(HierarchicalAnnotation<Annotation>::getHorizontalIndex),
+            true
+        );
+        Assert.assertEquals(SyntheticAnnotationResolver.COVERED_ATTRIBUTE_RESOLVER_ORDER, processor.order());
+    }
+
+    @Test
     public void testResolve() {
         CoveredAttributeResolver processor = new CoveredAttributeResolver(
             Comparator.comparing(HierarchicalAnnotation<Annotation>::getVerticalIndex)

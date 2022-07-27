@@ -25,9 +25,14 @@ public class MirrorAttributeResolver extends AbstractDynamicAttributeResolver {
 
 	private static final RelationType[] PROCESSED_RELATION_TYPES = new RelationType[]{ RelationType.MIRROR_FOR };
 
+	/**
+	 * 排序值，固定返回{@link SyntheticAnnotationResolver#MIRROR_ATTRIBUTE_RESOLVER_ORDER}
+	 *
+	 * @return 排序值
+	 */
 	@Override
 	public int order() {
-		return Integer.MIN_VALUE + 1;
+		return SyntheticAnnotationResolver.MIRROR_ATTRIBUTE_RESOLVER_ORDER;
 	}
 
 	/**

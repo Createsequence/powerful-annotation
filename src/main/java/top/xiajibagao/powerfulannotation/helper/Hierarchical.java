@@ -1,8 +1,6 @@
 package top.xiajibagao.powerfulannotation.helper;
 
 
-import java.util.Comparator;
-
 /**
  * <p>描述以一个在以{@link #getRoot()}为原点的二维坐标系中存在的对象，
  * 该对象以{@link #getVerticalIndex()}返回值为{@code x}轴坐标，
@@ -45,15 +43,6 @@ public interface Hierarchical {
      * 水平索引起始点
      */
     int HORIZONTAL_INDEX_START_POINT = 0;
-
-    // ====================== compare  ======================
-
-    /**
-     * 默认{@link #getHorizontalIndex()}与{@link #getVerticalIndex()}排序的比较器
-     */
-    Comparator<Hierarchical> DEFAULT_HIERARCHICAL_COMPARATOR = Comparator
-        .comparing(Hierarchical::getVerticalIndex)
-        .thenComparing(Hierarchical::getHorizontalIndex);
 
     // ====================== hierarchical  ======================
 

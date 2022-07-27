@@ -222,13 +222,6 @@ public abstract class AbstractTypeHierarchyScanner implements AnnotationScanner 
         }
 
         /**
-         * 获取垂直索引并递增
-         */
-        protected int getVerticalIndexAndIncrement() {
-            return verticalIndex++;
-        }
-
-        /**
          * 获取水平索引并递增
          */
         protected int getHorizontalIndexAndIncrement() {
@@ -240,13 +233,6 @@ public abstract class AbstractTypeHierarchyScanner implements AnnotationScanner 
          */
         protected int incrementVerticalIndexAndGet() {
             return ++verticalIndex;
-        }
-
-        /**
-         * 递增并获取水平索引
-         */
-        protected int incrementHorizontalIndexAndGet() {
-            return ++horizontalIndex;
         }
 
     }

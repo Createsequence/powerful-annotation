@@ -21,9 +21,9 @@ public class SimpleRepeatableMappingRegistryTest {
 
 	@Test
 	public void testRegister() {
-		SimpleRepeatableMappingRegistry registry = new SimpleRepeatableMappingRegistry(
-			new StandardRepeatableMappingParser(), new RepeatableByMappingParser()
-		);
+		SimpleRepeatableMappingRegistry registry = new SimpleRepeatableMappingRegistry();
+		registry.registerMappingParser(new StandardRepeatableMappingParser());
+		registry.registerMappingParser(new RepeatableByMappingParser());
 		registry.register(AnnotationForTest1.class);
 
 		RepeatableMapping mapping1 = getNodeValue(registry.mappingForestMap, AnnotationForTest1.class);

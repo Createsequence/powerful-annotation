@@ -15,7 +15,9 @@ public class AnnotationFinderTest {
 
     @Test
     public void testAccept() {
-        AnnotationFinder<Annotation> finder = AnnotationFinder.create(annotation -> ObjectUtil.equals(annotation.annotationType(), AnnotationForTest2.class));
+        AnnotationFinder<Annotation> finder = AnnotationFinder.create(
+            annotation -> ObjectUtil.equals(annotation.annotationType(), AnnotationForTest2.class)
+        );
 
         AnnotationForTest1 annotationForTest1 = ClassForTest.class.getAnnotation(AnnotationForTest1.class);
         finder.accept(0, 0, annotationForTest1);

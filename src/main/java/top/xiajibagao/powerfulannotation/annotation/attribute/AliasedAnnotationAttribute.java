@@ -1,6 +1,5 @@
 package top.xiajibagao.powerfulannotation.annotation.attribute;
 
-import lombok.ToString;
 import top.xiajibagao.powerfulannotation.synthesis.RelationType;
 
 /**
@@ -10,7 +9,6 @@ import top.xiajibagao.powerfulannotation.synthesis.RelationType;
  * @author huangchengxing
  * @see RelationType#ALIAS_FOR
  */
-@ToString(callSuper = true)
 public class AliasedAnnotationAttribute extends AbstractWrappedAnnotationAttribute {
 
 	public AliasedAnnotationAttribute(AnnotationAttribute origin, AnnotationAttribute linked) {
@@ -24,7 +22,7 @@ public class AliasedAnnotationAttribute extends AbstractWrappedAnnotationAttribu
 	 */
 	@Override
 	public Object getValue() {
-		return linked.isValueEquivalentToDefaultValue() ? super.getValue() : linked.getValue();
+		return linked.isValueEquivalentToDefaultValue() ? original.getValue() : linked.getValue();
 	}
 
 	/**

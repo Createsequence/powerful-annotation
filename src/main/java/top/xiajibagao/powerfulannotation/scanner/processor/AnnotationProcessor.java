@@ -21,7 +21,7 @@ public interface AnnotationProcessor {
     /**
      * 处理注解
      *
-     * @param verticalIndex 垂直索引。一般表示与扫描器扫描的{@link AnnotatedElement}相隔的层级层次。默认从1开始
+     * @param verticalIndex 垂直索引。一般表示与扫描器扫描的{@link AnnotatedElement}相隔的层级层次。默认从0开始
      * @param horizontalIndex 水平索引，一般用于衡量两个注解对象之间被扫描到的先后顺序。默认从1开始
      * @param annotation 被扫描到的注解对象
      */
