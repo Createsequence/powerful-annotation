@@ -4,21 +4,18 @@ import cn.hutool.core.util.ObjectUtil;
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import java.lang.annotation.*;
 
 /**
- * test for {@link AnnotationFinder}
+ * test for {@link GenericAnnotationFinder}
  *
  * @author huangchengxing
  */
-public class AnnotationFinderTest {
+public class GenericAnnotationFinderTest {
 
     @Test
     public void testAccept() {
-        AnnotationFinder finder = new AnnotationFinder(annotation -> ObjectUtil.equals(annotation.annotationType(), AnnotationForTest2.class));
+        GenericAnnotationFinder<Annotation> finder = GenericAnnotationFinder.create(annotation -> ObjectUtil.equals(annotation.annotationType(), AnnotationForTest2.class));
 
         AnnotationForTest1 annotationForTest1 = ClassForTest.class.getAnnotation(AnnotationForTest1.class);
         finder.accept(0, 0, annotationForTest1);

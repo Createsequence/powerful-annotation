@@ -4,21 +4,18 @@ import cn.hutool.core.collection.CollUtil;
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import java.lang.annotation.*;
 
 /**
- * test for {@link AnnotationCollector}
+ * test for {@link GenericAnnotationCollector}
  *
  * @author huangcehngxing
  */
-public class AnnotationCollectorTest {
+public class GenericAnnotationCollectorTest {
 
     @Test
     public void testApply() {
-        AnnotationCollector collector = new AnnotationCollector();
+        GenericAnnotationCollector<Annotation> collector = GenericAnnotationCollector.create();
 
         AnnotationForTest1 annotationForTest1 = ClassForTest.class.getAnnotation(AnnotationForTest1.class);
         collector.accept(0, 0, annotationForTest1);
@@ -29,7 +26,7 @@ public class AnnotationCollectorTest {
 
         Assert.assertEquals(
             CollUtil.newArrayList(annotationForTest1, annotationForTest2, annotationForTest3),
-            collector.getAnnotations()
+            collector.getTargets()
         );
     }
 
