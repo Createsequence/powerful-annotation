@@ -13,7 +13,7 @@ import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * 注解工具类
+ * 注解工具类，提供从{@link AnnotatedElement}及其层级结构中获取注解的方法
  *
  * @author huangchengxing
  */
@@ -21,6 +21,16 @@ public class AnnotationUtils {
 
     private AnnotationUtils() {
     }
+
+    /**
+     * 空注解对象数组
+     */
+    private static final Annotation[] EMPTY_ANNOTATIONS = new Annotation[0];
+
+    /**
+     * 注解缓存
+     */
+    private static final Map<AnnotatedElement, Annotation[]> ANNOTATED_ELEMENT_MAP = new WeakConcurrentMap<>(new ConcurrentHashMap<>(36));
 
     /**
      * 获取直接声明的注解
@@ -52,7 +62,7 @@ public class AnnotationUtils {
      */
     @SuppressWarnings("unchecked")
     public static <T extends Annotation> T[] emptyAnnotations() {
-        return (T[])new Annotation[0];
+        return (T[])EMPTY_ANNOTATIONS.clone();
     }
 
     /**
