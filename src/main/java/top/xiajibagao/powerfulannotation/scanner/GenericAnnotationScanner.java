@@ -14,7 +14,7 @@ import java.util.Objects;
 import java.util.stream.Stream;
 
 /**
- * <p>注解扫描器，用于从指定的{@link AnnotatedElement}及其可能存在的层级结构中获取注解对象，
+ * <p>注解扫描器，用于从指定的{@link AnnotatedElement}及其可能存在的层级结构中获取注解对象 <br />
  * 是{@link AbstractAnnotationScanner}的基本实现。在该抽象类的基础上，定义了支持扫描的{@link AnnotatedElement}层级结构：
  * <ul>
  *     <li>

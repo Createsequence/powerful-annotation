@@ -1,5 +1,6 @@
 package top.xiajibagao.powerfulannotation.scanner.processor;
 
+import lombok.Getter;
 import top.xiajibagao.powerfulannotation.helper.Assert;
 import top.xiajibagao.powerfulannotation.helper.Function3;
 import top.xiajibagao.powerfulannotation.scanner.AbstractAnnotationScanner;
@@ -21,6 +22,7 @@ public class AnnotationCollector<T> implements AnnotationProcessor {
 	/**
 	 * 目标对象
 	 */
+	@Getter
 	private final List<T> targets;
 
 	/**
@@ -49,15 +51,6 @@ public class AnnotationCollector<T> implements AnnotationProcessor {
 	@Override
 	public void accept(int verticalIndex, int horizontalIndex, Annotation annotation) {
 		targets.add(converter.accept(verticalIndex, horizontalIndex, annotation));
-	}
-
-	/**
-	 * 获取收集的对象
-	 *
-	 * @return 收集的注解对象
-	 */
-	public List<T> getTargets() {
-		return targets;
 	}
 
 }

@@ -1,5 +1,7 @@
 package top.xiajibagao.powerfulannotation.scanner;
 
+import lombok.Getter;
+import lombok.experimental.Accessors;
 import top.xiajibagao.powerfulannotation.helper.Assert;
 import top.xiajibagao.powerfulannotation.helper.StrUtils;
 
@@ -10,6 +12,8 @@ import java.util.function.Predicate;
  *
  * @author huangchengxing
  */
+@Accessors(chain = true)
+@Getter
 public class ScanOptions {
 
     /**
@@ -82,51 +86,6 @@ public class ScanOptions {
         this.enableScanMetaAnnotation = options.enableScanMetaAnnotation;
         this.enableScanAccessedType = options.enableScanAccessedType;
         this.typeFilter = options.typeFilter;
-    }
-
-    /**
-     * 是否支持扫描父类
-     *
-     * @return 是否
-     */
-    public boolean isEnableScanSuperClass() {
-        return enableScanSuperClass;
-    }
-
-    /**
-     * 是否支持扫描接口
-     *
-     * @return 是否
-     */
-    public boolean isEnableScanInterface() {
-        return enableScanInterface;
-    }
-
-    /**
-     * 是否支持扫描元注解
-     *
-     * @return 是否
-     */
-    public boolean isEnableScanMetaAnnotation() {
-        return enableScanMetaAnnotation;
-    }
-
-    /**
-     * 若一个非注解类已经被处理过，再次扫描到时是否再次处理
-     *
-     * @return 是否
-     */
-    public boolean isEnableScanAccessedType() {
-        return enableScanAccessedType;
-    }
-
-    /**
-     * 设置过滤器，若该类型——包括普通类与注解类——无法通过过滤器，则不会被扫描器扫描
-     *
-     * @return 类型过滤器
-     */
-    public Predicate<Class<?>> getTypeFilter() {
-        return typeFilter;
     }
 
     /**

@@ -1,5 +1,6 @@
 package top.xiajibagao.powerfulannotation.scanner.processor;
 
+import lombok.Getter;
 import top.xiajibagao.powerfulannotation.helper.Assert;
 import top.xiajibagao.powerfulannotation.helper.Function3;
 import top.xiajibagao.powerfulannotation.scanner.AbstractAnnotationScanner;
@@ -30,11 +31,13 @@ public class AnnotationFinder<T> implements AnnotationProcessor {
 	/**
 	 * 目标注解
 	 */
+	@Getter
 	private T target;
 
 	/**
 	 * 是否已经找到目标注解
 	 */
+	@Getter
 	private boolean found;
 
 	/**
@@ -48,24 +51,6 @@ public class AnnotationFinder<T> implements AnnotationProcessor {
 		Assert.notNull(converter, "converter must not null");
 		this.predicate = predicate;
 		this.converter = converter;
-	}
-
-	/**
-	 * 获取目标对象
-	 *
-	 * @return 目标对象
-	 */
-	public T getTarget() {
-		return target;
-	}
-
-	/**
-	 * 是否已经找到目标对象
-	 *
-	 * @return 目标对象
-	 */
-	public boolean isFound() {
-		return found;
 	}
 
 	/**
