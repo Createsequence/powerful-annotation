@@ -8,7 +8,7 @@ import top.xiajibagao.powerfulannotation.helper.HierarchySelector;
 import top.xiajibagao.powerfulannotation.repeatable.RepeatableBy;
 import top.xiajibagao.powerfulannotation.repeatable.RepeatableMappingRegistry;
 import top.xiajibagao.powerfulannotation.scanner.AnnotationFilter;
-import top.xiajibagao.powerfulannotation.scanner.AnnotationSearchStrategy;
+import top.xiajibagao.powerfulannotation.scanner.AnnotationSearchMode;
 
 import java.lang.annotation.*;
 import java.util.Collection;
@@ -51,7 +51,7 @@ public class GenericAnnotationAggregatorTest {
     @Test
     public void testIsPresent() {
         GenericAnnotationAggregator<Class<ClassForTest>> aggregator = new GenericAnnotationAggregator<>(ClassForTest.class, 0, 0);
-        AnnotationSearchStrategy.DIRECTLY.scan(ClassForTest.class, aggregator, AnnotationFilter.NOT_JDK_ANNOTATION);
+        AnnotationSearchMode.SELF_AND_DIRECT.scan(ClassForTest.class, aggregator, AnnotationFilter.FILTER_JAVA);
         Assert.assertTrue(aggregator.isPresent(AnnotationForTest1.class));
         Assert.assertFalse(aggregator.isPresent(AnnotationForTest4.class));
     }
@@ -59,7 +59,7 @@ public class GenericAnnotationAggregatorTest {
     @Test
     public void testGetAnnotationByVerticalIndex() {
         GenericAnnotationAggregator<Class<ClassForTest>> aggregator = new GenericAnnotationAggregator<>(ClassForTest.class, 0, 0);
-        AnnotationSearchStrategy.TYPE_HIERARCHY_AND_META_ANNOTATION.scan(ClassForTest.class, aggregator, AnnotationFilter.NOT_JDK_ANNOTATION);
+        AnnotationSearchMode.TYPE_HIERARCHY_AND_INDIRECT.scan(ClassForTest.class, aggregator, AnnotationFilter.FILTER_JAVA);
         Function<Integer, List<Annotation>> getAnnotationFromAggregator = index -> aggregator
             .getAnnotationByVerticalIndex(index).stream()
             .sorted(Comparator.comparing(annotation -> annotation.getAnnotation().annotationType().getSimpleName()))
@@ -86,7 +86,7 @@ public class GenericAnnotationAggregatorTest {
     @Test
     public void testGetAnnotationsByType() {
         GenericAnnotationAggregator<Class<ClassForTest>> aggregator = new GenericAnnotationAggregator<>(ClassForTest.class, 0, 0);
-        AnnotationSearchStrategy.TYPE_HIERARCHY_AND_META_ANNOTATION.scan(ClassForTest.class, aggregator, AnnotationFilter.NOT_JDK_ANNOTATION);
+        AnnotationSearchMode.TYPE_HIERARCHY_AND_INDIRECT.scan(ClassForTest.class, aggregator, AnnotationFilter.FILTER_JAVA);
 
         Collection<HierarchicalAnnotation<AnnotationForTest1>> annotation1s = aggregator.getAnnotationsByType(AnnotationForTest1.class);
         Assert.assertEquals(3, annotation1s.size());
@@ -101,14 +101,14 @@ public class GenericAnnotationAggregatorTest {
     @Test
     public void testGetAllAnnotations() {
         GenericAnnotationAggregator<Class<ClassForTest>> aggregator = new GenericAnnotationAggregator<>(ClassForTest.class, 0, 0);
-        AnnotationSearchStrategy.TYPE_HIERARCHY_AND_META_ANNOTATION.scan(ClassForTest.class, aggregator, AnnotationFilter.NOT_JDK_ANNOTATION);
+        AnnotationSearchMode.TYPE_HIERARCHY_AND_INDIRECT.scan(ClassForTest.class, aggregator, AnnotationFilter.FILTER_JAVA);
         Assert.assertEquals(7, aggregator.getAllAnnotations().size());
     }
 
     @Test
     public void testGetAnnotation() {
         GenericAnnotationAggregator<Class<ClassForTest>> aggregator = new GenericAnnotationAggregator<>(ClassForTest.class, 0, 0);
-        AnnotationSearchStrategy.TYPE_HIERARCHY_AND_META_ANNOTATION.scan(ClassForTest.class, aggregator, AnnotationFilter.NOT_JDK_ANNOTATION);
+        AnnotationSearchMode.TYPE_HIERARCHY_AND_INDIRECT.scan(ClassForTest.class, aggregator, AnnotationFilter.FILTER_JAVA);
 
         HierarchicalAnnotation<AnnotationForTest1> annotation = aggregator.getAnnotation(AnnotationForTest1.class, HierarchySelector.nearestAndOldestPriority());
         AnnotationForTest1 original = ClassForTest.class.getAnnotation(AnnotationForTest1.class);
@@ -152,7 +152,7 @@ public class GenericAnnotationAggregatorTest {
         GenericAnnotationAggregator<Class<RepeatableClassForTest>> aggregator = new GenericAnnotationAggregator<>(
             RepeatableClassForTest.class, 0, 0, RepeatableMappingRegistry.create()
         );
-        AnnotationSearchStrategy.TYPE_HIERARCHY_AND_META_ANNOTATION.scan(RepeatableClassForTest.class, aggregator, AnnotationFilter.NOT_JDK_ANNOTATION);
+        AnnotationSearchMode.TYPE_HIERARCHY_AND_INDIRECT.scan(RepeatableClassForTest.class, aggregator, AnnotationFilter.FILTER_JAVA);
         Assert.assertEquals(2, aggregator.getAllAnnotations().size());
 
         Collection<RepeatableAnnotationForTest1> annotation1s = aggregator.getRepeatableAnnotations(RepeatableAnnotationForTest1.class);

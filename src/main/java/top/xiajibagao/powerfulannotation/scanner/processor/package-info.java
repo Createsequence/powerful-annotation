@@ -1,5 +1,5 @@
 /**
- * 提供在{@link top.xiajibagao.powerfulannotation.scanner.AnnotationScanner}中使用的各项注解处理器
+ * 提供在{@link top.xiajibagao.powerfulannotation.scanner.AbstractAnnotationScanner}中使用的各项注解处理器
  *
  * @author huangchengxing
  */

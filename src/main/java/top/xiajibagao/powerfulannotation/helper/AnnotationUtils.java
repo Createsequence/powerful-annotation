@@ -1,5 +1,6 @@
 package top.xiajibagao.powerfulannotation.helper;
 
+import cn.hutool.core.map.WeakConcurrentMap;
 import cn.hutool.core.text.CharSequenceUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.ReflectUtil;
@@ -7,6 +8,9 @@ import cn.hutool.core.util.ReflectUtil;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Method;
+import java.util.Map;
+import java.util.Objects;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * 注解工具类
@@ -25,7 +29,9 @@ public class AnnotationUtils {
      * @return 直接声明的注解
      */
     public static Annotation[] getDeclaredAnnotations(AnnotatedElement element) {
-        return ObjectUtil.isNotNull(element) ? element.getDeclaredAnnotations() : emptyAnnotations();
+        Annotation[] annotations = Objects.isNull(element) ?
+            emptyAnnotations() :  ANNOTATED_ELEMENT_MAP.computeIfAbsent(element, AnnotatedElement::getDeclaredAnnotations);
+        return annotations.clone();
     }
     
     /**
