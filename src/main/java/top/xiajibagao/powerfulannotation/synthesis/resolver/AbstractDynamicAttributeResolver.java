@@ -1,17 +1,17 @@
 package top.xiajibagao.powerfulannotation.synthesis.resolver;
 
-import cn.hutool.core.lang.Assert;
-import cn.hutool.core.lang.Opt;
-import cn.hutool.core.util.ArrayUtil;
-import cn.hutool.core.util.ObjectUtil;
 import top.xiajibagao.powerfulannotation.annotation.HierarchicalAnnotation;
 import top.xiajibagao.powerfulannotation.annotation.attribute.AnnotationAttribute;
 import top.xiajibagao.powerfulannotation.helper.AnnotationUtils;
+import top.xiajibagao.powerfulannotation.helper.Assert;
+import top.xiajibagao.powerfulannotation.helper.CollUtils;
 import top.xiajibagao.powerfulannotation.synthesis.AnnotationSynthesizer;
 import top.xiajibagao.powerfulannotation.synthesis.Link;
 import top.xiajibagao.powerfulannotation.synthesis.RelationType;
 
 import java.lang.annotation.Annotation;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -47,12 +47,12 @@ public abstract class AbstractDynamicAttributeResolver implements SyntheticAnnot
 	private void resolveAttribute(HierarchicalAnnotation<Annotation> originalAnnotation, AnnotationSynthesizer synthesizer, String originalAttributeName, AnnotationAttribute originalAttribute) {
 		// 获取注解
 		final Link link = getAttributeAnnotation(originalAttribute, processTypes());
-		if (ObjectUtil.isNull(link)) {
+		if (Objects.isNull(link)) {
 			return;
 		}
 		// 获取注解属性
 		final HierarchicalAnnotation<Annotation> linkedAnnotation = getLinkedAnnotation(link, synthesizer, originalAnnotation.annotationType());
-		if (ObjectUtil.isNull(linkedAnnotation)) {
+		if (Objects.isNull(linkedAnnotation)) {
 			return;
 		}
 		final AnnotationAttribute linkedAttribute = linkedAnnotation.getAttribute(link.attribute());
@@ -99,11 +99,11 @@ public abstract class AbstractDynamicAttributeResolver implements SyntheticAnnot
 	 * @return 注解
 	 */
 	protected Link getAttributeAnnotation(AnnotationAttribute attribute, RelationType... relationTypes) {
-		return Opt.ofNullable(attribute)
+		return Optional.ofNullable(attribute)
 			// TODO 此处也允许使用元注解机制
 			.map(t -> AnnotationUtils.getDeclaredAnnotation(attribute.getAttribute(), Link.class))
-			.filter(a -> ArrayUtil.contains(relationTypes, a.type()))
-			.get();
+			.filter(a -> CollUtils.isContainsAny(relationTypes, a.type()))
+			.orElse(null);
 	}
 
 	/**
@@ -127,7 +127,7 @@ public abstract class AbstractDynamicAttributeResolver implements SyntheticAnnot
 	 * @return 注解类型
 	 */
 	protected Class<?> getLinkedAnnotationType(Link annotation, Class<?> defaultType) {
-		return ObjectUtil.equals(annotation.annotation(), Annotation.class) ?
+		return Objects.equals(annotation.annotation(), Annotation.class) ?
 			defaultType : annotation.annotation();
 	}
 
@@ -154,7 +154,7 @@ public abstract class AbstractDynamicAttributeResolver implements SyntheticAnnot
 	 * @param linked   {@link Link}指向的注解属性
 	 */
 	protected void checkLinkedSelf(AnnotationAttribute original, AnnotationAttribute linked) {
-		boolean linkSelf = (original == linked) || ObjectUtil.equals(original.getAttribute(), linked.getAttribute());
+		boolean linkSelf = (original == linked) || Objects.equals(original.getAttribute(), linked.getAttribute());
 		Assert.isFalse(linkSelf, "cannot link self [{}]", original.getAttribute());
 	}
 

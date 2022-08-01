@@ -1,13 +1,12 @@
 package top.xiajibagao.powerfulannotation.repeatable;
 
-import cn.hutool.core.lang.Opt;
-import cn.hutool.core.util.ClassUtil;
-import cn.hutool.core.util.ObjectUtil;
-import cn.hutool.core.util.ReflectUtil;
+import top.xiajibagao.powerfulannotation.helper.ReflectUtils;
 
 import java.lang.annotation.Annotation;
 import java.lang.annotation.Repeatable;
 import java.lang.reflect.Method;
+import java.util.Objects;
+import java.util.Optional;
 
 /**
  * 用于处理由{@link Repeatable}注解对应的元素注解与容器注解层级
@@ -35,26 +34,26 @@ public class StandardRepeatableMappingParser implements RepeatableMappingParser 
 	@Override
 	public RepeatableMapping parse(Class<? extends Annotation> annotationType, RepeatableMappingRegistry registry) {
 		final Class<? extends Annotation> containerType = getContainerType(annotationType);
-		if (ObjectUtil.isNull(containerType)) {
+		if (Objects.isNull(containerType)) {
 			return null;
 		}
-		final Method containedAttribute = ReflectUtil.getMethod(containerType, VALUE);
+		final Method containedAttribute = ReflectUtils.getDeclaredMethod(containerType, VALUE);
 		RepeatableMappingParser.checkContainedAttribute(annotationType, containerType, containedAttribute);
 		return new RepeatableAnnotationMapping(annotationType, containerType, containedAttribute);
 	}
 
 	private Class<? extends Annotation> getContainerType(Class<?> annotationType) {
-		final Class<? extends Annotation> containerType =  Opt.ofNullable(annotationType)
+		final Class<? extends Annotation> containerType =  Optional.ofNullable(annotationType)
 			.map(t -> t.getAnnotation(Repeatable.class))
 			.map(Repeatable::value)
 			.orElse(null);
-		if (ObjectUtil.isNull(containerType)) {
+		if (Objects.isNull(containerType)) {
 			return null;
 		}
 		// 检验注解
-		final boolean isContainerAnnotation = Opt.ofNullable(containerType)
-			.map(t -> ReflectUtil.getMethod(t, VALUE))
-			.map(m -> ClassUtil.isAssignable(annotationType, m.getReturnType().getComponentType()))
+		final boolean isContainerAnnotation = Optional.ofNullable(containerType)
+			.map(t -> ReflectUtils.getDeclaredMethod(t, VALUE))
+			.map(m -> ReflectUtils.isAssignable(annotationType, m.getReturnType().getComponentType()))
 			.orElse(false);
 		return isContainerAnnotation ? containerType : null;
 	}

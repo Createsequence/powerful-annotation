@@ -1,6 +1,6 @@
 package top.xiajibagao.powerfulannotation.scanner;
 
-import cn.hutool.core.text.CharSequenceUtil;
+import top.xiajibagao.powerfulannotation.helper.StrUtils;
 
 import java.lang.annotation.Annotation;
 import java.util.Arrays;
@@ -54,7 +54,7 @@ public interface AnnotationFilter extends Predicate<Annotation> {
 	class JavaAnnotationFilter implements AnnotationFilter {
 		@Override
 		public boolean test(Annotation annotation) {
-			return !CharSequenceUtil.startWithAny(
+			return StrUtils.isNotStartWithAny(
 				annotation.annotationType().getName(), "java.lang", "javax", "com.sum"
 			);
 		}

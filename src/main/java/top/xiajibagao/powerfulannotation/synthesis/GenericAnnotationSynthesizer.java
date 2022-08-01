@@ -1,7 +1,5 @@
 package top.xiajibagao.powerfulannotation.synthesis;
 
-import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.util.ObjectUtil;
 import lombok.AccessLevel;
 import lombok.Getter;
 import top.xiajibagao.powerfulannotation.annotation.GenericHierarchicalAnnotation;
@@ -13,6 +11,7 @@ import top.xiajibagao.powerfulannotation.synthesis.resolver.SyntheticAnnotationR
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * <p>{@link AnnotationSynthesizer}的基本实现，用于根据注册到实例中的注解，
@@ -64,7 +63,9 @@ public class GenericAnnotationSynthesizer implements AnnotationSynthesizer {
     public GenericAnnotationSynthesizer(
         Collection<SyntheticAnnotationResolver> resolvers,
         HierarchySelector<HierarchicalAnnotation<Annotation>> selector) {
-        this.resolvers = CollUtil.sort(resolvers, Comparator.comparing(SyntheticAnnotationResolver::order));
+        this.resolvers = resolvers.stream()
+            .sorted(Comparator.comparing(SyntheticAnnotationResolver::order))
+            .collect(Collectors.toList());
         this.synthesizedAnnotationMap = new LinkedHashMap<>();
         this.selector = selector;
     }
@@ -113,7 +114,7 @@ public class GenericAnnotationSynthesizer implements AnnotationSynthesizer {
     private void registerAnnotation(HierarchicalAnnotation<Annotation> annotation) {
         Class<? extends Annotation> type = annotation.annotationType();
         HierarchicalAnnotation<Annotation> old = synthesizedAnnotationMap.get(type);
-        if (ObjectUtil.isNull(old)) {
+        if (Objects.isNull(old)) {
             synthesizedAnnotationMap.put(type, annotation);
             return;
         }
@@ -163,7 +164,7 @@ public class GenericAnnotationSynthesizer implements AnnotationSynthesizer {
     @Override
     public <T extends Annotation> T synthesize(Class<T> annotationType) {
         HierarchicalAnnotation<Annotation> annotation = synthesizedAnnotationMap.get(annotationType);
-        return ObjectUtil.isNull(annotation) ?
+        return Objects.isNull(annotation) ?
             null : AnnotationProxyFactory.get(annotationType, annotation);
     }
 

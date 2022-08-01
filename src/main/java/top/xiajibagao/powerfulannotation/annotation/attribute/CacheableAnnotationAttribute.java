@@ -1,11 +1,11 @@
 package top.xiajibagao.powerfulannotation.annotation.attribute;
 
-import cn.hutool.core.lang.Assert;
-import cn.hutool.core.util.ObjectUtil;
-import cn.hutool.core.util.ReflectUtil;
+import top.xiajibagao.powerfulannotation.helper.Assert;
+import top.xiajibagao.powerfulannotation.helper.ReflectUtils;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
+import java.util.Objects;
 
 /**
  * {@link AnnotationAttribute}的基本实现，调用{@link #getValue()}后将会缓存返回值
@@ -46,7 +46,7 @@ public class CacheableAnnotationAttribute implements AnnotationAttribute {
     public Object getValue() {
         if (!valueInvoked) {
             valueInvoked = true;
-            value = ReflectUtil.invoke(annotation, attribute);
+            value = ReflectUtils.invoke(annotation, attribute);
         }
         return value;
     }
@@ -57,7 +57,7 @@ public class CacheableAnnotationAttribute implements AnnotationAttribute {
             defaultValue = attribute.getDefaultValue();
             defaultValueInvoked = true;
         }
-        return ObjectUtil.equals(getValue(), defaultValue);
+        return Objects.equals(getValue(), defaultValue);
     }
 
 }

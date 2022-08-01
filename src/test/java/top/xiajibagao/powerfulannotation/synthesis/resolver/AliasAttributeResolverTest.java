@@ -1,12 +1,12 @@
 package top.xiajibagao.powerfulannotation.synthesis.resolver;
 
-import cn.hutool.core.util.ReflectUtil;
 import org.junit.Assert;
 import org.junit.Test;
 import top.xiajibagao.powerfulannotation.annotation.GenericHierarchicalAnnotation;
 import top.xiajibagao.powerfulannotation.annotation.HierarchicalAnnotation;
 import top.xiajibagao.powerfulannotation.annotation.attribute.*;
 import top.xiajibagao.powerfulannotation.helper.HierarchySelector;
+import top.xiajibagao.powerfulannotation.helper.ReflectUtils;
 import top.xiajibagao.powerfulannotation.synthesis.AnnotationSynthesizer;
 import top.xiajibagao.powerfulannotation.synthesis.GenericAnnotationSynthesizer;
 import top.xiajibagao.powerfulannotation.synthesis.Link;
@@ -38,12 +38,12 @@ public class AliasAttributeResolverTest {
 		synthesizer.accept(annotation);
 
 		AnnotationAttribute valueAttribute = annotation.getAttribute("value");
-		Assert.assertEquals(ReflectUtil.getMethod(AnnotationForTest1.class, "value"), valueAttribute.getAttribute());
+		Assert.assertEquals(ReflectUtils.getDeclaredMethod(AnnotationForTest1.class, "value"), valueAttribute.getAttribute());
 		Assert.assertFalse(valueAttribute.isWrapped());
 		Assert.assertEquals(CacheableAnnotationAttribute.class, valueAttribute.getClass());
 
 		AnnotationAttribute nameAttribute = annotation.getAttribute("name");
-		Assert.assertEquals(ReflectUtil.getMethod(AnnotationForTest1.class, "name"), nameAttribute.getAttribute());
+		Assert.assertEquals(ReflectUtils.getDeclaredMethod(AnnotationForTest1.class, "name"), nameAttribute.getAttribute());
 		Assert.assertTrue(nameAttribute.isWrapped());
 		Assert.assertEquals(ForceAliasedAnnotationAttribute.class, nameAttribute.getClass());
 
@@ -58,12 +58,12 @@ public class AliasAttributeResolverTest {
 		synthesizer.accept(annotation);
 
 		AnnotationAttribute valueAttribute = annotation.getAttribute("value2");
-		Assert.assertEquals(ReflectUtil.getMethod(AnnotationForTest1.class, "value2"), valueAttribute.getAttribute());
+		Assert.assertEquals(ReflectUtils.getDeclaredMethod(AnnotationForTest1.class, "value2"), valueAttribute.getAttribute());
 		Assert.assertFalse(valueAttribute.isWrapped());
 		Assert.assertEquals(CacheableAnnotationAttribute.class, valueAttribute.getClass());
 
 		AnnotationAttribute nameAttribute = annotation.getAttribute("name2");
-		Assert.assertEquals(ReflectUtil.getMethod(AnnotationForTest1.class, "name2"), nameAttribute.getAttribute());
+		Assert.assertEquals(ReflectUtils.getDeclaredMethod(AnnotationForTest1.class, "name2"), nameAttribute.getAttribute());
 		Assert.assertTrue(nameAttribute.isWrapped());
 		Assert.assertEquals(AliasedAnnotationAttribute.class, nameAttribute.getClass());
 

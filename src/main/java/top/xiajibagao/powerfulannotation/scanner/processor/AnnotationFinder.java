@@ -1,6 +1,6 @@
 package top.xiajibagao.powerfulannotation.scanner.processor;
 
-import cn.hutool.core.lang.Assert;
+import top.xiajibagao.powerfulannotation.helper.Assert;
 import top.xiajibagao.powerfulannotation.helper.Function3;
 import top.xiajibagao.powerfulannotation.scanner.AbstractAnnotationScanner;
 

@@ -1,7 +1,7 @@
 package top.xiajibagao.powerfulannotation.scanner;
 
-import cn.hutool.core.lang.Assert;
-import cn.hutool.core.text.CharSequenceUtil;
+import top.xiajibagao.powerfulannotation.helper.Assert;
+import top.xiajibagao.powerfulannotation.helper.StrUtils;
 
 import java.util.function.Predicate;
 
@@ -56,7 +56,7 @@ public class ScanOptions {
         this.enableScanInterface = enableScanInterface;
         this.enableScanMetaAnnotation = enableScanMetaAnnotation;
         this.enableScanAccessedType = false;
-        this.typeFilter = t -> !CharSequenceUtil.startWithAny(t.getName(), "java.lang", "javax", "com.sum");
+        this.typeFilter = t -> StrUtils.isNotStartWithAny(t.getName(), "java.lang", "javax", "com.sum");
     }
 
     /**
@@ -69,7 +69,7 @@ public class ScanOptions {
         this.enableScanInterface = true;
         this.enableScanMetaAnnotation = true;
         this.enableScanAccessedType = false;
-        this.typeFilter = t -> !CharSequenceUtil.startWithAny(t.getName(), "java.lang", "javax", "com.sum");
+        this.typeFilter = t -> StrUtils.isNotStartWithAny(t.getName(), "java.lang", "javax", "com.sum");
     }
 
     /**

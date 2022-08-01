@@ -1,8 +1,8 @@
 package top.xiajibagao.powerfulannotation.annotation.attribute;
 
-import cn.hutool.core.util.ReflectUtil;
 import org.junit.Assert;
 import org.junit.Test;
+import top.xiajibagao.powerfulannotation.helper.ReflectUtils;
 
 import java.lang.annotation.*;
 import java.lang.reflect.Method;
@@ -18,9 +18,9 @@ public class ForceAliasedAnnotationAttributeTest {
 	public void testBaseInfo() {
 		// 组合属性
 		Annotation annotation = ClassForTest1.class.getAnnotation(AnnotationForTest.class);
-		Method valueMethod = ReflectUtil.getMethod(AnnotationForTest.class, "value");
+		Method valueMethod = ReflectUtils.getDeclaredMethod(AnnotationForTest.class, "value");
 		CacheableAnnotationAttribute valueAttribute = new CacheableAnnotationAttribute(annotation, valueMethod);
-		Method nameMethod = ReflectUtil.getMethod(AnnotationForTest.class, "name");
+		Method nameMethod = ReflectUtils.getDeclaredMethod(AnnotationForTest.class, "name");
 		CacheableAnnotationAttribute nameAttribute = new CacheableAnnotationAttribute(annotation, nameMethod);
 		ForceAliasedAnnotationAttribute valueAnnotationAttribute = new ForceAliasedAnnotationAttribute(valueAttribute, nameAttribute);
 
@@ -37,9 +37,9 @@ public class ForceAliasedAnnotationAttributeTest {
 	public void testWorkWhenValueDefault() {
 		// 组合属性
 		Annotation annotation = ClassForTest1.class.getAnnotation(AnnotationForTest.class);
-		Method valueMethod = ReflectUtil.getMethod(AnnotationForTest.class, "value");
+		Method valueMethod = ReflectUtils.getDeclaredMethod(AnnotationForTest.class, "value");
 		CacheableAnnotationAttribute valueAttribute = new CacheableAnnotationAttribute(annotation, valueMethod);
-		Method nameMethod = ReflectUtil.getMethod(AnnotationForTest.class, "name");
+		Method nameMethod = ReflectUtils.getDeclaredMethod(AnnotationForTest.class, "name");
 		CacheableAnnotationAttribute nameAttribute = new CacheableAnnotationAttribute(annotation, nameMethod);
 		AliasedAnnotationAttribute valueAnnotationAttribute = new AliasedAnnotationAttribute(valueAttribute, nameAttribute);
 
@@ -53,9 +53,9 @@ public class ForceAliasedAnnotationAttributeTest {
 	public void testWorkWhenValueNonDefault() {
 		// 组合属性
 		Annotation annotation = ClassForTest2.class.getAnnotation(AnnotationForTest.class);
-		Method valueMethod = ReflectUtil.getMethod(AnnotationForTest.class, "value");
+		Method valueMethod = ReflectUtils.getDeclaredMethod(AnnotationForTest.class, "value");
 		CacheableAnnotationAttribute valueAttribute = new CacheableAnnotationAttribute(annotation, valueMethod);
-		Method nameMethod = ReflectUtil.getMethod(AnnotationForTest.class, "name");
+		Method nameMethod = ReflectUtils.getDeclaredMethod(AnnotationForTest.class, "name");
 		CacheableAnnotationAttribute nameAttribute = new CacheableAnnotationAttribute(annotation, nameMethod);
 		ForceAliasedAnnotationAttribute valueAnnotationAttribute = new ForceAliasedAnnotationAttribute(valueAttribute, nameAttribute);
 

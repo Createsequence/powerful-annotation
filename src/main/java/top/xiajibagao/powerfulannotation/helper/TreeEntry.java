@@ -1,9 +1,7 @@
 package top.xiajibagao.powerfulannotation.helper;
 
-import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.util.ObjectUtil;
-
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.Consumer;
 
 /**
@@ -61,7 +59,7 @@ public interface TreeEntry<K, V> extends Map.Entry<K, V> {
 	 * @return 是否
 	 */
 	default boolean hasParent() {
-		return ObjectUtil.isNotNull(getDeclaredParent());
+		return Objects.nonNull(getDeclaredParent());
 	}
 
 	/**
@@ -86,7 +84,7 @@ public interface TreeEntry<K, V> extends Map.Entry<K, V> {
 	 * @return 是否
 	 */
 	default boolean containsParent(K key) {
-		return ObjectUtil.isNotNull(getParent(key));
+		return Objects.nonNull(getParent(key));
 	}
 
 	// ===================== 子节点相关方法 =====================
@@ -119,7 +117,7 @@ public interface TreeEntry<K, V> extends Map.Entry<K, V> {
 	 * @return 是否
 	 */
 	default boolean hasChildren() {
-		return CollUtil.isNotEmpty(getDeclaredChildren());
+		return CollUtils.isNotEmpty(getDeclaredChildren());
 	}
 
 	/**
@@ -137,7 +135,7 @@ public interface TreeEntry<K, V> extends Map.Entry<K, V> {
 	 * @return 是否
 	 */
 	default boolean containsChild(K key) {
-		return ObjectUtil.isNotNull(getChild(key));
+		return Objects.nonNull(getChild(key));
 	}
 
 }

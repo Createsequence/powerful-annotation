@@ -1,11 +1,11 @@
 package top.xiajibagao.powerfulannotation.repeatable;
 
-import cn.hutool.core.lang.Opt;
-import cn.hutool.core.util.ObjectUtil;
-import cn.hutool.core.util.ReflectUtil;
+import top.xiajibagao.powerfulannotation.helper.ReflectUtils;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
+import java.util.Objects;
+import java.util.Optional;
 
 /**
  * {@link RepeatableMapping}的基本实现
@@ -22,7 +22,7 @@ public class RepeatableAnnotationMapping implements RepeatableMapping {
 	RepeatableAnnotationMapping(Class<? extends Annotation> elementType, Class<? extends Annotation> containerType, Method containedAttribute) {
 		this.elementType = elementType;
 		this.containerType = containerType;
-		this.hasContainer = ObjectUtil.isNotNull(containerType);
+		this.hasContainer = Objects.nonNull(containerType);
 		this.containedAttribute = containedAttribute;
 	}
 
@@ -31,8 +31,8 @@ public class RepeatableAnnotationMapping implements RepeatableMapping {
 		if (!hasContainer()) {
 			return new Annotation[0];
 		}
-		return (Annotation[])Opt.ofNullable(containerAnnotation)
-			.map(m -> ReflectUtil.invoke(containerAnnotation, containedAttribute))
+		return (Annotation[])Optional.ofNullable(containerAnnotation)
+			.map(m -> ReflectUtils.invoke(containerAnnotation, containedAttribute))
 			.orElse(new Annotation[0]);
 	}
 

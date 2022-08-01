@@ -1,19 +1,17 @@
 package top.xiajibagao.powerfulannotation.annotation.proxy;
 
-import cn.hutool.core.lang.Opt;
-import cn.hutool.core.text.CharSequenceUtil;
-import cn.hutool.core.util.ClassUtil;
-import cn.hutool.core.util.ObjectUtil;
-import cn.hutool.core.util.ReflectUtil;
 import lombok.NonNull;
 import top.xiajibagao.powerfulannotation.annotation.AnnotationAttributeValueProvider;
 import top.xiajibagao.powerfulannotation.helper.AnnotationUtils;
+import top.xiajibagao.powerfulannotation.helper.ReflectUtils;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -63,9 +61,9 @@ public class AnnotationInvocationHandler implements InvocationHandler {
      */
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) {
-        return Opt.ofNullable(methods.get(method.getName()))
+        return Optional.ofNullable(methods.get(method.getName()))
             .map(m -> m.apply(method, args))
-            .orElseGet(() -> ReflectUtil.invoke(this, method, args));
+            .orElseGet(() -> ReflectUtils.invoke(this, method, args));
     }
 
     // ============================== 代理方法 ==============================
@@ -79,7 +77,7 @@ public class AnnotationInvocationHandler implements InvocationHandler {
         methods.put("hashCode", (method, args) -> proxyHashCode());
         methods.put("annotationType", (method, args) -> proxyAnnotationType());
         methods.put("getOriginal", (method, args) -> proxyGetOriginal());
-        Stream.of(ClassUtil.getDeclaredMethods(annotation.annotationType()))
+        Stream.of(ReflectUtils.getDeclaredMethods(annotation.annotationType()))
             .filter(AnnotationUtils::isAttributeMethod)
             .forEach(attribute -> methods.put(attribute.getName(), (method, args) -> proxyAttributeValue(method)));
     }
@@ -88,11 +86,11 @@ public class AnnotationInvocationHandler implements InvocationHandler {
      * 代理toString方法
      */
     private String proxyToString() {
-        final String attributes = Stream.of(ClassUtil.getDeclaredMethods(annotation.annotationType()))
+        final String attributes = Stream.of(ReflectUtils.getDeclaredMethods(annotation.annotationType()))
             .filter(AnnotationUtils::isAttributeMethod)
-            .map(method -> CharSequenceUtil.format("{}={}", method.getName(), proxyAttributeValue(method)))
+            .map(method -> String.format("%s=%s", method.getName(), proxyAttributeValue(method)))
             .collect(Collectors.joining(", "));
-        return CharSequenceUtil.format("@{}({})", annotation.annotationType()
+        return String.format("@%s(%s)", annotation.annotationType()
             .getName(), attributes);
     }
 
@@ -107,7 +105,7 @@ public class AnnotationInvocationHandler implements InvocationHandler {
      * 代理equals方法
      */
     private boolean proxyEquals(Object o) {
-        return ObjectUtil.equals(this, o);
+        return Objects.equals(this, o);
     }
 
     /**

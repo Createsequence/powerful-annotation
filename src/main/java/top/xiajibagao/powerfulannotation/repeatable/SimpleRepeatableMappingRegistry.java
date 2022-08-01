@@ -1,14 +1,6 @@
 package top.xiajibagao.powerfulannotation.repeatable;
 
-import cn.hutool.core.collection.CollStreamUtil;
-import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.lang.Assert;
-import cn.hutool.core.lang.Opt;
-import cn.hutool.core.util.ArrayUtil;
-import cn.hutool.core.util.ObjectUtil;
-import top.xiajibagao.powerfulannotation.helper.ForestMap;
-import top.xiajibagao.powerfulannotation.helper.LinkedForestMap;
-import top.xiajibagao.powerfulannotation.helper.TreeEntry;
+import top.xiajibagao.powerfulannotation.helper.*;
 
 import java.lang.annotation.Annotation;
 import java.lang.annotation.Repeatable;
@@ -47,7 +39,7 @@ public class SimpleRepeatableMappingRegistry implements RepeatableMappingRegistr
 	public SimpleRepeatableMappingRegistry(RepeatableMappingParser... parsers) {
 		this.mappingForestMap = new LinkedForestMap<>(false);
 		this.mappingParsers = new ArrayList<>();
-		CollUtil.addAll(this.mappingParsers, parsers);
+		CollUtils.addAll(this.mappingParsers, parsers);
 	}
 
 	/**
@@ -75,7 +67,7 @@ public class SimpleRepeatableMappingRegistry implements RepeatableMappingRegistr
 			return;
 		}
 		// 若未缓存，则解析该元素注解的与其容器注解的映射关系，并添加缓存
-		final Deque<List<RepeatableMapping>> deque = CollUtil.newLinkedList(parseRepeatableMappings(annotationType));
+		final Deque<List<RepeatableMapping>> deque = CollUtils.newLinkedList(parseRepeatableMappings(annotationType));
 		while (!deque.isEmpty()) {
 			final List<RepeatableMapping> mappings = deque.removeFirst();
 			final List<RepeatableMapping> next = new ArrayList<>();
@@ -83,9 +75,9 @@ public class SimpleRepeatableMappingRegistry implements RepeatableMappingRegistr
 				mappingForestMap.putLinkedNodes(
 					mapping.getElementType(), mapping.getContainerType(), mapping
 				);
-				CollUtil.addAll(next, parseRepeatableMappings(mapping.getContainerType()));
+				CollUtils.addAll(next, parseRepeatableMappings(mapping.getContainerType()));
 			}
-			if (CollUtil.isNotEmpty(next)) {
+			if (CollUtils.isNotEmpty(next)) {
 				deque.addLast(next);
 			}
 		}
@@ -100,7 +92,7 @@ public class SimpleRepeatableMappingRegistry implements RepeatableMappingRegistr
 	private List<RepeatableMapping> parseRepeatableMappings(Class<? extends Annotation> annotationType) {
 		return mappingParsers.stream()
 			.map(p -> p.parse(annotationType, this))
-			.filter(ObjectUtil::isNotNull)
+			.filter(Objects::nonNull)
 			.collect(Collectors.toList());
 	}
 
@@ -111,7 +103,7 @@ public class SimpleRepeatableMappingRegistry implements RepeatableMappingRegistr
 	 */
 	@Override
 	public boolean isContainer(Class<? extends Annotation> annotationType) {
-		return Opt.ofNullable(annotationType)
+		return Optional.ofNullable(annotationType)
 			.map(mappingForestMap::get)
 			.map(TreeEntry::hasParent)
 			.orElse(false);
@@ -125,7 +117,7 @@ public class SimpleRepeatableMappingRegistry implements RepeatableMappingRegistr
 	 */
 	@Override
 	public boolean hasContainer(Class<? extends Annotation> annotationType) {
-		return Opt.ofNullable(annotationType)
+		return Optional.ofNullable(annotationType)
 			.map(mappingForestMap::get)
 			.map(TreeEntry::hasChildren)
 			.orElse(false);
@@ -150,11 +142,11 @@ public class SimpleRepeatableMappingRegistry implements RepeatableMappingRegistr
 	 */
 	@Override
 	public List<RepeatableMapping> getContainers(Class<? extends Annotation> annotationType) {
-		return Opt.ofNullable(annotationType)
+		return Optional.ofNullable(annotationType)
 			.map(mappingForestMap::get)
 			.map(TreeEntry::getChildren)
 			.map(Map::values)
-			.map(t -> CollStreamUtil.toList(t, TreeEntry::getValue))
+			.map(t -> CollUtils.toList(t, TreeEntry::getValue))
 			.orElseGet(Collections::emptyList);
 	}
 
@@ -166,7 +158,7 @@ public class SimpleRepeatableMappingRegistry implements RepeatableMappingRegistr
 	 */
 	@Override
 	public List<Annotation> getAllElementsFromContainer(Annotation container) {
-		if (ObjectUtil.isNull(container)) {
+		if (Objects.isNull(container)) {
 			return Collections.emptyList();
 		}
 		// 若容器注解未在本表中注册，则直接返回其本身
@@ -175,7 +167,7 @@ public class SimpleRepeatableMappingRegistry implements RepeatableMappingRegistr
 			return Collections.singletonList(container);
 		}
 		final TreeEntry<Class<? extends Annotation>, RepeatableMapping> containerMapping = mappingForestMap.get(containerType);
-		List<Annotation> results = CollUtil.newArrayList(container);
+		List<Annotation> results = CollUtils.newArrayList(container);
 		forEachElements(container, containerMapping.getRoot().getKey(), containerMapping, results::addAll);
 		return results;
 	}
@@ -190,12 +182,12 @@ public class SimpleRepeatableMappingRegistry implements RepeatableMappingRegistr
 	@SuppressWarnings("unchecked")
 	@Override
 	public <T extends Annotation> List<T> getElementsFromContainer(Annotation container, Class<T> elementType) {
-		if (ObjectUtil.isNull(container)) {
+		if (Objects.isNull(container)) {
 			return Collections.emptyList();
 		}
 		// 若元素注解类型与容器注解类型相同，则返回本身
 		final Class<? extends Annotation> containerType = container.annotationType();
-		if (ObjectUtil.equals(containerType, elementType)) {
+		if (Objects.equals(containerType, elementType)) {
 			return (List<T>)Collections.singletonList(container);
 		}
 		// 若容器注解为null，或者未在本表中注册，则直接返回空集合
@@ -204,7 +196,7 @@ public class SimpleRepeatableMappingRegistry implements RepeatableMappingRegistr
 		}
 		// 获取容器注解的映射，并确定其与指定的元素注解存在关系
 		final TreeEntry<Class<? extends Annotation>, RepeatableMapping> containerMapping = mappingForestMap.get(containerType);
-		if (ObjectUtil.isNull(containerMapping) || !containerMapping.containsParent(elementType)) {
+		if (Objects.isNull(containerMapping) || !containerMapping.containsParent(elementType)) {
 			return Collections.emptyList();
 		}
 		// 将容器注解一层一层的兑换为元素注解
@@ -217,24 +209,24 @@ public class SimpleRepeatableMappingRegistry implements RepeatableMappingRegistr
 		TreeEntry<Class<? extends Annotation>, RepeatableMapping> containerMapping,
 		Consumer<List<Annotation>> consumer) {
 
-		List<Annotation> results = CollUtil.newArrayList(container);
+		List<Annotation> results = CollUtils.newArrayList(container);
 		TreeEntry<Class<? extends Annotation>, RepeatableMapping> mapping = containerMapping;
 		do {
 			final RepeatableMapping currContainerMapping = mapping.getValue();
-			if (ObjectUtil.isNull(currContainerMapping)) {
+			if (Objects.isNull(currContainerMapping)) {
 				continue;
 			}
 			results = results.stream()
 				.map(currContainerMapping::getElementsFromContainer)
-				.filter(ArrayUtil::isNotEmpty)
+				.filter(CollUtils::isNotEmpty)
 				.flatMap(Stream::of)
 				.collect(Collectors.toList());
 			consumer.accept(results);
-			if (ObjectUtil.equals(currContainerMapping.getElementType(), elementType)) {
+			if (Objects.equals(currContainerMapping.getElementType(), elementType)) {
 				break;
 			}
 			mapping = mapping.getDeclaredParent();
-		} while (ObjectUtil.isNotNull(mapping) && mapping.hasParent());
+		} while (Objects.nonNull(mapping) && mapping.hasParent());
 		return results;
 	}
 }

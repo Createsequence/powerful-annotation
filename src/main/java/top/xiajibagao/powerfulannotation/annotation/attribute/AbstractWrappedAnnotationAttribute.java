@@ -1,6 +1,5 @@
 package top.xiajibagao.powerfulannotation.annotation.attribute;
 
-import cn.hutool.core.util.ObjectUtil;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -8,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * {@link WrappedAnnotationAttribute}的基本实现
@@ -42,7 +42,7 @@ public abstract class AbstractWrappedAnnotationAttribute implements WrappedAnnot
     }
 
     private void collectLeafAttribute(AnnotationAttribute curr, List<AnnotationAttribute> leafAttributes) {
-        if (ObjectUtil.isNull(curr)) {
+        if (Objects.isNull(curr)) {
             return;
         }
         if (!curr.isWrapped()) {

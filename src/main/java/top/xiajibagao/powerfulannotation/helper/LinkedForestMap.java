@@ -1,11 +1,5 @@
 package top.xiajibagao.powerfulannotation.helper;
 
-import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.lang.Assert;
-import cn.hutool.core.text.CharSequenceUtil;
-import cn.hutool.core.util.ClassUtil;
-import cn.hutool.core.util.ObjectUtil;
-
 import java.util.*;
 import java.util.function.BiConsumer;
 import java.util.function.BiPredicate;
@@ -120,7 +114,7 @@ public class LinkedForestMap<K, V> implements ForestMap<K, V> {
 	@Override
 	public TreeEntry<K, V> remove(Object key) {
 		final TreeEntryNode<K, V> target = nodes.remove(key);
-		if (ObjectUtil.isNull(target)) {
+		if (Objects.isNull(target)) {
 			return null;
 		}
 		// 若存在父节点：
@@ -201,7 +195,7 @@ public class LinkedForestMap<K, V> implements ForestMap<K, V> {
 	@Override
 	public TreeEntryNode<K, V> putNode(K key, V value) {
 		TreeEntryNode<K, V> target = nodes.get(key);
-		if (ObjectUtil.isNotNull(target)) {
+		if (Objects.nonNull(target)) {
 			final V oldVal = target.getValue();
 			target.setValue(value);
 			return target.copy(oldVal);
@@ -262,13 +256,13 @@ public class LinkedForestMap<K, V> implements ForestMap<K, V> {
 	 */
 	@Override
 	public void linkNodes(K parentKey, K childKey, BiConsumer<TreeEntry<K, V>, TreeEntry<K, V>> consumer) {
-		consumer = ObjectUtil.defaultIfNull(consumer, (parent, child) -> {
+		consumer = ObjectUtils.defaultIfNull(consumer, (parent, child) -> {
 		});
 		final TreeEntryNode<K, V> parentNode = nodes.computeIfAbsent(parentKey, t -> new TreeEntryNode<>(null, t));
 		TreeEntryNode<K, V> childNode = nodes.get(childKey);
 
 		// 1.子节点不存在
-		if (ObjectUtil.isNull(childNode)) {
+		if (Objects.isNull(childNode)) {
 			childNode = new TreeEntryNode<>(parentNode, childKey);
 			consumer.accept(parentNode, childNode);
 			nodes.put(childKey, childNode);
@@ -276,7 +270,7 @@ public class LinkedForestMap<K, V> implements ForestMap<K, V> {
 		}
 
 		// 2.子节点存在，且已经是该父节点的子节点了
-		if (ObjectUtil.equals(parentNode, childNode.getDeclaredParent())) {
+		if (Objects.equals(parentNode, childNode.getDeclaredParent())) {
 			consumer.accept(parentNode, childNode);
 			return;
 		}
@@ -292,8 +286,8 @@ public class LinkedForestMap<K, V> implements ForestMap<K, V> {
 		}
 		// 5.子节点存在，且已经与其他节点构成父子关系，但是不允许子节点直接修改其父节点
 		else {
-			throw new IllegalArgumentException(CharSequenceUtil.format(
-					"[{}] has been used as child of [{}], can not be overwrite as child of [{}]",
+			throw new IllegalArgumentException(String.format(
+					"[%s] has been used as child of [%s], can not be overwrite as child of [%s]",
 					childNode.getKey(), childNode.getDeclaredParent().getKey(), parentKey
 			));
 		}
@@ -309,7 +303,7 @@ public class LinkedForestMap<K, V> implements ForestMap<K, V> {
 	@Override
 	public void unlinkNode(K parentKey, K childKey) {
 		final TreeEntryNode<K, V> childNode = nodes.get(childKey);
-		if (ObjectUtil.isNull(childNode)) {
+		if (Objects.isNull(childNode)) {
 			return;
 		}
 		if (childNode.hasParent()) {
@@ -377,7 +371,7 @@ public class LinkedForestMap<K, V> implements ForestMap<K, V> {
 			this.key = key;
 			this.value = value;
 			this.children = new LinkedHashMap<>();
-			if (ObjectUtil.isNull(parent)) {
+			if (Objects.isNull(parent)) {
 				this.root = this;
 				this.weight = 0;
 			} else {
@@ -442,9 +436,9 @@ public class LinkedForestMap<K, V> implements ForestMap<K, V> {
 		 */
 		TreeEntryNode<K, V> traverseParentNodes(
 				boolean includeCurrent, Consumer<TreeEntryNode<K, V>> consumer, Predicate<TreeEntryNode<K, V>> breakTraverse) {
-			breakTraverse = ObjectUtil.defaultIfNull(breakTraverse, n -> false);
+			breakTraverse = ObjectUtils.defaultIfNull(breakTraverse, n -> false);
 			TreeEntryNode<K, V> curr = includeCurrent ? this : this.parent;
-			while (ObjectUtil.isNotNull(curr)) {
+			while (Objects.nonNull(curr)) {
 				consumer.accept(curr);
 				if (breakTraverse.test(curr)) {
 					break;
@@ -470,7 +464,7 @@ public class LinkedForestMap<K, V> implements ForestMap<K, V> {
 		 */
 		@Override
 		public TreeEntryNode<K, V> getRoot() {
-			if (ObjectUtil.isNotNull(this.root)) {
+			if (Objects.nonNull(this.root)) {
 				return this.root;
 			} else {
 				this.root = traverseParentNodes(true, p -> {
@@ -519,7 +513,7 @@ public class LinkedForestMap<K, V> implements ForestMap<K, V> {
 		 * @return 是否key一致
 		 */
 		public boolean equalsKey(K key) {
-			return ObjectUtil.equal(getKey(), key);
+			return Objects.equals(getKey(), key);
 		}
 
 		// ================== 子节点的操作 ==================
@@ -534,8 +528,8 @@ public class LinkedForestMap<K, V> implements ForestMap<K, V> {
 		 */
 		TreeEntryNode<K, V> traverseChildNodes(
 				boolean includeCurrent, BiConsumer<Integer, TreeEntryNode<K, V>> consumer, BiPredicate<Integer, TreeEntryNode<K, V>> breakTraverse) {
-			breakTraverse = ObjectUtil.defaultIfNull(breakTraverse, (i, n) -> false);
-			final Deque<List<TreeEntryNode<K, V>>> keyNodeDeque = CollUtil.newLinkedList(CollUtil.newArrayList(this));
+			breakTraverse = ObjectUtils.defaultIfNull(breakTraverse, (i, n) -> false);
+			final Deque<List<TreeEntryNode<K, V>>> keyNodeDeque = CollUtils.newLinkedList(CollUtils.newArrayList(this));
 			boolean needProcess = includeCurrent;
 			int index = includeCurrent ? 0 : 1;
 			TreeEntryNode<K, V> lastNode = null;
@@ -551,12 +545,12 @@ public class LinkedForestMap<K, V> implements ForestMap<K, V> {
 					} else {
 						needProcess = true;
 					}
-					CollUtil.addAll(next, node.children.values());
+					CollUtils.addAll(next, node.children.values());
 				}
 				if (!next.isEmpty()) {
 					keyNodeDeque.addLast(next);
 				}
-				lastNode = CollUtil.getLast(next);
+				lastNode = CollUtils.getLast(next);
 				index++;
 			}
 			return lastNode;
@@ -575,10 +569,10 @@ public class LinkedForestMap<K, V> implements ForestMap<K, V> {
 			}
 
 			// 检查循环引用
-			traverseParentNodes(true, s -> Assert.notEquals(
-					s.key, child.key,
-					"circular reference between [{}] and [{}]!",
-					s.key, this.key
+			traverseParentNodes(true, s -> Assert.isTrue(
+				ObjectUtils.isNotEquals(s.key, child.key),
+				"circular reference between [{}] and [{}]!",
+				s.key, this.key
 			), null);
 
 			// 调整该节点的信息
@@ -599,7 +593,7 @@ public class LinkedForestMap<K, V> implements ForestMap<K, V> {
 		 */
 		void removeDeclaredChild(K key) {
 			final TreeEntryNode<K, V> child = children.get(key);
-			if (ObjectUtil.isNull(child)) {
+			if (Objects.isNull(child)) {
 				return;
 			}
 
@@ -669,11 +663,11 @@ public class LinkedForestMap<K, V> implements ForestMap<K, V> {
 			if (this == o) {
 				return true;
 			}
-			if (o == null || this.getClass().equals(o.getClass()) || ClassUtil.isAssignable(this.getClass(), o.getClass())) {
+			if (o == null || this.getClass().equals(o.getClass()) || ReflectUtils.isAssignable(this.getClass(), o.getClass())) {
 				return false;
 			}
 			final TreeEntry<?, ?> treeEntry = (TreeEntry<?, ?>) o;
-			return ObjectUtil.equals(this.getKey(), treeEntry.getKey());
+			return Objects.equals(this.getKey(), treeEntry.getKey());
 		}
 
 		/**
@@ -694,7 +688,7 @@ public class LinkedForestMap<K, V> implements ForestMap<K, V> {
 		 * @return 节点
 		 */
 		TreeEntryNode<K, V> copy(V value) {
-			TreeEntryNode<K, V> copiedNode = new TreeEntryNode<>(this.parent, this.key, ObjectUtil.defaultIfNull(value, this.value));
+			TreeEntryNode<K, V> copiedNode = new TreeEntryNode<>(this.parent, this.key, ObjectUtils.defaultIfNull(value, this.value));
 			copiedNode.children.putAll(children);
 			return copiedNode;
 		}

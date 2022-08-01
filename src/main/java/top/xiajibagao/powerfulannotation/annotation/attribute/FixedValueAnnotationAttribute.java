@@ -1,8 +1,8 @@
 package top.xiajibagao.powerfulannotation.annotation.attribute;
 
-import cn.hutool.core.lang.Assert;
-import cn.hutool.core.util.ClassUtil;
-import cn.hutool.core.util.ObjectUtil;
+import top.xiajibagao.powerfulannotation.helper.Assert;
+
+import java.util.Objects;
 
 /**
  * 总是返回固定值的注解属性
@@ -16,17 +16,17 @@ public class FixedValueAnnotationAttribute extends AbstractWrappedAnnotationAttr
     public FixedValueAnnotationAttribute(AnnotationAttribute original, Object value) {
         super(original, null);
         this.value = value;
-        Class<?> targetClass = ClassUtil.getClass(value);
+        Class<?> targetClass = value.getClass();
         Assert.isAssignable(
             original.getAttributeType(), targetClass,
-            "value type [{}] must be consistent with the original attribute type [{}]",
+            "value type [%s] must be consistent with the original attribute type [%s]",
             targetClass, original.getAttributeType()
         );
     }
 
     @Override
     public boolean isValueEquivalentToDefaultValue() {
-        return ObjectUtil.equals(original.getValue(), value);
+        return Objects.equals(original.getValue(), value);
     }
 
     @Override

@@ -1,16 +1,15 @@
 package top.xiajibagao.powerfulannotation.synthesis.resolver;
 
-import cn.hutool.core.lang.Assert;
-import cn.hutool.core.text.CharSequenceUtil;
-import cn.hutool.core.util.ObjectUtil;
 import top.xiajibagao.powerfulannotation.annotation.HierarchicalAnnotation;
 import top.xiajibagao.powerfulannotation.annotation.attribute.AnnotationAttribute;
 import top.xiajibagao.powerfulannotation.annotation.attribute.MirroredAnnotationAttribute;
+import top.xiajibagao.powerfulannotation.helper.Assert;
 import top.xiajibagao.powerfulannotation.synthesis.AnnotationSynthesizer;
 import top.xiajibagao.powerfulannotation.synthesis.Link;
 import top.xiajibagao.powerfulannotation.synthesis.RelationType;
 
 import java.lang.annotation.Annotation;
+import java.util.Objects;
 
 /**
  * <p>用于处理注解对象中带有{@link Link}注解，且{@link Link#type()}为{@link RelationType#MIRROR_FOR}的属性。<br>
@@ -90,7 +89,7 @@ public class MirrorAttributeResolver extends AbstractDynamicAttributeResolver {
 
 		// 校验通过
 		final boolean passed = originalAttributeMirrored && mirrorAttributeMirrored
-			&& ObjectUtil.equals(((MirroredAnnotationAttribute)original).getLinked(), ((MirroredAnnotationAttribute)mirror).getOriginal());
+			&& Objects.equals(((MirroredAnnotationAttribute)original).getLinked(), ((MirroredAnnotationAttribute)mirror).getOriginal());
 		if (passed) {
 			return;
 		}
@@ -99,22 +98,22 @@ public class MirrorAttributeResolver extends AbstractDynamicAttributeResolver {
 		String errorMsg;
 		// 原始字段已经跟其他字段形成镜像
 		if (originalAttributeMirrored && !mirrorAttributeMirrored) {
-			errorMsg = CharSequenceUtil.format(
-				"attribute [{}] cannot mirror for [{}], because it's already mirrored for [{}]",
+			errorMsg = String.format(
+				"attribute [%s] cannot mirror for [%s], because it's already mirrored for [%s]",
 				original.getAttribute(), mirror.getAttribute(), ((MirroredAnnotationAttribute)original).getLinked()
 			);
 		}
 		// 镜像字段已经跟其他字段形成镜像
 		else if (!originalAttributeMirrored && mirrorAttributeMirrored) {
-			errorMsg = CharSequenceUtil.format(
-				"attribute [{}] cannot mirror for [{}], because it's already mirrored for [{}]",
+			errorMsg = String.format(
+				"attribute [%s] cannot mirror for [%s], because it's already mirrored for [%s]",
 				mirror.getAttribute(), original.getAttribute(), ((MirroredAnnotationAttribute)mirror).getLinked()
 			);
 		}
 		// 两者都形成了镜像，但是都未指向对方，理论上不会存在该情况
 		else {
-			errorMsg = CharSequenceUtil.format(
-				"attribute [{}] cannot mirror for [{}], because [{}] already mirrored for [{}] and  [{}] already mirrored for [{}]",
+			errorMsg = String.format(
+				"attribute [%s] cannot mirror for [%s], because [%s] already mirrored for [%s] and [%s] already mirrored for [%s]",
 				mirror.getAttribute(), original.getAttribute(),
 				mirror.getAttribute(), ((MirroredAnnotationAttribute)mirror).getLinked(),
 				original.getAttribute(), ((MirroredAnnotationAttribute)original).getLinked()
@@ -135,8 +134,8 @@ public class MirrorAttributeResolver extends AbstractDynamicAttributeResolver {
 		// 镜像属性上必须存在对应的注解
 		final Link mirrorAttributeAnnotation = getAttributeAnnotation(mirror, RelationType.MIRROR_FOR);
 		Assert.isTrue(
-			ObjectUtil.isNotNull(mirrorAttributeAnnotation) && RelationType.MIRROR_FOR.equals(mirrorAttributeAnnotation.type()),
-			"mirror attribute [{}] of original attribute [{}] must marked by @Link, and also @LinkType.type() must is [{}]",
+			Objects.nonNull(mirrorAttributeAnnotation) && RelationType.MIRROR_FOR.equals(mirrorAttributeAnnotation.type()),
+			"mirror attribute [%s] of original attribute [%s] must marked by @Link, and also @LinkType.type() must is [%s]",
 			mirror.getAttribute(), original.getAttribute(), RelationType.MIRROR_FOR
 		);
 		checkLinkedSelf(original, mirror);

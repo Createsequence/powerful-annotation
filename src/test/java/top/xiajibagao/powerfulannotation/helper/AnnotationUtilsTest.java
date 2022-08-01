@@ -1,6 +1,5 @@
 package top.xiajibagao.powerfulannotation.helper;
 
-import cn.hutool.core.util.ReflectUtil;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -47,7 +46,7 @@ public class AnnotationUtilsTest {
             .filter(AnnotationUtils::isAttributeMethod)
             .collect(Collectors.toList());
         Assert.assertEquals(1, attributes.size());
-        Assert.assertEquals(ReflectUtil.getMethod(MetaAnnotationForTest.class, "value"), attributes.get(0));
+        Assert.assertEquals(ReflectUtils.getDeclaredMethod(MetaAnnotationForTest.class, "value"), attributes.get(0));
     }
 
     @Target({ElementType.ANNOTATION_TYPE, ElementType.TYPE, ElementType.METHOD})

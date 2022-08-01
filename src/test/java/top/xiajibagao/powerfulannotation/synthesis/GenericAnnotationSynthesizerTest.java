@@ -1,11 +1,10 @@
 package top.xiajibagao.powerfulannotation.synthesis;
 
-import cn.hutool.core.collection.CollStreamUtil;
-import cn.hutool.core.collection.CollUtil;
 import org.junit.Assert;
 import org.junit.Test;
 import top.xiajibagao.powerfulannotation.annotation.GenericHierarchicalAnnotation;
 import top.xiajibagao.powerfulannotation.annotation.HierarchicalAnnotation;
+import top.xiajibagao.powerfulannotation.helper.CollUtils;
 import top.xiajibagao.powerfulannotation.helper.HierarchySelector;
 
 import java.lang.annotation.*;
@@ -31,7 +30,7 @@ public class GenericAnnotationSynthesizerTest {
         AnnotationForTest3 annotation3 = ClassForTest.class.getAnnotation(AnnotationForTest3.class);
         synthesizer.accept(0, 3, annotation3);
         Assert.assertEquals(
-            CollUtil.newLinkedHashSet(AnnotationForTest1.class, AnnotationForTest2.class, AnnotationForTest3.class),
+            CollUtils.newLinkedHashSet(AnnotationForTest1.class, AnnotationForTest2.class, AnnotationForTest3.class),
             synthesizer.getSynthesizedAnnotationMap().keySet()
         );
 
@@ -43,7 +42,7 @@ public class GenericAnnotationSynthesizerTest {
         HierarchicalAnnotation<Annotation> hierarchicalAnnotation3 = new GenericHierarchicalAnnotation<>(ClassForTest.class.getAnnotation(AnnotationForTest3.class), synthesizer, 0, 3);
         synthesizer.accept(hierarchicalAnnotation3);
         Assert.assertEquals(
-            CollUtil.newLinkedHashSet(AnnotationForTest1.class, AnnotationForTest2.class, AnnotationForTest3.class),
+            CollUtils.newLinkedHashSet(AnnotationForTest1.class, AnnotationForTest2.class, AnnotationForTest3.class),
             synthesizer.getSynthesizedAnnotationMap().keySet()
         );
     }
@@ -75,8 +74,8 @@ public class GenericAnnotationSynthesizerTest {
 
         Assert.assertEquals(3, synthesizer.getAllAnnotation().size());
         Assert.assertEquals(
-            CollUtil.newArrayList(annotation1, annotation2, annotation3),
-            CollStreamUtil.toList(synthesizer.getAllAnnotation(), HierarchicalAnnotation::getAnnotation)
+            CollUtils.newArrayList(annotation1, annotation2, annotation3),
+            CollUtils.toList(synthesizer.getAllAnnotation(), HierarchicalAnnotation::getAnnotation)
         );
     }
 

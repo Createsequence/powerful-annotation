@@ -1,9 +1,9 @@
 package top.xiajibagao.powerfulannotation.aggerate;
 
-import cn.hutool.core.collection.CollUtil;
 import org.junit.Assert;
 import org.junit.Test;
 import top.xiajibagao.powerfulannotation.annotation.HierarchicalAnnotation;
+import top.xiajibagao.powerfulannotation.helper.CollUtils;
 import top.xiajibagao.powerfulannotation.helper.HierarchySelector;
 import top.xiajibagao.powerfulannotation.repeatable.RepeatableBy;
 import top.xiajibagao.powerfulannotation.repeatable.RepeatableMappingRegistry;
@@ -70,17 +70,17 @@ public class GenericAnnotationAggregatorTest {
         AnnotationForTest1 annotation1 = ClassForTest.class.getAnnotation(AnnotationForTest1.class);
         AnnotationForTest2 annotation2 = ClassForTest.class.getAnnotation(AnnotationForTest2.class);
         AnnotationForTest3 annotation3 = ClassForTest.class.getAnnotation(AnnotationForTest3.class);
-        Assert.assertEquals(CollUtil.newArrayList(annotation1, annotation2, annotation3), getAnnotationFromAggregator.apply(1));
+        Assert.assertEquals(CollUtils.newArrayList(annotation1, annotation2, annotation3), getAnnotationFromAggregator.apply(1));
 
         // 第二层
         AnnotationForTest1 annotation4 = AnnotationForTest2.class.getAnnotation(AnnotationForTest1.class);
         AnnotationForTest2 annotation5 = AnnotationForTest3.class.getAnnotation(AnnotationForTest2.class);
         AnnotationForTest4 annotation6 = AnnotationForTest3.class.getAnnotation(AnnotationForTest4.class);
-        Assert.assertEquals(CollUtil.newArrayList(annotation4, annotation5, annotation6), getAnnotationFromAggregator.apply(2));
+        Assert.assertEquals(CollUtils.newArrayList(annotation4, annotation5, annotation6), getAnnotationFromAggregator.apply(2));
 
         // 第三场
         AnnotationForTest1 annotation7 = AnnotationForTest2.class.getAnnotation(AnnotationForTest1.class);
-        Assert.assertEquals(CollUtil.newArrayList(annotation7), getAnnotationFromAggregator.apply(3));
+        Assert.assertEquals(CollUtils.newArrayList(annotation7), getAnnotationFromAggregator.apply(3));
     }
 
     @Test

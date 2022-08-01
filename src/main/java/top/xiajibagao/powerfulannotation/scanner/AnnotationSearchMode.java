@@ -1,6 +1,5 @@
 package top.xiajibagao.powerfulannotation.scanner;
 
-import cn.hutool.core.util.ObjectUtil;
 import top.xiajibagao.powerfulannotation.helper.Function3;
 import top.xiajibagao.powerfulannotation.scanner.processor.AnnotationCollector;
 import top.xiajibagao.powerfulannotation.scanner.processor.AnnotationFinder;
@@ -11,6 +10,7 @@ import java.lang.annotation.Inherited;
 import java.lang.reflect.AnnotatedElement;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Predicate;
 
 /**
@@ -97,7 +97,7 @@ public enum AnnotationSearchMode {
 	/**
 	 * 注解扫描器
 	 */
-	private final AbstractAnnotationScanner scanner;
+	protected final AbstractAnnotationScanner scanner;
 
 	/**
 	 * 构造
@@ -129,7 +129,7 @@ public enum AnnotationSearchMode {
 	public <T> List<T> getAnnotations(
 		AnnotatedElement element, AnnotationFilter filter,
 		Function3<Integer, Integer, Annotation, T> converter) {
-		if (ObjectUtil.isNull(element)) {
+		if (Objects.isNull(element)) {
 			return Collections.emptyList();
 		}
 		AnnotationCollector<T> collector = new AnnotationCollector<>(converter);
@@ -161,7 +161,7 @@ public enum AnnotationSearchMode {
 	public <T> T getAnnotation(
 		AnnotatedElement element, AnnotationFilter filter, Predicate<T> predicate,
 		Function3<Integer, Integer, Annotation, T> converter) {
-		if (ObjectUtil.isNull(element)) {
+		if (Objects.isNull(element)) {
 			return null;
 		}
 		AnnotationFinder<T> finder = new AnnotationFinder<>(converter, predicate);
@@ -181,7 +181,7 @@ public enum AnnotationSearchMode {
 	public <T extends Annotation> T getAnnotation(AnnotatedElement element, Class<T> annotationType) {
 		return (T) getAnnotation(
 			element, AnnotationFilter.FILTER_NOTHING,
-			annotation -> ObjectUtil.equals(annotation.annotationType(), annotationType),
+			annotation -> Objects.equals(annotation.annotationType(), annotationType),
 			(vi, hi, annotation) -> annotation
 		);
 	}
@@ -194,7 +194,7 @@ public enum AnnotationSearchMode {
 	 * @return 是否
 	 */
 	public boolean isAnnotationPresent(AnnotatedElement element, Class<? extends Annotation> annotationType) {
-		return ObjectUtil.isNotNull(getAnnotation(element, annotationType));
+		return Objects.nonNull(getAnnotation(element, annotationType));
 	}
 
 	/**

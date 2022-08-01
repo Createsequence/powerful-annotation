@@ -1,19 +1,20 @@
 package top.xiajibagao.powerfulannotation.synthesis.resolver;
 
-import cn.hutool.core.lang.Assert;
-import cn.hutool.core.lang.Opt;
-import cn.hutool.core.util.ObjectUtil;
 import top.xiajibagao.powerfulannotation.annotation.HierarchicalAnnotation;
 import top.xiajibagao.powerfulannotation.annotation.attribute.AbstractWrappedAnnotationAttribute;
 import top.xiajibagao.powerfulannotation.annotation.attribute.AliasedAnnotationAttribute;
 import top.xiajibagao.powerfulannotation.annotation.attribute.AnnotationAttribute;
 import top.xiajibagao.powerfulannotation.annotation.attribute.ForceAliasedAnnotationAttribute;
+import top.xiajibagao.powerfulannotation.helper.Assert;
+import top.xiajibagao.powerfulannotation.helper.ObjectUtils;
 import top.xiajibagao.powerfulannotation.synthesis.AnnotationSynthesizer;
 import top.xiajibagao.powerfulannotation.synthesis.Link;
 import top.xiajibagao.powerfulannotation.synthesis.RelationType;
 
 import java.lang.annotation.Annotation;
 import java.util.Comparator;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.function.BinaryOperator;
 
 /**
@@ -95,8 +96,8 @@ public class AliasAttributeResolver extends AbstractDynamicAttributeResolver {
 		checkAliasRelation(annotation, originalAttribute, linkedAttribute);
 		// 若指定了排序，则需要保证元素属性所属的注解优先级必须大于等于关联属性
 		Assert.isTrue(
-			ObjectUtil.isNull(comparator)
-				|| ObjectUtil.equals(originalAnnotation, linkedAnnotation)
+			Objects.isNull(comparator)
+				|| Objects.equals(originalAnnotation, linkedAnnotation)
 				|| comparator.compare(originalAnnotation, linkedAnnotation) <= 0,
 			"link attribute [{}] priority cannot be higher than original attribute [{}]",
 			linkedAttribute, originalAttribute
@@ -133,7 +134,7 @@ public class AliasAttributeResolver extends AbstractDynamicAttributeResolver {
 	private void processAttribute(
 		AnnotationSynthesizer synthesizer, AnnotationAttribute originalAttribute,
 		AnnotationAttribute target, BinaryOperator<AnnotationAttribute> wrapping) {
-		Opt.ofNullable(target.getAnnotationType())
+		Optional.ofNullable(target.getAnnotationType())
 			.map(synthesizer::getAnnotation)
 			.ifPresent(t -> t.replaceAttribute(target.getAttributeName(), old -> wrapping.apply(old, originalAttribute)));
 	}
@@ -153,14 +154,14 @@ public class AliasAttributeResolver extends AbstractDynamicAttributeResolver {
 	private void checkCircularDependency(AnnotationAttribute original, AnnotationAttribute alias) {
 		checkLinkedSelf(original, alias);
 		Link annotation = getAttributeAnnotation(alias, RelationType.ALIAS_FOR, RelationType.FORCE_ALIAS_FOR);
-		if (ObjectUtil.isNull(annotation)) {
+		if (Objects.isNull(annotation)) {
 			return;
 		}
 		final Class<?> aliasAnnotationType = getLinkedAnnotationType(annotation, alias.getAnnotationType());
-		if (ObjectUtil.notEqual(aliasAnnotationType, original.getAnnotationType())) {
+		if (ObjectUtils.isNotEquals(aliasAnnotationType, original.getAnnotationType())) {
 			return;
 		}
-		Assert.notEquals(
+		Assert.isNotEquals(
 			annotation.attribute(), original.getAttributeName(),
 			"circular reference between the alias attribute [{}] and the original attribute [{}]",
 			alias.getAttribute(), original.getAttribute()

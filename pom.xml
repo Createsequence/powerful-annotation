@@ -16,7 +16,6 @@
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
         <lomboke.version>1.18.24</lomboke.version>
-        <hutool.version>5.8.3</hutool.version>
         <junit.version>4.13.2</junit.version>
     </properties>
 
@@ -25,11 +24,6 @@
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <version>${lomboke.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>cn.hutool</groupId>
-            <artifactId>hutool-core</artifactId>
-            <version>${hutool.version}</version>
         </dependency>
         <dependency>
             <groupId>junit</groupId>

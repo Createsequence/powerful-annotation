@@ -1,8 +1,8 @@
 package top.xiajibagao.powerfulannotation.repeatable;
 
-import cn.hutool.core.util.ReflectUtil;
 import org.junit.Assert;
 import org.junit.Test;
+import top.xiajibagao.powerfulannotation.helper.ReflectUtils;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -20,7 +20,7 @@ public class RepeatableAnnotationMappingTest {
 	public void testRepeatableAnnotationMapping() {
 		RepeatableAnnotationMapping mapping = new RepeatableAnnotationMapping(
 			AnnotationForTest2.class, AnnotationForTest1.class,
-			ReflectUtil.getMethod(AnnotationForTest2.class, "value")
+			ReflectUtils.getDeclaredMethod(AnnotationForTest2.class, "value")
 		);
 		Assert.assertEquals(AnnotationForTest1.class, mapping.getContainerType());
 		Assert.assertEquals(AnnotationForTest2.class, mapping.getElementType());

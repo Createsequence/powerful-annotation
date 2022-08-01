@@ -1,8 +1,7 @@
 package top.xiajibagao.powerfulannotation.scanner;
 
-import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.text.CharSequenceUtil;
-import cn.hutool.core.util.ObjectUtil;
+import top.xiajibagao.powerfulannotation.helper.CollUtils;
+import top.xiajibagao.powerfulannotation.helper.ObjectUtils;
 import top.xiajibagao.powerfulannotation.scanner.processor.AnnotationProcessor;
 
 import java.lang.annotation.Annotation;
@@ -113,10 +112,10 @@ public abstract class AbstractAnnotationScanner implements AnnotationScanner {
 	 */
 	@Override
 	public void scan(AnnotatedElement element, AnnotationProcessor processor, AnnotationFilter filter) {
-		if (ObjectUtil.isNull(element) || ObjectUtil.isNull(processor)) {
+		if (Objects.isNull(element) || Objects.isNull(processor)) {
 			return;
 		}
-		filter = ObjectUtil.defaultIfNull(filter, AnnotationFilter.FILTER_NOTHING);
+		filter = ObjectUtils.defaultIfNull(filter, AnnotationFilter.FILTER_NOTHING);
 		final Class<?> typeHierarchy = getTypeHierarchyFromElement(element);
 		final Context context = new Context(
 			element, VERTICAL_INDEX_START_POINT, HORIZONTAL_INDEX_START_POINT,
@@ -124,7 +123,7 @@ public abstract class AbstractAnnotationScanner implements AnnotationScanner {
 		);
 
 		// 元素没有可递归的层级结构，或者传入了注解类但是又不允许扫描元注解
-		if (ObjectUtil.isNull(typeHierarchy) || (context.scanningMetaAnnotations && !options.isEnableScanMetaAnnotation())) {
+		if (Objects.isNull(typeHierarchy) || (context.scanningMetaAnnotations && !options.isEnableScanMetaAnnotation())) {
 			processAnnotation(context, processor, filter, element.getAnnotations());
 			return;
 		}
@@ -162,7 +161,7 @@ public abstract class AbstractAnnotationScanner implements AnnotationScanner {
 		final Set<Class<?>> accessedTypes = new LinkedHashSet<>();
 
 		// 递归扫描目标元素的层级结构
-		while (CollUtil.isNotEmpty(typeHierarchyDeque)) {
+		while (CollUtils.isNotEmpty(typeHierarchyDeque)) {
 			++context.verticalIndex;
 
 			final List<Class<?>> currTypeHierarchies = typeHierarchyDeque.removeFirst();
@@ -186,7 +185,7 @@ public abstract class AbstractAnnotationScanner implements AnnotationScanner {
 			}
 
 			// 进入下一层
-			if (CollUtil.isNotEmpty(nextTypeHierarchies)) {
+			if (CollUtils.isNotEmpty(nextTypeHierarchies)) {
 				typeHierarchyDeque.addLast(nextTypeHierarchies);
 			}
 		}
@@ -314,8 +313,8 @@ public abstract class AbstractAnnotationScanner implements AnnotationScanner {
             return getAnnotationsFromTypeDeclaredField(type, sourceField);
         }
         // 理论上不会进入该分支
-        throw new IllegalArgumentException(CharSequenceUtil.format(
-			"cannot get annotation from element [{}]", element
+        throw new IllegalArgumentException(String.format(
+			"cannot get annotation from element [%s]", element
 		));
     }
 

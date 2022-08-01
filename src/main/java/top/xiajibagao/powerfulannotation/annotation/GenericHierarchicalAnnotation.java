@@ -1,18 +1,18 @@
 package top.xiajibagao.powerfulannotation.annotation;
 
-import cn.hutool.core.lang.Opt;
-import cn.hutool.core.util.ClassUtil;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import top.xiajibagao.powerfulannotation.annotation.attribute.AnnotationAttribute;
 import top.xiajibagao.powerfulannotation.annotation.attribute.CacheableAnnotationAttribute;
 import top.xiajibagao.powerfulannotation.helper.AnnotationUtils;
+import top.xiajibagao.powerfulannotation.helper.ReflectUtils;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -89,7 +89,7 @@ public class GenericHierarchicalAnnotation<T extends Annotation> implements Hier
      * @return 属性注解
      */
     protected Map<String, AnnotationAttribute> loadAnnotationAttributes(T annotation) {
-        return Stream.of(ClassUtil.getDeclaredMethods(annotation.annotationType()))
+        return Stream.of(ReflectUtils.getDeclaredMethods(annotation.annotationType()))
             .filter(AnnotationUtils::isAttributeMethod)
             .collect(Collectors.toMap(Method::getName, method -> new CacheableAnnotationAttribute(annotation, method)));
     }
@@ -103,8 +103,8 @@ public class GenericHierarchicalAnnotation<T extends Annotation> implements Hier
      */
     @Override
     public boolean hasAttribute(String attributeName, Class<?> attributeType) {
-        return Opt.ofNullable(attributeMap.get(attributeName))
-            .filter(method -> ClassUtil.isAssignable(attributeType, method.getAttributeType()))
+        return Optional.ofNullable(attributeMap.get(attributeName))
+            .filter(method -> ReflectUtils.isAssignable(attributeType, method.getAttributeType()))
             .isPresent();
     }
 

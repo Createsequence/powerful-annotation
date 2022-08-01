@@ -1,15 +1,12 @@
 package top.xiajibagao.powerfulannotation.helper;
 
-import cn.hutool.core.map.WeakConcurrentMap;
-import cn.hutool.core.text.CharSequenceUtil;
-import cn.hutool.core.util.ObjectUtil;
-import cn.hutool.core.util.ReflectUtil;
-
 import java.lang.annotation.Annotation;
+import java.lang.ref.WeakReference;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Method;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -30,7 +27,7 @@ public class AnnotationUtils {
     /**
      * 注解缓存
      */
-    private static final Map<AnnotatedElement, Annotation[]> ANNOTATED_ELEMENT_MAP = new WeakConcurrentMap<>(new ConcurrentHashMap<>(36));
+    private static final Map<AnnotatedElement, WeakReference<Annotation[]>> ANNOTATED_ELEMENT_MAP = new ConcurrentHashMap<>(36);
 
     /**
      * 获取直接声明的注解
@@ -39,9 +36,14 @@ public class AnnotationUtils {
      * @return 直接声明的注解
      */
     public static Annotation[] getDeclaredAnnotations(AnnotatedElement element) {
-        Annotation[] annotations = Objects.isNull(element) ?
-            emptyAnnotations() :  ANNOTATED_ELEMENT_MAP.computeIfAbsent(element, AnnotatedElement::getDeclaredAnnotations);
-        return annotations.clone();
+        return Optional.ofNullable(ANNOTATED_ELEMENT_MAP.get(element))
+            .map(WeakReference::get)
+            .orElseGet(() -> {
+                Annotation[] annotations = Objects.isNull(element) ?
+                    emptyAnnotations() : element.getAnnotations();
+                ANNOTATED_ELEMENT_MAP.put(element, new WeakReference<>(annotations));
+                return annotations;
+            });
     }
     
     /**
@@ -52,7 +54,7 @@ public class AnnotationUtils {
      * @return 获取直接声明的注解
      */
     public static <T extends Annotation> T getDeclaredAnnotation(AnnotatedElement element, Class<T> annotationType) {
-        return ObjectUtil.isNull(element) ? null : element.getDeclaredAnnotation(annotationType);
+        return Objects.isNull(element) ? null : element.getDeclaredAnnotation(annotationType);
     }
 
     /**
@@ -75,9 +77,9 @@ public class AnnotationUtils {
     public static boolean isAttributeMethod(Method method) {
         return method.getParameterCount() == 0
             && method.getReturnType() != void.class
-            && !ReflectUtil.isHashCodeMethod(method)
-            && !ReflectUtil.isToStringMethod(method)
-            && !CharSequenceUtil.equals("annotationType", method.getName());
+            && !"hashCode".equals(method.getName())
+            && !"toString".equals(method.getName())
+            && !"annotationType".equals(method.getName());
     }
 
 }

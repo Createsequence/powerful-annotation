@@ -1,11 +1,11 @@
 package top.xiajibagao.powerfulannotation.annotation.proxy;
 
-import cn.hutool.core.util.ObjectUtil;
 import top.xiajibagao.powerfulannotation.annotation.AnnotationAttributeValueProvider;
 import top.xiajibagao.powerfulannotation.annotation.HierarchicalAnnotation;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Proxy;
+import java.util.Objects;
 
 /**
  * 代理注解静态工厂，用于合成一些与原始注解具有不一样属性值的代理注解
@@ -44,7 +44,7 @@ public class AnnotationProxyFactory {
     @SuppressWarnings("unchecked")
     public static <T extends Annotation> T get(
         Class<T> annotationType, Annotation original, AnnotationAttributeValueProvider valueProvider) {
-        if (ObjectUtil.isNull(original) || ObjectUtil.isNull(annotationType) || ObjectUtil.isNull(valueProvider)) {
+        if (Objects.isNull(original) || Objects.isNull(annotationType) || Objects.isNull(valueProvider)) {
             return null;
         }
         AnnotationInvocationHandler invocationHandler = new AnnotationInvocationHandler(valueProvider, original);

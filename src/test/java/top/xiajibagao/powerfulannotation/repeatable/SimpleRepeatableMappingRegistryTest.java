@@ -1,15 +1,14 @@
 package top.xiajibagao.powerfulannotation.repeatable;
 
-import cn.hutool.core.collection.CollStreamUtil;
-import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.lang.Opt;
 import org.junit.Assert;
 import org.junit.Test;
+import top.xiajibagao.powerfulannotation.helper.CollUtils;
 import top.xiajibagao.powerfulannotation.helper.ForestMap;
 import top.xiajibagao.powerfulannotation.helper.TreeEntry;
 
 import java.lang.annotation.*;
 import java.util.Collection;
+import java.util.Optional;
 import java.util.Set;
 
 /**
@@ -73,10 +72,10 @@ public class SimpleRepeatableMappingRegistryTest {
 		);
 		registry.register(AnnotationForTest1.class);
 
-		Set<Class<? extends Annotation>> set1 = CollUtil.newLinkedHashSet(AnnotationForTest2.class, AnnotationForTest3.class);
-		Assert.assertEquals(set1, CollStreamUtil.toSet(registry.getContainers(AnnotationForTest1.class), RepeatableMapping::getContainerType));
-		Set<Class<? extends Annotation>> set2 = CollUtil.newLinkedHashSet(AnnotationForTest3.class);
-		Assert.assertEquals(set2, CollStreamUtil.toSet(registry.getContainers(AnnotationForTest2.class), RepeatableMapping::getContainerType));
+		Set<Class<? extends Annotation>> set1 = CollUtils.newLinkedHashSet(AnnotationForTest2.class, AnnotationForTest3.class);
+		Assert.assertEquals(set1, CollUtils.toSet(registry.getContainers(AnnotationForTest1.class), RepeatableMapping::getContainerType));
+		Set<Class<? extends Annotation>> set2 = CollUtils.newLinkedHashSet(AnnotationForTest3.class);
+		Assert.assertEquals(set2, CollUtils.toSet(registry.getContainers(AnnotationForTest2.class), RepeatableMapping::getContainerType));
 		Assert.assertTrue(registry.getContainers(AnnotationForTest3.class).isEmpty());
 		Assert.assertTrue(registry.getContainers(AnnotationForTest4.class).isEmpty());
 	}
@@ -102,20 +101,20 @@ public class SimpleRepeatableMappingRegistryTest {
 
 		AnnotationForTest3 annotation = ClassForTest.class.getAnnotation(AnnotationForTest3.class);
 		Assert.assertTrue(registry.getElementsFromContainer(annotation, AnnotationForTest4.class).isEmpty());
-		Assert.assertEquals(CollUtil.newArrayList(annotation), registry.getElementsFromContainer(annotation, AnnotationForTest3.class));
+		Assert.assertEquals(CollUtils.newArrayList(annotation), registry.getElementsFromContainer(annotation, AnnotationForTest3.class));
 		Assert.assertEquals(2, registry.getElementsFromContainer(annotation, AnnotationForTest2.class).size());
 		Assert.assertEquals(4, registry.getElementsFromContainer(annotation, AnnotationForTest1.class).size());
 
 		AnnotationForTest4 annotation2 =  ClassForTest.class.getAnnotation(AnnotationForTest4.class);
-		Assert.assertEquals(CollUtil.newArrayList(annotation2), registry.getElementsFromContainer(annotation2, AnnotationForTest4.class));
+		Assert.assertEquals(CollUtils.newArrayList(annotation2), registry.getElementsFromContainer(annotation2, AnnotationForTest4.class));
 		Assert.assertTrue(registry.getElementsFromContainer(annotation2, AnnotationForTest3.class).isEmpty());
 	}
 
 	private <K, V> V getNodeValue(ForestMap<K, V> map, K key) {
-		return Opt.ofNullable(key)
+		return Optional.ofNullable(key)
 			.map(map::get)
 			.map(TreeEntry::getValue)
-			.get();
+			.orElse(null);
 	}
 
 	@Repeatable(AnnotationForTest2.class)

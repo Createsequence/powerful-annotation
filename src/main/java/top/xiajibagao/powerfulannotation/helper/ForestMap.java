@@ -1,13 +1,6 @@
 package top.xiajibagao.powerfulannotation.helper;
 
-import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.lang.Opt;
-import cn.hutool.core.util.ObjectUtil;
-
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.function.BiConsumer;
 
 /**
@@ -46,7 +39,7 @@ public interface ForestMap<K, V> extends Map<K, TreeEntry<K, V>> {
 	 */
 	@Override
 	default void putAll(Map<? extends K, ? extends TreeEntry<K, V>> treeEntryMap) {
-		if (CollUtil.isEmpty(treeEntryMap)) {
+		if (CollUtils.isEmpty(treeEntryMap)) {
 			return;
 		}
 		treeEntryMap.forEach((k, v) -> {
@@ -171,11 +164,11 @@ public interface ForestMap<K, V> extends Map<K, TreeEntry<K, V>> {
 	 */
 	default Set<TreeEntry<K, V>> getTreeNodes(K key) {
 		final TreeEntry<K, V> target = get(key);
-		if (ObjectUtil.isNull(target)) {
+		if (Objects.isNull(target)) {
 			return Collections.emptySet();
 		}
-		final Set<TreeEntry<K, V>> results = CollUtil.newLinkedHashSet(target.getRoot());
-		CollUtil.addAll(results, target.getRoot().getChildren().values());
+		final Set<TreeEntry<K, V>> results = CollUtils.newLinkedHashSet(target.getRoot());
+		CollUtils.addAll(results, target.getRoot().getChildren().values());
 		return results;
 	}
 
@@ -187,7 +180,7 @@ public interface ForestMap<K, V> extends Map<K, TreeEntry<K, V>> {
 	 * @return 节点
 	 */
 	default TreeEntry<K, V> getRootNode(K key) {
-		return Opt.ofNullable(get(key))
+		return Optional.ofNullable(get(key))
 				.map(TreeEntry::getRoot)
 				.orElse(null);
 	}
@@ -200,7 +193,7 @@ public interface ForestMap<K, V> extends Map<K, TreeEntry<K, V>> {
 	 * @return 节点
 	 */
 	default TreeEntry<K, V> getDeclaredParentNode(K key) {
-		return Opt.ofNullable(get(key))
+		return Optional.ofNullable(get(key))
 				.map(TreeEntry::getDeclaredParent)
 				.orElse(null);
 	}
@@ -213,7 +206,7 @@ public interface ForestMap<K, V> extends Map<K, TreeEntry<K, V>> {
 	 * @return 节点
 	 */
 	default TreeEntry<K, V> getParentNode(K key, K parentKey) {
-		return Opt.ofNullable(get(key))
+		return Optional.ofNullable(get(key))
 				.map(t -> t.getParent(parentKey))
 				.orElse(null);
 	}
@@ -226,7 +219,7 @@ public interface ForestMap<K, V> extends Map<K, TreeEntry<K, V>> {
 	 * @return 是否
 	 */
 	default boolean containsParentNode(K key, K parentKey) {
-		return Opt.ofNullable(get(key))
+		return Optional.ofNullable(get(key))
 				.map(m -> m.containsParent(parentKey))
 				.orElse(false);
 	}
@@ -238,9 +231,9 @@ public interface ForestMap<K, V> extends Map<K, TreeEntry<K, V>> {
 	 * @return 节点值，若节点不存在，或节点值为null都将返回null
 	 */
 	default V getNodeValue(K key) {
-		return Opt.ofNullable(get(key))
+		return Optional.ofNullable(get(key))
 			.map(TreeEntry::getValue)
-			.get();
+			.orElse(null);
 	}
 
 	// ===================== 子节点相关方法 =====================
@@ -253,7 +246,7 @@ public interface ForestMap<K, V> extends Map<K, TreeEntry<K, V>> {
 	 * @return 是否
 	 */
 	default boolean containsChildNode(K parentKey, K childKey) {
-		return Opt.ofNullable(get(parentKey))
+		return Optional.ofNullable(get(parentKey))
 				.map(m -> m.containsChild(childKey))
 				.orElse(false);
 	}
@@ -266,7 +259,7 @@ public interface ForestMap<K, V> extends Map<K, TreeEntry<K, V>> {
 	 * @return 节点
 	 */
 	default Collection<TreeEntry<K, V>> getDeclaredChildNodes(K key) {
-		return Opt.ofNullable(get(key))
+		return Optional.ofNullable(get(key))
 				.map(TreeEntry::getDeclaredChildren)
 				.map(Map::values)
 				.orElseGet(Collections::emptyList);
@@ -280,7 +273,7 @@ public interface ForestMap<K, V> extends Map<K, TreeEntry<K, V>> {
 	 * @return 该节点的全部子节点
 	 */
 	default Collection<TreeEntry<K, V>> getChildNodes(K key) {
-		return Opt.ofNullable(get(key))
+		return Optional.ofNullable(get(key))
 				.map(TreeEntry::getChildren)
 				.map(Map::values)
 				.orElseGet(Collections::emptyList);

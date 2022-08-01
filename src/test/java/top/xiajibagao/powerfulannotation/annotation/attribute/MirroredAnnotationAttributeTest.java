@@ -1,8 +1,8 @@
 package top.xiajibagao.powerfulannotation.annotation.attribute;
 
-import cn.hutool.core.util.ReflectUtil;
 import org.junit.Assert;
 import org.junit.Test;
+import top.xiajibagao.powerfulannotation.helper.ReflectUtils;
 
 import java.lang.annotation.*;
 import java.lang.reflect.Method;
@@ -18,9 +18,9 @@ public class MirroredAnnotationAttributeTest {
 	public void testBaseInfo() {
 		// 组合属性
 		final Annotation annotation = ClassForTest1.class.getAnnotation(AnnotationForTest.class);
-		final Method valueMethod = ReflectUtil.getMethod(AnnotationForTest.class, "value");
+		final Method valueMethod = ReflectUtils.getDeclaredMethod(AnnotationForTest.class, "value");
 		final CacheableAnnotationAttribute valueAttribute = new CacheableAnnotationAttribute(annotation, valueMethod);
-		final Method nameMethod = ReflectUtil.getMethod(AnnotationForTest.class, "name");
+		final Method nameMethod = ReflectUtils.getDeclaredMethod(AnnotationForTest.class, "name");
 		final CacheableAnnotationAttribute nameAttribute = new CacheableAnnotationAttribute(annotation, nameMethod);
 		final MirroredAnnotationAttribute nameAnnotationAttribute = new MirroredAnnotationAttribute(nameAttribute, valueAttribute);
 
@@ -37,9 +37,9 @@ public class MirroredAnnotationAttributeTest {
 	public void testWorkWhenValueDefault() {
 		// 组合属性
 		final Annotation annotation = ClassForTest2.class.getAnnotation(AnnotationForTest.class);
-		final Method valueMethod = ReflectUtil.getMethod(AnnotationForTest.class, "value");
+		final Method valueMethod = ReflectUtils.getDeclaredMethod(AnnotationForTest.class, "value");
 		final CacheableAnnotationAttribute valueAttribute = new CacheableAnnotationAttribute(annotation, valueMethod);
-		final Method nameMethod = ReflectUtil.getMethod(AnnotationForTest.class, "name");
+		final Method nameMethod = ReflectUtils.getDeclaredMethod(AnnotationForTest.class, "name");
 		final CacheableAnnotationAttribute nameAttribute = new CacheableAnnotationAttribute(annotation, nameMethod);
 		final MirroredAnnotationAttribute nameAnnotationAttribute = new MirroredAnnotationAttribute(nameAttribute, valueAttribute);
 
@@ -53,9 +53,9 @@ public class MirroredAnnotationAttributeTest {
 	public void testWorkWhenValueNonDefault() {
 		// 组合属性
 		final Annotation annotation = ClassForTest1.class.getAnnotation(AnnotationForTest.class);
-		final Method valueMethod = ReflectUtil.getMethod(AnnotationForTest.class, "value");
+		final Method valueMethod = ReflectUtils.getDeclaredMethod(AnnotationForTest.class, "value");
 		final CacheableAnnotationAttribute valueAttribute = new CacheableAnnotationAttribute(annotation, valueMethod);
-		final Method nameMethod = ReflectUtil.getMethod(AnnotationForTest.class, "name");
+		final Method nameMethod = ReflectUtils.getDeclaredMethod(AnnotationForTest.class, "name");
 		final CacheableAnnotationAttribute nameAttribute = new CacheableAnnotationAttribute(annotation, nameMethod);
 		final MirroredAnnotationAttribute nameAnnotationAttribute = new MirroredAnnotationAttribute(nameAttribute, valueAttribute);
 

@@ -1,6 +1,6 @@
 package top.xiajibagao.powerfulannotation.repeatable;
 
-import cn.hutool.core.lang.Assert;
+import top.xiajibagao.powerfulannotation.helper.Assert;
 
 import java.lang.annotation.Annotation;
 import java.lang.annotation.Repeatable;

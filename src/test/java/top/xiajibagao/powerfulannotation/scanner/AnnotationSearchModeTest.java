@@ -1,6 +1,5 @@
 package top.xiajibagao.powerfulannotation.scanner;
 
-import cn.hutool.core.bean.BeanUtil;
 import lombok.SneakyThrows;
 import org.junit.Assert;
 import org.junit.Test;
@@ -40,7 +39,7 @@ public class AnnotationSearchModeTest {
 
 	@Test
 	public void copyOptionsTest() {
-		ScanOptions source = ((AbstractAnnotationScanner)BeanUtil.getFieldValue(AnnotationSearchMode.SELF_AND_DIRECT, "scanner")).options;
+		ScanOptions source = AnnotationSearchMode.SELF_AND_DIRECT.scanner.options;
 		ScanOptions copy = AnnotationSearchMode.SELF_AND_DIRECT.getOptions();
 		Assert.assertNotSame(source, copy);
 		Assert.assertEquals(source.isEnableScanAccessedType(), copy.isEnableScanAccessedType());

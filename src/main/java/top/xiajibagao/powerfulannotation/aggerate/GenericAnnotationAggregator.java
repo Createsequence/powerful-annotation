@@ -1,19 +1,15 @@
 package top.xiajibagao.powerfulannotation.aggerate;
 
-import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.lang.Assert;
-import cn.hutool.core.util.ObjectUtil;
 import lombok.AccessLevel;
 import lombok.Getter;
 import top.xiajibagao.powerfulannotation.annotation.GenericHierarchicalAnnotation;
 import top.xiajibagao.powerfulannotation.annotation.HierarchicalAnnotation;
+import top.xiajibagao.powerfulannotation.helper.Assert;
+import top.xiajibagao.powerfulannotation.helper.CollUtils;
 import top.xiajibagao.powerfulannotation.repeatable.RepeatableMappingRegistry;
 
 import java.lang.annotation.Annotation;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -152,7 +148,7 @@ public class GenericAnnotationAggregator<T> implements AnnotationAggregator<T> {
     @Override
     public Collection<HierarchicalAnnotation<Annotation>> getAnnotationByVerticalIndex(int verticalIndex) {
         return getAllAnnotations().stream()
-            .filter(annotation -> ObjectUtil.equals(annotation.getVerticalIndex(), verticalIndex))
+            .filter(annotation -> Objects.equals(annotation.getVerticalIndex(), verticalIndex))
             .collect(Collectors.toList());
     }
 
@@ -173,10 +169,10 @@ public class GenericAnnotationAggregator<T> implements AnnotationAggregator<T> {
         // 通过映射表将注解转换为指定的元素注解
         return annotations.stream()
             .filter(annotation -> repeatableMappingRegistry.isContainerOf(annotationType, annotation.annotationType())
-                || ObjectUtil.equals(annotationType, annotation.annotationType()))
+                || Objects.equals(annotationType, annotation.annotationType()))
             .map(HierarchicalAnnotation::getAnnotation)
             .map(annotation -> repeatableMappingRegistry.getElementsFromContainer(annotation, annotationType))
-            .filter(CollUtil::isNotEmpty)
+            .filter(CollUtils::isNotEmpty)
             .flatMap(Collection::stream)
             .collect(Collectors.toList());
     }

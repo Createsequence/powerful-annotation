@@ -1,6 +1,5 @@
 package top.xiajibagao.powerfulannotation.synthesis.resolver;
 
-import cn.hutool.core.util.ReflectUtil;
 import org.junit.Assert;
 import org.junit.Test;
 import top.xiajibagao.powerfulannotation.annotation.GenericHierarchicalAnnotation;
@@ -9,6 +8,7 @@ import top.xiajibagao.powerfulannotation.annotation.attribute.AnnotationAttribut
 import top.xiajibagao.powerfulannotation.annotation.attribute.MirroredAnnotationAttribute;
 import top.xiajibagao.powerfulannotation.annotation.attribute.WrappedAnnotationAttribute;
 import top.xiajibagao.powerfulannotation.helper.HierarchySelector;
+import top.xiajibagao.powerfulannotation.helper.ReflectUtils;
 import top.xiajibagao.powerfulannotation.synthesis.AnnotationSynthesizer;
 import top.xiajibagao.powerfulannotation.synthesis.GenericAnnotationSynthesizer;
 import top.xiajibagao.powerfulannotation.synthesis.Link;
@@ -38,12 +38,12 @@ public class MirrorAttributeResolverTest {
 		synthesizer.accept(annotation);
 
 		AnnotationAttribute valueAttribute = annotation.getAttribute("value");
-		Assert.assertEquals(ReflectUtil.getMethod(AnnotationForTest.class, "value"), valueAttribute.getAttribute());
+		Assert.assertEquals(ReflectUtils.getDeclaredMethod(AnnotationForTest.class, "value"), valueAttribute.getAttribute());
 		Assert.assertTrue(valueAttribute.isWrapped());
 		Assert.assertEquals(MirroredAnnotationAttribute.class, valueAttribute.getClass());
 
 		AnnotationAttribute nameAttribute = annotation.getAttribute("name");
-		Assert.assertEquals(ReflectUtil.getMethod(AnnotationForTest.class, "name"), nameAttribute.getAttribute());
+		Assert.assertEquals(ReflectUtils.getDeclaredMethod(AnnotationForTest.class, "name"), nameAttribute.getAttribute());
 		Assert.assertTrue(nameAttribute.isWrapped());
 		Assert.assertEquals(MirroredAnnotationAttribute.class, nameAttribute.getClass());
 

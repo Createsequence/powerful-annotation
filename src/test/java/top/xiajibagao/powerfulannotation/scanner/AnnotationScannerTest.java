@@ -1,9 +1,9 @@
 package top.xiajibagao.powerfulannotation.scanner;
 
-import cn.hutool.core.text.CharSequenceUtil;
 import lombok.SneakyThrows;
 import org.junit.Assert;
 import org.junit.Test;
+import top.xiajibagao.powerfulannotation.helper.StrUtils;
 
 import java.lang.annotation.*;
 import java.lang.reflect.AnnotatedType;
@@ -53,7 +53,7 @@ public class AnnotationScannerTest {
 				.setEnableScanSuperClass(false)
 				.setEnableScanMetaAnnotation(false)
 				.setEnableScanAccessedType(false)
-				.setTypeFilter(t -> !CharSequenceUtil.startWithAny(t.getName(), "java.lang", "javax", "com.sum"))
+				.setTypeFilter(t -> StrUtils.isNotStartWithAny(t.getName(), "java.lang", "javax", "com.sum"))
 		);
 
 		// class

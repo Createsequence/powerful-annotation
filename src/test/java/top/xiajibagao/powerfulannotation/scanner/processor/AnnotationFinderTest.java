@@ -1,10 +1,10 @@
 package top.xiajibagao.powerfulannotation.scanner.processor;
 
-import cn.hutool.core.util.ObjectUtil;
 import org.junit.Assert;
 import org.junit.Test;
 
 import java.lang.annotation.*;
+import java.util.Objects;
 
 public class AnnotationFinderTest {
 
@@ -12,7 +12,7 @@ public class AnnotationFinderTest {
 	public void finderTest() {
 		AnnotationFinder<Annotation> finder = new AnnotationFinder<>(
 			(vi, hi, annotation) -> annotation,
-			annotation -> ObjectUtil.equals(annotation.annotationType(), AnnotationForTest2.class)
+			annotation -> Objects.equals(annotation.annotationType(), AnnotationForTest2.class)
 		);
 
 		AnnotationForTest1 annotationForTest1 = ClassForTest.class.getAnnotation(AnnotationForTest1.class);

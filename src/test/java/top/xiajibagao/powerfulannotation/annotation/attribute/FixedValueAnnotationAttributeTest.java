@@ -1,9 +1,9 @@
 package top.xiajibagao.powerfulannotation.annotation.attribute;
 
-import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.util.ReflectUtil;
 import org.junit.Assert;
 import org.junit.Test;
+import top.xiajibagao.powerfulannotation.helper.CollUtils;
+import top.xiajibagao.powerfulannotation.helper.ReflectUtils;
 
 import java.lang.annotation.*;
 import java.lang.reflect.Method;
@@ -18,7 +18,7 @@ public class FixedValueAnnotationAttributeTest {
     @Test
     public void testBaseInfo() {
         Annotation annotation = ClassForTest.class.getAnnotation(AnnotationForTest.class);
-        Method method = ReflectUtil.getMethod(AnnotationForTest.class, "value");
+        Method method = ReflectUtils.getDeclaredMethod(AnnotationForTest.class, "value");
         Assert.assertNotNull(method);
         AnnotationAttribute originalAttribute = new CacheableAnnotationAttribute(annotation, method);
         Assert.assertThrows(IllegalArgumentException.class, () -> new FixedValueAnnotationAttribute(originalAttribute, 123));
@@ -34,7 +34,7 @@ public class FixedValueAnnotationAttributeTest {
         Assert.assertEquals(method.getReturnType(), attribute.getAttributeType());
         // 获取包装对象
         Assert.assertEquals(originalAttribute, attribute.getOriginal());
-        Assert.assertEquals(CollUtil.newArrayList(originalAttribute), attribute.getAllLinkedNonWrappedAttributes());
+        Assert.assertEquals(CollUtils.newArrayList(originalAttribute), attribute.getAllLinkedNonWrappedAttributes());
         // 获取值
         Assert.assertEquals("name", attribute.getValue());
         Assert.assertFalse(attribute.isValueEquivalentToDefaultValue());

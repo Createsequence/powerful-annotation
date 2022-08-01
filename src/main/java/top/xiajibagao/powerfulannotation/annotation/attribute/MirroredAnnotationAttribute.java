@@ -1,6 +1,6 @@
 package top.xiajibagao.powerfulannotation.annotation.attribute;
 
-import cn.hutool.core.lang.Assert;
+import top.xiajibagao.powerfulannotation.helper.Assert;
 import top.xiajibagao.powerfulannotation.synthesis.RelationType;
 
 /**

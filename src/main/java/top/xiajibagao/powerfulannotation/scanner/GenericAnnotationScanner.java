@@ -1,17 +1,16 @@
 package top.xiajibagao.powerfulannotation.scanner;
 
-import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.text.CharSequenceUtil;
-import cn.hutool.core.util.ArrayUtil;
-import cn.hutool.core.util.ClassUtil;
-import cn.hutool.core.util.ObjectUtil;
 import top.xiajibagao.powerfulannotation.helper.AnnotationUtils;
+import top.xiajibagao.powerfulannotation.helper.CollUtils;
+import top.xiajibagao.powerfulannotation.helper.ObjectUtils;
+import top.xiajibagao.powerfulannotation.helper.ReflectUtils;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Stream;
 
 /**
@@ -91,8 +90,8 @@ public class GenericAnnotationScanner extends AbstractAnnotationScanner {
     @Override
     protected void collectInterfaceTypeIfNecessary(List<Class<?>> nextTypeHierarchies, Class<?> type) {
         final Class<?>[] interfaces = type.getInterfaces();
-        if (ArrayUtil.isNotEmpty(interfaces)) {
-            CollUtil.addAll(nextTypeHierarchies, interfaces);
+        if (CollUtils.isNotEmpty(interfaces)) {
+            CollUtils.addAll(nextTypeHierarchies, interfaces);
         }
     }
 
@@ -105,7 +104,7 @@ public class GenericAnnotationScanner extends AbstractAnnotationScanner {
     @Override
     protected void collectSuperTypeIfNecessary(List<Class<?>> nextTypeHierarchies, Class<?> type) {
         final Class<?> superClass = type.getSuperclass();
-        if (!ObjectUtil.equals(superClass, Object.class) && ObjectUtil.isNotNull(superClass)) {
+        if (ObjectUtils.isNotEquals(superClass, Object.class) && Objects.nonNull(superClass)) {
             nextTypeHierarchies.add(superClass);
         }
     }
@@ -122,7 +121,7 @@ public class GenericAnnotationScanner extends AbstractAnnotationScanner {
     @Override
     protected Annotation[] getAnnotationsFromTypeDeclaredField(Class<?> type, Field element) {
         return Stream.of(type.getDeclaredFields())
-            .filter(field -> ObjectUtil.equals(field, element))
+            .filter(field -> Objects.equals(field, element))
             .map(AnnotationUtils::getDeclaredAnnotations)
             .flatMap(Stream::of)
             .toArray(Annotation[]::new);
@@ -137,7 +136,7 @@ public class GenericAnnotationScanner extends AbstractAnnotationScanner {
      */
     @Override
     protected Annotation[] getAnnotationsFromTypeDeclaredMethod(Class<?> type, Method element) {
-        return Stream.of(ClassUtil.getDeclaredMethods(type))
+        return Stream.of(ReflectUtils.getDeclaredMethods(type))
             .filter(superMethod -> !superMethod.isBridge())
             .filter(superMethod -> hasSameMethodSignature(element, superMethod))
             .map(AnnotationUtils::getDeclaredAnnotations)
@@ -162,18 +161,18 @@ public class GenericAnnotationScanner extends AbstractAnnotationScanner {
      */
     private boolean hasSameMethodSignature(Method element, Method superMethod) {
         // check name
-        if (!CharSequenceUtil.equals(element.getName(), superMethod.getName())) {
+        if (ObjectUtils.isNotEquals(element.getName(), superMethod.getName())) {
             return false;
         }
         // check params
         final Class<?>[] sourceParameterTypes = element.getParameterTypes();
         final Class<?>[] targetParameterTypes = superMethod.getParameterTypes();
         if ((sourceParameterTypes.length != targetParameterTypes.length)
-            || !ArrayUtil.containsAll(sourceParameterTypes, targetParameterTypes)) {
+            || !CollUtils.isContainsAll(sourceParameterTypes, targetParameterTypes)) {
             return false;
         }
         // check return
-        return ClassUtil.isAssignable(superMethod.getReturnType(), element.getReturnType());
+        return ReflectUtils.isAssignable(superMethod.getReturnType(), element.getReturnType());
     }
 
 }

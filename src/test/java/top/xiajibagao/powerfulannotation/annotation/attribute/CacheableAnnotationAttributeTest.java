@@ -1,8 +1,8 @@
 package top.xiajibagao.powerfulannotation.annotation.attribute;
 
-import cn.hutool.core.util.ReflectUtil;
 import org.junit.Assert;
 import org.junit.Test;
+import top.xiajibagao.powerfulannotation.helper.ReflectUtils;
 
 import java.lang.annotation.*;
 import java.lang.reflect.Method;
@@ -17,7 +17,7 @@ public class CacheableAnnotationAttributeTest {
     @Test
     public void testBaseInfo() {
         final Annotation annotation = ClassForTest1.class.getAnnotation(AnnotationForTest.class);
-        final Method attribute = ReflectUtil.getMethod(AnnotationForTest.class, "value");
+        final Method attribute = ReflectUtils.getDeclaredMethod(AnnotationForTest.class, "value");
         final CacheableAnnotationAttribute annotationAttribute = new CacheableAnnotationAttribute(annotation, attribute);
         // 注解属性
         Assert.assertEquals(annotation, annotationAttribute.getAnnotation());
@@ -30,7 +30,7 @@ public class CacheableAnnotationAttributeTest {
     @Test
     public void testWorkWhenValueDefault() {
         final Annotation annotation = ClassForTest1.class.getAnnotation(AnnotationForTest.class);
-        final Method attribute = ReflectUtil.getMethod(AnnotationForTest.class, "value");
+        final Method attribute = ReflectUtils.getDeclaredMethod(AnnotationForTest.class, "value");
         final CacheableAnnotationAttribute annotationAttribute = new CacheableAnnotationAttribute(annotation, attribute);
 
         // 值处理
@@ -42,7 +42,7 @@ public class CacheableAnnotationAttributeTest {
     @Test
     public void TestWorkWhenValueNonDefault() {
         final Annotation annotation = ClassForTest2.class.getAnnotation(AnnotationForTest.class);
-        final Method attribute = ReflectUtil.getMethod(AnnotationForTest.class, "value");
+        final Method attribute = ReflectUtils.getDeclaredMethod(AnnotationForTest.class, "value");
         final CacheableAnnotationAttribute annotationAttribute = new CacheableAnnotationAttribute(annotation, attribute);
 
         // 值处理
