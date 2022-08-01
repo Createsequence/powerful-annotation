@@ -155,7 +155,7 @@ public abstract class AbstractDynamicAttributeResolver implements SyntheticAnnot
 	 */
 	protected void checkLinkedSelf(AnnotationAttribute original, AnnotationAttribute linked) {
 		boolean linkSelf = (original == linked) || Objects.equals(original.getAttribute(), linked.getAttribute());
-		Assert.isFalse(linkSelf, "cannot link self [{}]", original.getAttribute());
+		Assert.isFalse(linkSelf, "cannot link self [%s]", original.getAttribute());
 	}
 
 	/**
@@ -166,7 +166,7 @@ public abstract class AbstractDynamicAttributeResolver implements SyntheticAnnot
 	 * @param annotation      {@link Link}注解
 	 */
 	protected void checkLinkedAttributeNotNull(AnnotationAttribute original, AnnotationAttribute linkedAttribute, Link annotation) {
-		Assert.notNull(linkedAttribute, "cannot find linked attribute [{}] of original [{}] in [{}]",
+		Assert.notNull(linkedAttribute, "cannot find linked attribute [%s] of original [%s] in [%s]",
 			original.getAttribute(), annotation.attribute(),
 			getLinkedAnnotationType(annotation, original.getAnnotationType())
 		);

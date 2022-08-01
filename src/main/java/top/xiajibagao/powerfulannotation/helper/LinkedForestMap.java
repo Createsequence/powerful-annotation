@@ -571,7 +571,7 @@ public class LinkedForestMap<K, V> implements ForestMap<K, V> {
 			// 检查循环引用
 			traverseParentNodes(true, s -> Assert.isTrue(
 				ObjectUtils.isNotEquals(s.key, child.key),
-				"circular reference between [{}] and [{}]!",
+				"circular reference between [%s] and [%s]!",
 				s.key, this.key
 			), null);
 

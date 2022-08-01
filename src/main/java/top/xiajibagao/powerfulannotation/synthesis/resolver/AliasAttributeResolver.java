@@ -99,7 +99,7 @@ public class AliasAttributeResolver extends AbstractDynamicAttributeResolver {
 			Objects.isNull(comparator)
 				|| Objects.equals(originalAnnotation, linkedAnnotation)
 				|| comparator.compare(originalAnnotation, linkedAnnotation) <= 0,
-			"link attribute [{}] priority cannot be higher than original attribute [{}]",
+			"link attribute [%s] priority cannot be higher than original attribute [%s]",
 			linkedAttribute, originalAttribute
 		);
 		// 处理aliasFor类型的关系
@@ -163,7 +163,7 @@ public class AliasAttributeResolver extends AbstractDynamicAttributeResolver {
 		}
 		Assert.isNotEquals(
 			annotation.attribute(), original.getAttributeName(),
-			"circular reference between the alias attribute [{}] and the original attribute [{}]",
+			"circular reference between the alias attribute [%s] and the original attribute [%s]",
 			alias.getAttribute(), original.getAttribute()
 		);
 	}

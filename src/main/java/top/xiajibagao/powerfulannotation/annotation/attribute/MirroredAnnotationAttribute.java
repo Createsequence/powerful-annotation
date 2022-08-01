@@ -26,7 +26,7 @@ public class MirroredAnnotationAttribute extends AbstractWrappedAnnotationAttrib
 		if (originIsDefault == targetIsDefault) {
 			Assert.equals(
 				originValue, targetValue,
-				"the values of attributes [{}] and [{}] that mirror each other are different: [{}] <==> [{}]",
+				"the values of attributes [%s] and [%s] that mirror each other are different: [%s] <==> [%s]",
 				original.getAttribute(), linked.getAttribute(), originValue, targetValue
 			);
 			return originValue;

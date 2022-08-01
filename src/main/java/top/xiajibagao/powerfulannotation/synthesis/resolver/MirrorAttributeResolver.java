@@ -138,7 +138,6 @@ public class MirrorAttributeResolver extends AbstractDynamicAttributeResolver {
 			"mirror attribute [%s] of original attribute [%s] must marked by @Link, and also @LinkType.type() must is [%s]",
 			mirror.getAttribute(), original.getAttribute(), RelationType.MIRROR_FOR
 		);
-		checkLinkedSelf(original, mirror);
 	}
 
 }

@@ -25,7 +25,7 @@ public class RepeatableByMappingParser implements RepeatableMappingParser {
 		}
 		Assert.isFalse(
 			annotationType.isAnnotationPresent(Repeatable.class),
-			"cannot parse @Link(type = RelationType.CONTAINED_BY) on [{}] , the annotation already annotated by @Repeatable",
+			"cannot parse @Link(type = RelationType.CONTAINED_BY) on [%s] , the annotation already annotated by @Repeatable",
 			annotationType, annotationType
 		);
 		final Class<? extends Annotation> containerType = annotation.annotation();

@@ -44,13 +44,13 @@ public interface RepeatableMappingParser {
 	 */
 	static void checkContainedAttribute(Class<? extends Annotation> elementType, Class<? extends Annotation> containerType, Method containerAttribute) {
 		// 容器注解的元素属性不能为空
-		Assert.notNull(containerAttribute, "container annotation [{}] of element annotation [{}] must have contained attribute", containerType, elementType);
+		Assert.notNull(containerAttribute, "container annotation [%s] of element annotation [%s] must have contained attribute", containerType, elementType);
 		// 获取属性的返回值类型，校验该属性是否返回指定的元素注解
 		Class<?> containerAttributeType = containerAttribute.getReturnType();
 		containerAttributeType = containerAttributeType.isArray() ?
 			containerAttributeType.getComponentType() : containerAttributeType;
 		Assert.isAssignable(
-			elementType, containerAttributeType, "the element attribute [{}] of the container annotation [{}] must return the element annotation [{}]",
+			elementType, containerAttributeType, "the element attribute [%s] of the container annotation [%s] must return the element annotation [%s]",
 			containerAttribute.getName(), containerType, elementType
 		);
 	}
