@@ -23,6 +23,7 @@ public class CollUtils {
         return !isEmpty(collection);
     }
 
+    @SafeVarargs
     public static <T> void addAll(Collection<T> collection, T... elements) {
         if (Objects.nonNull(collection) && Objects.nonNull(elements)) {
             collection.addAll(Arrays.asList(elements));
@@ -74,14 +75,6 @@ public class CollUtils {
         return last;
     }
 
-    public static <T> T getFirst(Iterable<T> collection) {
-        if (Objects.isNull(collection)) {
-            return null;
-        }
-        Iterator<T> iterator = collection.iterator();
-        return iterator.next();
-    }
-
     public static <T, R> List<R> toList(Collection<T> collection, Function<T, R> mapping) {
         return collection.stream().map(mapping).collect(Collectors.toList());
     }
@@ -100,6 +93,7 @@ public class CollUtils {
         return !isEmpty(array);
     }
 
+    @SafeVarargs
     public static <T> boolean isContainsAll(T[] sources, T... elements) {
         return Arrays.asList(sources)
             .containsAll(Arrays.asList(elements));

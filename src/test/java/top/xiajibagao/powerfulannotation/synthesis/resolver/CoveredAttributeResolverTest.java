@@ -5,7 +5,6 @@ import org.junit.Test;
 import top.xiajibagao.powerfulannotation.annotation.GenericHierarchicalAnnotation;
 import top.xiajibagao.powerfulannotation.annotation.HierarchicalAnnotation;
 import top.xiajibagao.powerfulannotation.helper.HierarchySelector;
-import top.xiajibagao.powerfulannotation.synthesis.AnnotationSynthesizer;
 import top.xiajibagao.powerfulannotation.synthesis.GenericAnnotationSynthesizer;
 
 import java.lang.annotation.*;
@@ -37,7 +36,7 @@ public class CoveredAttributeResolverTest {
             true
         );
 
-        AnnotationSynthesizer synthesizer = new GenericAnnotationSynthesizer(Collections.singletonList(processor), HierarchySelector.nearestAndOldestPriority());
+        GenericAnnotationSynthesizer synthesizer = new GenericAnnotationSynthesizer(Collections.singletonList(processor), HierarchySelector.nearestAndOldestPriority());
         HierarchicalAnnotation<Annotation> annotation1 = new GenericHierarchicalAnnotation<>(
             ClassForTest.class.getAnnotation(AnnotationForTest1.class), ClassForTest.class, 0, 1
         );
@@ -50,6 +49,7 @@ public class CoveredAttributeResolverTest {
             ClassForTest.class.getAnnotation(AnnotationForTest3.class), ClassForTest.class, 0, 3
         );
         synthesizer.accept(annotation3);
+        synthesizer.resolve();
 
         Assert.assertEquals("value1", annotation1.getAttribute("value").getValue());
         Assert.assertEquals("value1", annotation2.getAttribute("value").getValue());

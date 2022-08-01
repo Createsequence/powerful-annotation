@@ -46,7 +46,8 @@ public interface AnnotationSynthesizer extends AnnotationProcessor {
     boolean support(Class<? extends Annotation> annotationType);
 
     /**
-     * 基于一组具有一定关系的注解，对其进行“合成”，并最终返回一个指定类型的合成注解
+     * 基于一组具有一定关系的注解，对其进行“合成”，并最终返回一个指定类型的合成注解 <br />
+     * <b>调用该方法前，需要保证至少调用过一次{@link #resolve()}</b>
      *
      * @param annotationType 注解类型
      * @param <T> 注解类型

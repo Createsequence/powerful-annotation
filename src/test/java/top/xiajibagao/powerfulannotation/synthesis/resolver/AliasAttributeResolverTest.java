@@ -7,14 +7,12 @@ import top.xiajibagao.powerfulannotation.annotation.HierarchicalAnnotation;
 import top.xiajibagao.powerfulannotation.annotation.attribute.*;
 import top.xiajibagao.powerfulannotation.helper.HierarchySelector;
 import top.xiajibagao.powerfulannotation.helper.ReflectUtils;
-import top.xiajibagao.powerfulannotation.synthesis.AnnotationSynthesizer;
 import top.xiajibagao.powerfulannotation.synthesis.GenericAnnotationSynthesizer;
 import top.xiajibagao.powerfulannotation.synthesis.Link;
 import top.xiajibagao.powerfulannotation.synthesis.RelationType;
 
 import java.lang.annotation.*;
 import java.util.Collections;
-import java.util.Comparator;
 
 /**
  * test for {@link AliasAttributeResolver}
@@ -34,8 +32,9 @@ public class AliasAttributeResolverTest {
 		AliasAttributeResolver processor = new AliasAttributeResolver();
 
 		HierarchicalAnnotation<Annotation> annotation = new GenericHierarchicalAnnotation<>(ClassForTest.class.getAnnotation(AnnotationForTest1.class));
-		AnnotationSynthesizer synthesizer = new GenericAnnotationSynthesizer(Collections.singletonList(processor), HierarchySelector.nearestAndOldestPriority());
+		GenericAnnotationSynthesizer synthesizer = new GenericAnnotationSynthesizer(Collections.singletonList(processor), HierarchySelector.nearestAndOldestPriority());
 		synthesizer.accept(annotation);
+		synthesizer.resolve();
 
 		AnnotationAttribute valueAttribute = annotation.getAttribute("value");
 		Assert.assertEquals(ReflectUtils.getDeclaredMethod(AnnotationForTest1.class, "value"), valueAttribute.getAttribute());
@@ -54,8 +53,9 @@ public class AliasAttributeResolverTest {
 	public void testResolveAliasFor() {
 		AliasAttributeResolver processor = new AliasAttributeResolver();
 		HierarchicalAnnotation<Annotation> annotation = new GenericHierarchicalAnnotation<>(ClassForTest.class.getAnnotation(AnnotationForTest1.class));
-		AnnotationSynthesizer synthesizer = new GenericAnnotationSynthesizer(Collections.singletonList(processor), HierarchySelector.nearestAndOldestPriority());
+		GenericAnnotationSynthesizer synthesizer = new GenericAnnotationSynthesizer(Collections.singletonList(processor), HierarchySelector.nearestAndOldestPriority());
 		synthesizer.accept(annotation);
+		synthesizer.resolve();
 
 		AnnotationAttribute valueAttribute = annotation.getAttribute("value2");
 		Assert.assertEquals(ReflectUtils.getDeclaredMethod(AnnotationForTest1.class, "value2"), valueAttribute.getAttribute());
@@ -68,22 +68,6 @@ public class AliasAttributeResolverTest {
 		Assert.assertEquals(AliasedAnnotationAttribute.class, nameAttribute.getClass());
 
 		Assert.assertEquals(valueAttribute, ((WrappedAnnotationAttribute)nameAttribute).getLinked());
-	}
-
-	@Test
-	public void testResolveWhenComparing() {
-		AliasAttributeResolver processor = new AliasAttributeResolver(
-			Comparator.comparing(HierarchicalAnnotation<Annotation>::getVerticalIndex)
-				.thenComparing(HierarchicalAnnotation<Annotation>::getHorizontalIndex)
-		);
-		AnnotationSynthesizer synthesizer = new GenericAnnotationSynthesizer(Collections.singletonList(processor), HierarchySelector.nearestAndOldestPriority());
-		synthesizer.accept(0, 1, ClassForTest.class.getAnnotation(AnnotationForTest1.class));
-		synthesizer.accept(0, 2, ClassForTest.class.getAnnotation(AnnotationForTest3.class));
-		AnnotationForTest2 annotation = AnnotationForTest3.class.getAnnotation(AnnotationForTest2.class);
-		Assert.assertThrows(
-			IllegalArgumentException.class,
-			() -> synthesizer.accept(0, 3, annotation)
-		);
 	}
 
 	@AnnotationForTest3("value3")

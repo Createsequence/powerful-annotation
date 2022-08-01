@@ -132,11 +132,12 @@ public class AliasAttributeResolver extends AbstractDynamicAttributeResolver {
 	 * 获取指定注解属性，然后将其再进行一层包装
 	 */
 	private void processAttribute(
-		AnnotationSynthesizer synthesizer, AnnotationAttribute originalAttribute,
-		AnnotationAttribute target, BinaryOperator<AnnotationAttribute> wrapping) {
-		Optional.ofNullable(target.getAnnotationType())
+		AnnotationSynthesizer synthesizer,
+		AnnotationAttribute originalAttribute, AnnotationAttribute aliasAttribute,
+		BinaryOperator<AnnotationAttribute> wrapping) {
+		Optional.ofNullable(aliasAttribute.getAnnotationType())
 			.map(synthesizer::getAnnotation)
-			.ifPresent(t -> t.replaceAttribute(target.getAttributeName(), old -> wrapping.apply(old, originalAttribute)));
+			.ifPresent(t -> t.replaceAttribute(aliasAttribute.getAttributeName(), old -> wrapping.apply(old, originalAttribute)));
 	}
 
 	/**

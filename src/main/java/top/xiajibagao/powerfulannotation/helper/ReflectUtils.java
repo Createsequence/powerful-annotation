@@ -2,7 +2,6 @@ package top.xiajibagao.powerfulannotation.helper;
 
 import lombok.SneakyThrows;
 
-import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.Arrays;
@@ -58,15 +57,6 @@ public class ReflectUtils {
             .filter(m -> Objects.equals(m.getName(), name))
             .findFirst()
             .orElse(null);
-    }
-
-    public static Field[] getDeclaredFields(Class<?> targetClass) {
-        return targetClass.getDeclaredFields();
-    }
-
-    @SneakyThrows
-    public static Field getDeclaredField(Class<?> targetClass, String name) {
-        return targetClass.getDeclaredField(name);
     }
 
     public static boolean isAssignable(Class<?> superClass, Class<?> sourceClass) {

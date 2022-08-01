@@ -6,8 +6,12 @@ import top.xiajibagao.powerfulannotation.annotation.GenericHierarchicalAnnotatio
 import top.xiajibagao.powerfulannotation.annotation.HierarchicalAnnotation;
 import top.xiajibagao.powerfulannotation.helper.CollUtils;
 import top.xiajibagao.powerfulannotation.helper.HierarchySelector;
+import top.xiajibagao.powerfulannotation.synthesis.resolver.AliasAttributeResolver;
+import top.xiajibagao.powerfulannotation.synthesis.resolver.CoveredAttributeResolver;
+import top.xiajibagao.powerfulannotation.synthesis.resolver.MirrorAttributeResolver;
 
 import java.lang.annotation.*;
+import java.util.Arrays;
 import java.util.Collections;
 
 /**
@@ -98,7 +102,7 @@ public class GenericAnnotationSynthesizerTest {
         );
         AnnotationForTest1 annotation1 = ClassForTest.class.getAnnotation(AnnotationForTest1.class);
         synthesizer.accept(0, 1, annotation1);
-
+        
         AnnotationForTest1 synthesizeAnnotation1 = synthesizer.synthesize(AnnotationForTest1.class);
         Assert.assertEquals("value1", synthesizeAnnotation1.value());
         Assert.assertNull(synthesizer.synthesize(AnnotationForTest2.class));
@@ -126,5 +130,153 @@ public class GenericAnnotationSynthesizerTest {
     @AnnotationForTest2("value2")
     @AnnotationForTest3("value3")
     private static class ClassForTest {}
+
+    @Test
+    public void testSynthesizeMirrorForAttribute() {
+        GenericAnnotationSynthesizer synthesizer = new GenericAnnotationSynthesizer(
+            Collections.singletonList(new MirrorAttributeResolver()),
+            HierarchySelector.nearestAndOldestPriority()
+        );
+
+        Annotation annotation = ClassForTest2.class.getAnnotation(AnnotationForTest4.class);
+        synthesizer.accept(1, 1, annotation);
+        
+        AnnotationForTest4 synthesize = synthesizer.synthesize(AnnotationForTest4.class);
+        Assert.assertEquals("value1", synthesize.name());
+        Assert.assertEquals("value1", synthesize.value());
+    }
+
+    @Test
+    public void testSynthesizeAliasForAttribute() {
+        GenericAnnotationSynthesizer synthesizer = new GenericAnnotationSynthesizer(
+            Collections.singletonList(new AliasAttributeResolver()),
+            HierarchySelector.farthestAndNewestPriority()
+        );
+
+        Annotation annotation = ClassForTest2.class.getAnnotation(AnnotationForTest5.class);
+        synthesizer.accept(0, 0, annotation);
+        
+        AnnotationForTest5 synthesize = synthesizer.synthesize(AnnotationForTest5.class);
+        Assert.assertEquals("name", synthesize.name());
+        Assert.assertEquals("default", synthesize.value());
+
+        annotation = ClassForTest3.class.getAnnotation(AnnotationForTest5.class);
+        synthesizer.accept(0, 0, annotation);
+        
+        synthesize = synthesizer.synthesize(AnnotationForTest5.class);
+        Assert.assertEquals("value", synthesize.name());
+        Assert.assertEquals("value", synthesize.value());
+    }
+
+    @Retention(RetentionPolicy.RUNTIME)
+    @Target({ ElementType.METHOD, ElementType.TYPE })
+    private @interface AnnotationForTest4 {
+        @Link(attribute = "name", type = RelationType.MIRROR_FOR)
+        String value() default "";
+        @Link(type = RelationType.MIRROR_FOR)
+        String name() default "";
+    }
+
+    @Retention(RetentionPolicy.RUNTIME)
+    @Target({ ElementType.METHOD, ElementType.TYPE })
+    private @interface AnnotationForTest5 {
+        @Link(attribute = "name", type = RelationType.ALIAS_FOR)
+        String value() default "default";
+        String name() default "";
+    }
+
+    @AnnotationForTest4("value1")
+    @AnnotationForTest5(name = "name")
+    private static class ClassForTest2 {}
+
+    @AnnotationForTest5(value = "value")
+    public static class ClassForTest3 {}
+
+    @Test
+    public void testHierarchySynthesize() {
+        GenericAnnotationSynthesizer synthesizer = new GenericAnnotationSynthesizer(
+            Arrays.asList(new MirrorAttributeResolver(), new AliasAttributeResolver()),
+            HierarchySelector.farthestAndNewestPriority()
+        );
+
+        synthesizer.accept(0, 2, AnnotationForTest7.class.getAnnotation(AnnotationForTest6.class));
+        synthesizer.accept(0, 1, ClassForTest4.class.getAnnotation(AnnotationForTest7.class));
+        Assert.assertTrue(synthesizer.support(AnnotationForTest7.class));
+        Assert.assertTrue(synthesizer.support(AnnotationForTest6.class));
+        
+        AnnotationForTest6 annotationForTest6 = synthesizer.synthesize(AnnotationForTest6.class);
+        Assert.assertEquals("default_name", annotationForTest6.name());
+        Assert.assertEquals("default_name", annotationForTest6.value());
+        AnnotationForTest7 annotationForTest7 = synthesizer.synthesize(AnnotationForTest7.class);
+        Assert.assertEquals("default_name", annotationForTest7.alias());
+
+        synthesizer.getSynthesizedAnnotationMap().clear();
+        synthesizer.accept(0, 2, AnnotationForTest7.class.getAnnotation(AnnotationForTest6.class));
+        synthesizer.accept(0, 1, ClassForTest5.class.getAnnotation(AnnotationForTest7.class));
+
+        annotationForTest6 = synthesizer.synthesize(AnnotationForTest6.class);
+        Assert.assertEquals("alias_name", annotationForTest6.name());
+        Assert.assertEquals("alias_name", annotationForTest6.value());
+        annotationForTest7 = synthesizer.synthesize(AnnotationForTest7.class);
+        Assert.assertEquals("alias_name", annotationForTest7.alias());
+    }
+
+    @Test
+    public void testHierarchyConvertedAttributeSynthesize() {
+        GenericAnnotationSynthesizer synthesizer = new GenericAnnotationSynthesizer(
+            Arrays.asList(
+                new MirrorAttributeResolver(),
+                new AliasAttributeResolver(),
+                new CoveredAttributeResolver(true)
+            ),
+            HierarchySelector.farthestAndNewestPriority()
+        );
+
+        synthesizer.accept(1, 1, AnnotationForTest7.class.getAnnotation(AnnotationForTest6.class));
+        synthesizer.accept(0, 1, ClassForTest4.class.getAnnotation(AnnotationForTest7.class));
+        Assert.assertTrue(synthesizer.support(AnnotationForTest7.class));
+        Assert.assertTrue(synthesizer.support(AnnotationForTest6.class));
+        
+        AnnotationForTest6 annotationForTest6 = synthesizer.synthesize(AnnotationForTest6.class);
+        Assert.assertEquals("converted_name", annotationForTest6.name());
+        Assert.assertEquals("default_name", annotationForTest6.value());
+        AnnotationForTest7 annotationForTest7 = synthesizer.synthesize(AnnotationForTest7.class);
+        Assert.assertEquals("default_name", annotationForTest7.alias());
+
+        synthesizer.getSynthesizedAnnotationMap().clear();
+        synthesizer.accept(1, 1, AnnotationForTest7.class.getAnnotation(AnnotationForTest6.class));
+        synthesizer.accept(0, 1, ClassForTest5.class.getAnnotation(AnnotationForTest7.class));
+
+        annotationForTest6 = synthesizer.synthesize(AnnotationForTest6.class);
+        Assert.assertEquals("converted_name", annotationForTest6.name());
+        Assert.assertEquals("alias_name", annotationForTest6.value());
+        annotationForTest7 = synthesizer.synthesize(AnnotationForTest7.class);
+        Assert.assertEquals("alias_name", annotationForTest7.alias());
+        Assert.assertEquals("converted_name", annotationForTest7.name());
+    }
+
+    @Retention(RetentionPolicy.RUNTIME)
+    @Target({ ElementType.METHOD, ElementType.TYPE })
+    private @interface AnnotationForTest6 {
+        @Link(attribute = "name", type = RelationType.MIRROR_FOR)
+        String value() default "";
+        @Link(type = RelationType.MIRROR_FOR)
+        String name() default "";
+    }
+
+    @AnnotationForTest6("default_name")
+    @Retention(RetentionPolicy.RUNTIME)
+    @Target({ ElementType.METHOD, ElementType.TYPE })
+    private @interface AnnotationForTest7 {
+        @Link(annotation = AnnotationForTest6.class, type = RelationType.ALIAS_FOR)
+        String alias() default "default_name";
+        String name() default "converted_name";
+    }
+
+    @AnnotationForTest7
+    public static class ClassForTest4 {}
+
+    @AnnotationForTest7(alias = "alias_name")
+    public static class ClassForTest5 {}
 
 }

@@ -30,6 +30,17 @@ public class CoveredAttributeResolver implements SyntheticAnnotationResolver {
      * 是否强制覆盖，若为否则仅当排序靠前的注解属性不为默认值时才覆盖
      */
     private final boolean isForceConverted;
+    
+    /**
+     * 创建一个覆盖属性解析器，默认只允许低层级的注解属性覆盖高层级的注解属性
+     *
+     * @param isForceConverted 是否强制覆盖，若为否则仅当排序靠前的注解属性不为默认值时才覆盖
+     */
+    public CoveredAttributeResolver(boolean isForceConverted) {
+        this.comparator = Comparator.comparing(HierarchicalAnnotation<Annotation>::getVerticalIndex)
+            .thenComparing(HierarchicalAnnotation<Annotation>::getHorizontalIndex);
+        this.isForceConverted = isForceConverted;
+    }
 
     /**
      * 排序值，固定返回{@link SyntheticAnnotationResolver#COVERED_ATTRIBUTE_RESOLVER_ORDER}

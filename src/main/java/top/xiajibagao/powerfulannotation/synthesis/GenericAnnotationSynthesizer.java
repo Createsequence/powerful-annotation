@@ -44,6 +44,11 @@ public class GenericAnnotationSynthesizer implements AnnotationSynthesizer {
     private final List<SyntheticAnnotationResolver> resolvers;
 
     /**
+     * 是否已解析
+     */
+    private boolean resolved;
+
+    /**
      * 待合成的注解
      */
     @Getter(AccessLevel.PROTECTED)
@@ -68,11 +73,13 @@ public class GenericAnnotationSynthesizer implements AnnotationSynthesizer {
             .collect(Collectors.toList());
         this.synthesizedAnnotationMap = new LinkedHashMap<>();
         this.selector = selector;
+        this.resolved = false;
     }
 
     /**
      * 向当前实例注册注解，若该类型的注解已经在{@link #synthesizedAnnotationMap}中存在，
-     * 则使用{@link #selector}两注解进行选择，并仅保留最终有效的注解
+     * 则使用{@link #selector}两注解进行选择，并仅保留最终有效的注解 <br />
+     * <b>注意：注解注册的先后顺序将会影响到属性的“合并”</b>
      *
      * @param verticalIndex 垂直索引。一般表示与扫描器扫描的{@link AnnotatedElement}相隔的层级层次。默认从1开始
      * @param horizontalIndex 水平索引，一般用于衡量两个注解对象之间被扫描到的先后顺序。默认从1开始
@@ -88,14 +95,15 @@ public class GenericAnnotationSynthesizer implements AnnotationSynthesizer {
 
     /**
      * 向当前实例注册注解，若该类型的注解已经在{@link #synthesizedAnnotationMap}中存在，
-     * 则使用{@link #selector}两注解进行选择，并仅保留最终有效的注解
+     * 则使用{@link #selector}两注解进行选择，并仅保留最终有效的注解 <br />
+     * <b>注意：注解注册的先后顺序将会影响到属性的“合并”</b>
      *
      * @param hierarchicalAnnotation 注解
      */
     @Override
     public void accept(HierarchicalAnnotation<Annotation> hierarchicalAnnotation) {
         registerAnnotation(hierarchicalAnnotation);
-        resolveAnnotation(hierarchicalAnnotation);
+        this.resolved = false;
     }
 
     /**
@@ -119,6 +127,22 @@ public class GenericAnnotationSynthesizer implements AnnotationSynthesizer {
             return;
         }
         synthesizedAnnotationMap.put(type, selector.choose(old, annotation));
+    }
+
+    /**
+     * 完成解析
+     */
+    public synchronized void resolve() {
+        if (this.resolved) {
+            return;
+        }
+        getAllAnnotation().stream()
+            .sorted(
+                Comparator.comparing(HierarchicalAnnotation<Annotation>::getVerticalIndex)
+                    .thenComparing(HierarchicalAnnotation<Annotation>::getHorizontalIndex)
+            )
+            .forEach(this::resolveAnnotation);
+        this.resolved = true;
     }
 
     /**
@@ -154,8 +178,8 @@ public class GenericAnnotationSynthesizer implements AnnotationSynthesizer {
     }
 
     /**
-     * 基于一组处于聚合状态的注解，在使用指定选择器对聚合的注解进行筛选后，
-     * 根据剩余的有效注解进行“合成”，并最终返回一个指定类型的合成注解
+     * 基于一组具有一定关系的注解，对其进行“合成”，并最终返回一个指定类型的合成注解 <br />
+     * <b>调用该方法前，需要保证至少调用过一次{@link #resolve()}</b>
      *
      * @param annotationType 注解类型
      * @param <T> 注解类型
@@ -163,6 +187,9 @@ public class GenericAnnotationSynthesizer implements AnnotationSynthesizer {
      */
     @Override
     public <T extends Annotation> T synthesize(Class<T> annotationType) {
+        if (!resolved) {
+            resolve();
+        }
         HierarchicalAnnotation<Annotation> annotation = synthesizedAnnotationMap.get(annotationType);
         return Objects.isNull(annotation) ?
             null : AnnotationProxyFactory.get(annotationType, annotation);

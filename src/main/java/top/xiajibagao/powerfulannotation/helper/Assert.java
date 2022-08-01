@@ -44,10 +44,6 @@ public class Assert {
         isTrue(superClass.isAssignableFrom(sourceClass), temp, args);
     }
 
-    public static void isAssignable(Class<?> superClass, Class<?> sourceClass, String msg) {
-        isTrue(superClass.isAssignableFrom(sourceClass), msg);
-    }
-
     public static void equals(Object t1, Object t2, String temp, Object... args) {
         isTrue(Objects.equals(t1, t2), temp, args);
     }
@@ -58,10 +54,6 @@ public class Assert {
 
     public static void isNotEquals(Object t1, Object t2, String temp, Object... args) {
         isFalse(Objects.equals(t1, t2), temp, args);
-    }
-
-    public static void isNotEquals(Object t1, Object t2, String msg) {
-        isFalse(Objects.equals(t1, t2), msg);
     }
 
 }

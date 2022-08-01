@@ -9,7 +9,6 @@ import top.xiajibagao.powerfulannotation.annotation.attribute.MirroredAnnotation
 import top.xiajibagao.powerfulannotation.annotation.attribute.WrappedAnnotationAttribute;
 import top.xiajibagao.powerfulannotation.helper.HierarchySelector;
 import top.xiajibagao.powerfulannotation.helper.ReflectUtils;
-import top.xiajibagao.powerfulannotation.synthesis.AnnotationSynthesizer;
 import top.xiajibagao.powerfulannotation.synthesis.GenericAnnotationSynthesizer;
 import top.xiajibagao.powerfulannotation.synthesis.Link;
 import top.xiajibagao.powerfulannotation.synthesis.RelationType;
@@ -34,8 +33,9 @@ public class MirrorAttributeResolverTest {
 	public void testResolve() {
 		MirrorAttributeResolver processor = new MirrorAttributeResolver();
 		HierarchicalAnnotation<Annotation> annotation = new GenericHierarchicalAnnotation<>(ClassForTest.class.getAnnotation(AnnotationForTest.class));
-		AnnotationSynthesizer synthesizer = new GenericAnnotationSynthesizer(Collections.singletonList(processor), HierarchySelector.nearestAndOldestPriority());
+		GenericAnnotationSynthesizer synthesizer = new GenericAnnotationSynthesizer(Collections.singletonList(processor), HierarchySelector.nearestAndOldestPriority());
 		synthesizer.accept(annotation);
+		synthesizer.resolve();
 
 		AnnotationAttribute valueAttribute = annotation.getAttribute("value");
 		Assert.assertEquals(ReflectUtils.getDeclaredMethod(AnnotationForTest.class, "value"), valueAttribute.getAttribute());
