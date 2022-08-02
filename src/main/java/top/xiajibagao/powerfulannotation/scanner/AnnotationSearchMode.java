@@ -149,6 +149,22 @@ public enum AnnotationSearchMode {
 	}
 
 	/**
+	 * 从元素获取指定类型的注解
+	 *
+	 * @param element 要扫描的元素
+	 * @param annotationType 注解类型
+	 * @return 注解对象
+	 */
+	@SuppressWarnings("unchecked")
+	public <T extends Annotation> List<T> getAnnotations(AnnotatedElement element, Class<T> annotationType) {
+		return getAnnotations(
+			element,
+			AnnotationFilter.FILTER_NOTHING,
+			(vi, hi, annotation) -> Objects.equals(annotation.annotationType(), annotationType) ? (T)annotation : null
+		);
+	}
+
+	/**
 	 * 从元素获取注解并将其转为指定类型对象，若符合条件则返回该指定类型对象
 	 *
 	 * @param element   要扫描的元素

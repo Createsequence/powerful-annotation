@@ -5,7 +5,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import top.xiajibagao.powerfulannotation.annotation.attribute.AnnotationAttribute;
 import top.xiajibagao.powerfulannotation.annotation.attribute.CacheableAnnotationAttribute;
-import top.xiajibagao.powerfulannotation.helper.AnnotationUtils;
+import top.xiajibagao.powerfulannotation.helper.Annotations;
 import top.xiajibagao.powerfulannotation.helper.ReflectUtils;
 
 import java.lang.annotation.Annotation;
@@ -90,7 +90,7 @@ public class GenericHierarchicalAnnotation<T extends Annotation> implements Hier
      */
     protected Map<String, AnnotationAttribute> loadAnnotationAttributes(T annotation) {
         return Stream.of(ReflectUtils.getDeclaredMethods(annotation.annotationType()))
-            .filter(AnnotationUtils::isAttributeMethod)
+            .filter(Annotations::isAttributeMethod)
             .collect(Collectors.toMap(Method::getName, method -> new CacheableAnnotationAttribute(annotation, method)));
     }
 

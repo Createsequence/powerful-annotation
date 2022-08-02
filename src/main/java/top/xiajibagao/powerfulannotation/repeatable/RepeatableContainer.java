@@ -3,7 +3,7 @@ package top.xiajibagao.powerfulannotation.repeatable;
 import top.xiajibagao.powerfulannotation.aggerate.AnnotationAggregator;
 
 import java.lang.annotation.Annotation;
-import java.util.Collection;
+import java.util.List;
 
 /**
  * 表明实现类是一个可重复注解容器，可以从该对象中批量获得指定类型的可重复注解
@@ -19,6 +19,6 @@ public interface RepeatableContainer {
      * @param annotationType 注解类型
      * @return java.util.Collection<A>
      */
-    <A extends Annotation> Collection<A> getRepeatableAnnotations(Class<A> annotationType);
+    <A extends Annotation> List<A> getRepeatableAnnotations(Class<A> annotationType);
 
 }

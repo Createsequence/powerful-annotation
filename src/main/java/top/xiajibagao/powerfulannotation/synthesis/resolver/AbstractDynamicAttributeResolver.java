@@ -2,7 +2,7 @@ package top.xiajibagao.powerfulannotation.synthesis.resolver;
 
 import top.xiajibagao.powerfulannotation.annotation.HierarchicalAnnotation;
 import top.xiajibagao.powerfulannotation.annotation.attribute.AnnotationAttribute;
-import top.xiajibagao.powerfulannotation.helper.AnnotationUtils;
+import top.xiajibagao.powerfulannotation.helper.Annotations;
 import top.xiajibagao.powerfulannotation.helper.Assert;
 import top.xiajibagao.powerfulannotation.helper.CollUtils;
 import top.xiajibagao.powerfulannotation.synthesis.AnnotationSynthesizer;
@@ -101,7 +101,7 @@ public abstract class AbstractDynamicAttributeResolver implements SyntheticAnnot
 	protected Link getAttributeAnnotation(AnnotationAttribute attribute, RelationType... relationTypes) {
 		return Optional.ofNullable(attribute)
 			// TODO 此处也允许使用元注解机制
-			.map(t -> AnnotationUtils.getDeclaredAnnotation(attribute.getAttribute(), Link.class))
+			.map(t -> Annotations.getDeclaredAnnotation(attribute.getAttribute(), Link.class))
 			.filter(a -> CollUtils.isContainsAny(relationTypes, a.type()))
 			.orElse(null);
 	}

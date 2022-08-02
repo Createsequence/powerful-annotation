@@ -9,6 +9,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * <p>用于在{@link AbstractAnnotationScanner}扫描过程中收集注解的注解处理器，
@@ -42,7 +43,7 @@ public class AnnotationCollector<T> implements AnnotationProcessor {
 	}
 
 	/**
-	 * 处理注解，将其添加到{@link #targets}中
+	 * 处理注解，若获得的对象不为null，则将其添加到{@link #targets}中
 	 *
 	 * @param verticalIndex   垂直索引。一般表示与扫描器扫描的{@link AnnotatedElement}相隔的层级层次。默认从1开始
 	 * @param horizontalIndex 水平索引，一般用于衡量两个注解对象之间被扫描到的先后顺序。默认从1开始
@@ -50,7 +51,10 @@ public class AnnotationCollector<T> implements AnnotationProcessor {
 	 */
 	@Override
 	public void accept(int verticalIndex, int horizontalIndex, Annotation annotation) {
-		targets.add(converter.accept(verticalIndex, horizontalIndex, annotation));
+		T target = converter.accept(verticalIndex, horizontalIndex, annotation);
+		if (Objects.nonNull(target)) {
+			targets.add(target);
+		}
 	}
 
 }

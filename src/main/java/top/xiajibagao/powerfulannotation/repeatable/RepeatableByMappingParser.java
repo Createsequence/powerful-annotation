@@ -1,6 +1,6 @@
 package top.xiajibagao.powerfulannotation.repeatable;
 
-import top.xiajibagao.powerfulannotation.helper.AnnotationUtils;
+import top.xiajibagao.powerfulannotation.helper.Annotations;
 import top.xiajibagao.powerfulannotation.helper.Assert;
 import top.xiajibagao.powerfulannotation.helper.ReflectUtils;
 
@@ -19,7 +19,7 @@ public class RepeatableByMappingParser implements RepeatableMappingParser {
 
 	@Override
 	public RepeatableMapping parse(Class<? extends Annotation> annotationType, RepeatableMappingRegistry registry) {
-		final RepeatableBy annotation = AnnotationUtils.getDeclaredAnnotation(annotationType, RepeatableBy.class);
+		final RepeatableBy annotation = Annotations.getDeclaredAnnotation(annotationType, RepeatableBy.class);
 		if (Objects.isNull(annotation)) {
 			return null;
 		}

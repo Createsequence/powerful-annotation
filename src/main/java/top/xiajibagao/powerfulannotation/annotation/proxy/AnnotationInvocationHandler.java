@@ -2,7 +2,7 @@ package top.xiajibagao.powerfulannotation.annotation.proxy;
 
 import lombok.NonNull;
 import top.xiajibagao.powerfulannotation.annotation.AnnotationAttributeValueProvider;
-import top.xiajibagao.powerfulannotation.helper.AnnotationUtils;
+import top.xiajibagao.powerfulannotation.helper.Annotations;
 import top.xiajibagao.powerfulannotation.helper.ReflectUtils;
 
 import java.lang.annotation.Annotation;
@@ -78,7 +78,7 @@ public class AnnotationInvocationHandler implements InvocationHandler {
         methods.put("annotationType", (method, args) -> proxyAnnotationType());
         methods.put("getOriginal", (method, args) -> proxyGetOriginal());
         Stream.of(ReflectUtils.getDeclaredMethods(annotation.annotationType()))
-            .filter(AnnotationUtils::isAttributeMethod)
+            .filter(Annotations::isAttributeMethod)
             .forEach(attribute -> methods.put(attribute.getName(), (method, args) -> proxyAttributeValue(method)));
     }
 
@@ -87,7 +87,7 @@ public class AnnotationInvocationHandler implements InvocationHandler {
      */
     private String proxyToString() {
         final String attributes = Stream.of(ReflectUtils.getDeclaredMethods(annotation.annotationType()))
-            .filter(AnnotationUtils::isAttributeMethod)
+            .filter(Annotations::isAttributeMethod)
             .map(method -> String.format("%s=%s", method.getName(), proxyAttributeValue(method)))
             .collect(Collectors.joining(", "));
         return String.format("@%s(%s)", annotation.annotationType()

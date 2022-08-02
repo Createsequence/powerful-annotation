@@ -1,6 +1,6 @@
 package top.xiajibagao.powerfulannotation.scanner;
 
-import top.xiajibagao.powerfulannotation.helper.AnnotationUtils;
+import top.xiajibagao.powerfulannotation.helper.Annotations;
 import top.xiajibagao.powerfulannotation.helper.CollUtils;
 import top.xiajibagao.powerfulannotation.helper.ObjectUtils;
 import top.xiajibagao.powerfulannotation.helper.ReflectUtils;
@@ -122,7 +122,7 @@ public class GenericAnnotationScanner extends AbstractAnnotationScanner {
     protected Annotation[] getAnnotationsFromTypeDeclaredField(Class<?> type, Field element) {
         return Stream.of(type.getDeclaredFields())
             .filter(field -> Objects.equals(field, element))
-            .map(AnnotationUtils::getDeclaredAnnotations)
+            .map(Annotations::getDeclaredAnnotations)
             .flatMap(Stream::of)
             .toArray(Annotation[]::new);
     }
@@ -139,7 +139,7 @@ public class GenericAnnotationScanner extends AbstractAnnotationScanner {
         return Stream.of(ReflectUtils.getDeclaredMethods(type))
             .filter(superMethod -> !superMethod.isBridge())
             .filter(superMethod -> hasSameMethodSignature(element, superMethod))
-            .map(AnnotationUtils::getDeclaredAnnotations)
+            .map(Annotations::getDeclaredAnnotations)
             .flatMap(Stream::of)
             .toArray(Annotation[]::new);
     }
@@ -153,7 +153,7 @@ public class GenericAnnotationScanner extends AbstractAnnotationScanner {
      */
     @Override
     protected Annotation[] getAnnotationFromType(Class<?> type, Class<?> element) {
-        return AnnotationUtils.getDeclaredAnnotations(type);
+        return Annotations.getDeclaredAnnotations(type);
     }
 
     /**

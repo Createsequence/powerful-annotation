@@ -37,8 +37,9 @@ import java.util.*;
  *
  * <h3>扫描顺序</h3>
  * <p>默认情况下，扫描器将按照广度优先遍历被扫描的{@link AnnotatedElement}的层级结构中的被注解元素。<br />
- * 同一层级中的注解，按照其所属{@link AnnotatedElement}的被扫描顺序、
+ * 同一层级中的注解，按照其所属{@link AnnotatedElement}的被扫描顺序(元素本身 -> 父类 -> 父接口)、
  * 以及其在{@link AnnotatedElement#getDeclaredAnnotations()}返回的注解数组中的顺序决定。<br />
+ *
  * 若允许扫描元注解，则在获得注解对象时，将优先扫描该注解对象的层级结构，
  * 然后再继续扫描该与该注解处于统一层级，但是顺序靠后的注解。
  * <p>比如：现有类<em>X</em>，上有注解<em>A</em>，<em>A</em>又有元注解<em>B</em>；
@@ -252,7 +253,7 @@ public abstract class AbstractAnnotationScanner implements AnnotationScanner {
     private void collectTypeToQueue(Context context, List<Class<?>> nextTypeHierarchies, Class<?> type) {
     	// 正在扫描元注解
 		if (context.scanningMetaAnnotations && options.isEnableScanMetaAnnotation()) {
-			collectAnnotationTypeIfNecessary(nextTypeHierarchies, type);
+ 			collectAnnotationTypeIfNecessary(nextTypeHierarchies, type);
 			return;
 		}
 		// 不在扫描元注解

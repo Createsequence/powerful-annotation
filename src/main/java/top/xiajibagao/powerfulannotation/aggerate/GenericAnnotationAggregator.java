@@ -80,6 +80,7 @@ public class GenericAnnotationAggregator<T> implements AnnotationAggregator<T> {
         this.horizontalIndex = horizontalIndex;
         this.aggregatedAnnotationMap = new LinkedHashMap<>();
         this.repeatableMappingRegistry = repeatableMappingRegistry;
+        this.repeatableAggregatedAnnotationRegistered = false;
     }
 
     /**
@@ -91,9 +92,7 @@ public class GenericAnnotationAggregator<T> implements AnnotationAggregator<T> {
      */
     @Override
     public void accept(int verticalIndex, int horizontalIndex, Annotation annotation) {
-        if (repeatableAggregatedAnnotationRegistered) {
-            repeatableAggregatedAnnotationRegistered = false;
-        }
+        repeatableAggregatedAnnotationRegistered = false;
         HierarchicalAnnotation<Annotation> hierarchicalAnnotation = new GenericHierarchicalAnnotation<>(
             annotation, this, verticalIndex, horizontalIndex
         );
@@ -160,7 +159,7 @@ public class GenericAnnotationAggregator<T> implements AnnotationAggregator<T> {
      * @throws IllegalArgumentException 当{@link #repeatableMappingRegistry}为空时抛出
      */
     @Override
-    public <A extends Annotation> Collection<A> getRepeatableAnnotations(Class<A> annotationType) {
+    public <A extends Annotation> List<A> getRepeatableAnnotations(Class<A> annotationType) {
         Assert.notNull(repeatableMappingRegistry, "no repeatable mapping registry available");
         // 注册未解析注解
         Collection<HierarchicalAnnotation<Annotation>> annotations = getAllAnnotations();
