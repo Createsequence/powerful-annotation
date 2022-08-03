@@ -2,12 +2,11 @@ package top.xiajibagao.powerfulannotation.helper;
 
 import lombok.SneakyThrows;
 
+import java.lang.ref.WeakReference;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * 反射工具类
@@ -21,6 +20,11 @@ public class ReflectUtils {
      */
     private static final Map<Class<?>, Class<?>> WRAPPER_PRIMITIVE_MAP = new HashMap<>(8);
     private static final Map<Class<?>, Class<?>> PRIMITIVE_WRAPPER_MAP = new HashMap<>(8);
+
+    /**
+     * 注解缓存
+     */
+    private static final Map<Class<?>, WeakReference<Method[]>> CLASS_DECLARED_METHOD_MAP = new ConcurrentHashMap<>(36);
 
     static {
         WRAPPER_PRIMITIVE_MAP.put(Boolean.class, boolean.class);
@@ -49,7 +53,14 @@ public class ReflectUtils {
     }
 
     public static Method[] getDeclaredMethods(Class<?> targetClass) {
-        return targetClass.getDeclaredMethods();
+        return Optional.ofNullable(CLASS_DECLARED_METHOD_MAP.get(targetClass))
+            .map(WeakReference::get)
+            .orElseGet(() -> {
+                Method[] methods = targetClass.getDeclaredMethods();
+                WeakReference<Method[]> reference = new WeakReference<>(methods);
+                CLASS_DECLARED_METHOD_MAP.put(targetClass, reference);
+                return methods;
+            });
     }
 
     public static Method getDeclaredMethod(Class<?> targetClass, String name) {

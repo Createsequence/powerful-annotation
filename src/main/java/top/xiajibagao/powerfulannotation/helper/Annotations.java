@@ -139,6 +139,7 @@ public class Annotations {
      *
      * @param element 注解元素
      * @param annotationType 注解类型
+     * @param <T> 注解类型
      * @return 获取直接声明的注解
      */
     public static <T extends Annotation> T getDeclaredAnnotation(AnnotatedElement element, Class<T> annotationType) {
@@ -148,6 +149,7 @@ public class Annotations {
     /**
      * 获取一个空注解数组
      *
+     * @param <T> 注解类型
      * @return 空注解数组
      */
     @SuppressWarnings("unchecked")
@@ -177,6 +179,7 @@ public class Annotations {
      *
      * @param element 查找的元素
      * @param annotationType 注解类型
+     * @param <T> 注解类型
      * @return 注解
      * @see AnnotationSearchMode#SELF_AND_DIRECT
      */
@@ -190,6 +193,7 @@ public class Annotations {
      *
      * @param element 查找的元素
      * @param annotationType 注解类型
+     * @param <T> 注解类型
      * @return 注解
      * @see AnnotationSearchMode#SELF_AND_DIRECT
      */
@@ -203,6 +207,7 @@ public class Annotations {
      *
      * @param element 查找的元素
      * @param annotationType 可重复注解类型
+     * @param <T> 注解类型
      * @return 注解
      * @see AnnotationSearchMode#SELF_AND_DIRECT
      */
@@ -233,6 +238,7 @@ public class Annotations {
      *
      * @param element 查找的元素
      * @param annotationType 注解类型
+     * @param <T> 注解类型
      * @return 注解
      * @see AnnotationSearchMode#SELF_AND_INDIRECT
      */
@@ -246,6 +252,7 @@ public class Annotations {
      *
      * @param element 查找的元素
      * @param annotationType 注解类型
+     * @param <T> 注解类型
      * @return 注解
      * @see AnnotationSearchMode#SELF_AND_INDIRECT
      */
@@ -259,6 +266,7 @@ public class Annotations {
      *
      * @param element 查找的元素
      * @param annotationType 可重复注解类型
+     * @param <T> 注解类型
      * @return 注解
      * @see AnnotationSearchMode#SELF_AND_INDIRECT
      */
@@ -289,6 +297,7 @@ public class Annotations {
      *
      * @param element 查找的元素
      * @param annotationType 注解类型
+     * @param <T> 注解类型
      * @return 注解
      * @see AnnotationSearchMode#TYPE_HIERARCHY_AND_DIRECT
      */
@@ -302,6 +311,7 @@ public class Annotations {
      *
      * @param element 查找的元素
      * @param annotationType 注解类型
+     * @param <T> 注解类型
      * @return 注解
      * @see AnnotationSearchMode#TYPE_HIERARCHY_AND_DIRECT
      */
@@ -315,6 +325,7 @@ public class Annotations {
      *
      * @param element 查找的元素
      * @param annotationType 可重复注解类型
+     * @param <T> 注解类型
      * @return 注解
      * @see AnnotationSearchMode#TYPE_HIERARCHY_AND_DIRECT
      */
@@ -345,6 +356,7 @@ public class Annotations {
      *
      * @param element 查找的元素
      * @param annotationType 注解类型
+     * @param <T> 注解类型
      * @return 注解
      * @see AnnotationSearchMode#TYPE_HIERARCHY_AND_INDIRECT
      */
@@ -358,6 +370,7 @@ public class Annotations {
      *
      * @param element 查找的元素
      * @param annotationType 可重复注解类型
+     * @param <T> 注解类型
      * @return 注解
      * @see AnnotationSearchMode#TYPE_HIERARCHY_AND_DIRECT
      */
@@ -373,6 +386,7 @@ public class Annotations {
      *
      * @param element 查找的元素
      * @param annotationType 注解类型
+     * @param <T> 注解类型
      * @return 注解
      * @see AnnotationSearchMode#TYPE_HIERARCHY_AND_INDIRECT
      */
@@ -402,7 +416,7 @@ public class Annotations {
      * @param annotation 注解对象
      * @return 是否
      */
-    public static boolean isSynthesized(Annotation annotation) {
+    public static boolean isSynthesizedAnnotation(Annotation annotation) {
         return AnnotationProxyFactory.isProxied(annotation);
     }
     
@@ -410,9 +424,10 @@ public class Annotations {
      * 若注解为一个合成注解，则返回该注解未被合成前的原始注解
      *
      * @param annotation 注解对象
+     * @param <T> 注解类型
      * @return 原始注解
      */
-    public static <T extends Annotation> T getNotSynthesized(T annotation) {
+    public static <T extends Annotation> T getNotSynthesizedAnnotation(T annotation) {
         return AnnotationProxyFactory.getOriginal(annotation);
     }
 
@@ -421,14 +436,20 @@ public class Annotations {
      *
      * @param annotation     待合成的注解
      * @param annotationType 注解类型
+     * @param includeMetaAnnotations 是否扫描该注解的元注解
+     * @param <T> 合成注解类型
      * @return 合成注解
      */
-    public static <T extends Annotation> T synthesize(Annotation annotation, Class<T> annotationType) {
+    public static <T extends Annotation> T synthesize(Annotation annotation, Class<T> annotationType, boolean includeMetaAnnotations) {
+        if (Objects.isNull(annotation)) {
+            return null;
+        }
         AnnotationSynthesizer synthesizer = getAnnotationSynthesizer();
         synthesizer.accept(0, 0, annotation);
-        AnnotationSearchMode.SELF_AND_INDIRECT.scan(annotation.annotationType(), synthesizer, AnnotationFilter.FILTER_JAVA);
-        return synthesizer.support(annotationType) ?
-            synthesizer.synthesize(annotationType) : null;
+        if (includeMetaAnnotations) {
+            AnnotationSearchMode.SELF_AND_INDIRECT.scan(annotation.annotationType(), synthesizer, AnnotationFilter.FILTER_JAVA);
+        }
+        return synthesizer.synthesize(annotationType);
     }
 
     /**
@@ -439,6 +460,9 @@ public class Annotations {
      * @return 合成注解
      */
     public static <T extends Annotation> T synthesize(Class<T> annotationType, Annotation... annotations) {
+        if (CollUtils.isEmpty(annotations)) {
+            return null;
+        }
         AnnotationSynthesizer synthesizer = getAnnotationSynthesizer();
         for (int i = 0; i < annotations.length; i++) {
             Annotation annotation = annotations[i];

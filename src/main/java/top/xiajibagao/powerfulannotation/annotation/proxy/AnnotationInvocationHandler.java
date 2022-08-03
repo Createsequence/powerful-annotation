@@ -47,7 +47,8 @@ public class AnnotationInvocationHandler implements InvocationHandler {
     AnnotationInvocationHandler(@NonNull AnnotationAttributeValueProvider valueProvider, @NonNull Annotation annotation) {
         this.methods = new HashMap<>();
         this.valueProvider = valueProvider;
-        this.annotation = annotation;
+        this.annotation = Annotations.isSynthesizedAnnotation(annotation)
+            ? ((ProxiedAnnotation)annotation).getOriginal() : annotation;
         loadMethods();
     }
 
