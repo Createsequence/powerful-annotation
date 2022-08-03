@@ -32,7 +32,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 /**
- * <p>注解工具类，提供从{@link AnnotatedElement}及其层级结构中获取注解的方法
+ * <p>注解工具类，提供从{@link AnnotatedElement}及其层级结构中获取注解或合成注解的方法
  *
  * <h3>注解获取支持</h3>
  * <p>工具类支持按<em>get</em>语义或<em>find</em>语义对{@link AnnotatedElement}上的元素进行查找：<br />
@@ -72,12 +72,12 @@ import java.util.stream.Collectors;
  * 因此{@link AnnotatedElement}中对注解作用域的定义在当前工具类中无效。<br />
  * 若有更细粒度的方法需求，可以参考{@link AnnotationSearchMode}或{@link AnnotationScanner}相关方法。
  *
- * <h3>可重复注解注解</h3>
+ * <h3>可重复注解注解支持</h3>
  * 注解工具类支持从层级结构中获取可重复的注解。通过名称带有<em>AllRepeatable</em>关键字的方法，
  * 用户可以从元素中获取全部直接或间接存在的、基于{@link Repeatable}或{@link RepeatableBy}实现的可重复注解。<br />
  * 若有更细粒度的方法需求，可以参考{@link AnnotationAggregator}相关方法。
  *
- * <h3>合成注解</h3>
+ * <h3>合成注解支持</h3>
  * <p>工具类支持将一批具有相关的注解对象“合并”为一个具有特殊属性的合成注解，
  * 此类方法包括<em>synthesize</em>以及所有方法名以<em>SynthesizedAnnotation</em>结尾的方法。<br />
  * 合成注解一般用于合成一个指定的注解对象以及其元注解，
@@ -453,7 +453,7 @@ public class Annotations {
     }
 
     /**
-     * 将一批注解合成为指定类型的合成注解
+     * 将一批注解按入参顺序合成为一个指定类型的注解，顺序越靠前的注解在合成中的优先级越高
      *
      * @param annotationType 注解类型
      * @param annotations 待合成的注解
