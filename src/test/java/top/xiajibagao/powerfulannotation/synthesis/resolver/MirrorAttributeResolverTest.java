@@ -10,8 +10,7 @@ import top.xiajibagao.powerfulannotation.annotation.attribute.WrappedAnnotationA
 import top.xiajibagao.powerfulannotation.helper.HierarchySelector;
 import top.xiajibagao.powerfulannotation.helper.ReflectUtils;
 import top.xiajibagao.powerfulannotation.synthesis.GenericAnnotationSynthesizer;
-import top.xiajibagao.powerfulannotation.synthesis.Link;
-import top.xiajibagao.powerfulannotation.synthesis.RelationType;
+import top.xiajibagao.powerfulannotation.synthesis.MirrorFor;
 
 import java.lang.annotation.*;
 import java.util.Collections;
@@ -57,9 +56,11 @@ public class MirrorAttributeResolverTest {
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target({ ElementType.METHOD, ElementType.TYPE })
 	private @interface AnnotationForTest {
-		@Link(attribute = "name", type = RelationType.MIRROR_FOR)
+		//@Link(attribute = "name", type = RelationType.MIRROR_FOR)
+		@MirrorFor(attribute = "name")
 		String value() default "";
-		@Link(type = RelationType.MIRROR_FOR)
+		//@Link(type = RelationType.MIRROR_FOR)
+		@MirrorFor
 		String name() default "";
 	}
 

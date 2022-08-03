@@ -101,7 +101,7 @@ public abstract class AbstractDynamicAttributeResolver implements SyntheticAnnot
 	protected Link getAttributeAnnotation(AnnotationAttribute attribute, RelationType... relationTypes) {
 		return Optional.ofNullable(attribute)
 			// TODO 此处也允许使用元注解机制
-			.map(t -> Annotations.getDeclaredAnnotation(attribute.getAttribute(), Link.class))
+			.map(t -> Annotations.getSynthesizedAnnotation(attribute.getAttribute(), Link.class))
 			.filter(a -> CollUtils.isContainsAny(relationTypes, a.type()))
 			.orElse(null);
 	}

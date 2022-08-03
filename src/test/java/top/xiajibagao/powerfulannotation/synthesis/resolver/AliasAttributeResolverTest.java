@@ -7,9 +7,9 @@ import top.xiajibagao.powerfulannotation.annotation.HierarchicalAnnotation;
 import top.xiajibagao.powerfulannotation.annotation.attribute.*;
 import top.xiajibagao.powerfulannotation.helper.HierarchySelector;
 import top.xiajibagao.powerfulannotation.helper.ReflectUtils;
+import top.xiajibagao.powerfulannotation.synthesis.AliasFor;
+import top.xiajibagao.powerfulannotation.synthesis.ForceAliasFor;
 import top.xiajibagao.powerfulannotation.synthesis.GenericAnnotationSynthesizer;
-import top.xiajibagao.powerfulannotation.synthesis.Link;
-import top.xiajibagao.powerfulannotation.synthesis.RelationType;
 
 import java.lang.annotation.*;
 import java.util.Collections;
@@ -77,11 +77,13 @@ public class AliasAttributeResolverTest {
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target({ ElementType.METHOD, ElementType.TYPE })
 	private @interface AnnotationForTest1 {
-		@Link(attribute = "name", type = RelationType.FORCE_ALIAS_FOR)
+		//@Link(attribute = "name", type = RelationType.FORCE_ALIAS_FOR)
+		@ForceAliasFor(attribute = "name")
 		String value() default "";
 		String name() default "";
 
-		@Link(attribute = "name2", type = RelationType.ALIAS_FOR)
+		//@Link(attribute = "name2", type = RelationType.ALIAS_FOR)
+		@AliasFor(attribute = "name2")
 		String value2() default "";
 		String name2() default "";
 	}
@@ -89,7 +91,8 @@ public class AliasAttributeResolverTest {
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target({ ElementType.METHOD, ElementType.TYPE })
 	private @interface AnnotationForTest2 {
-		@Link(type = RelationType.FORCE_ALIAS_FOR)
+		//@Link(type = RelationType.FORCE_ALIAS_FOR)
+		@ForceAliasFor
 		String value() default "";
 	}
 

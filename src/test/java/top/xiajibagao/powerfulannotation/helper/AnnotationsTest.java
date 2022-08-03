@@ -3,8 +3,8 @@ package top.xiajibagao.powerfulannotation.helper;
 import org.junit.Assert;
 import org.junit.Test;
 import top.xiajibagao.powerfulannotation.repeatable.RepeatableBy;
-import top.xiajibagao.powerfulannotation.synthesis.Link;
-import top.xiajibagao.powerfulannotation.synthesis.RelationType;
+import top.xiajibagao.powerfulannotation.synthesis.AliasFor;
+import top.xiajibagao.powerfulannotation.synthesis.MirrorFor;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -337,11 +337,14 @@ public class AnnotationsTest {
     @Target({ElementType.TYPE, ElementType.METHOD, ElementType.FIELD})
     @Retention(RetentionPolicy.RUNTIME)
     private @interface AnnotationForTest1 {
-        @Link(attribute = "name", type = RelationType.MIRROR_FOR)
+        //@Link(attribute = "name", type = RelationType.MIRROR_FOR)
+        @MirrorFor(attribute = "name")
         String value() default "";
-        @Link(type = RelationType.MIRROR_FOR)
+        //@Link(type = RelationType.MIRROR_FOR)
+        @MirrorFor
         String name() default "";
-        @Link(annotation = AnnotationForTest4.class, attribute = "text", type = RelationType.ALIAS_FOR)
+        //@Link(annotation = AnnotationForTest4.class, attribute = "text", type = RelationType.ALIAS_FOR)
+        @AliasFor(annotation = AnnotationForTest4.class, attribute = "text")
         String forCover() default "";
     }
 
@@ -350,7 +353,8 @@ public class AnnotationsTest {
     @Target({ElementType.TYPE, ElementType.METHOD, ElementType.FIELD})
     @Retention(RetentionPolicy.RUNTIME)
     private @interface AnnotationForTest2 {
-        @Link(annotation = AnnotationForTest1.class, type = RelationType.ALIAS_FOR)
+        //@Link(annotation = AnnotationForTest1.class, type = RelationType.ALIAS_FOR)
+        @AliasFor(annotation = AnnotationForTest1.class)
         String value() default "";
         AnnotationForTest1[] annotations() default {};
     }
