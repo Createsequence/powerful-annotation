@@ -8,7 +8,7 @@
     <artifactId>powerful-annotation</artifactId>
     <version>0.0.1</version>
     <name>powerful-annotation</name>
-    <description>基于 SpringBoot 的注解式字典项、关联表与枚举值通用处理框架</description>
+    <description>一个小巧的 java 注解增强库，让注解更加好用</description>
     <url>https://gitee.com/CreateSequence/powerful-annotation</url>
 
     <properties>
