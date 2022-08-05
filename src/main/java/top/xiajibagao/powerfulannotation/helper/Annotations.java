@@ -30,6 +30,7 @@ import java.lang.reflect.Method;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * <p>注解工具类，提供从{@link AnnotatedElement}及其层级结构中获取注解或合成注解的方法
@@ -408,6 +409,41 @@ public class Annotations {
             .isAnnotationPresent(element, annotationType);
     }
 
+    // =========================== repeatable ===========================
+
+    /**
+     * 从指定的容器注解中获取可重复注解
+     *
+     * @param repeatableAnnotationType 可重复注解类型
+     * @param annotations 注解对象
+     * @return 可重复注解
+     */
+    public static <T extends Annotation> List<T> getRepeatableFrom(Class<T> repeatableAnnotationType, Annotation... annotations) {
+        if (CollUtils.isEmpty(annotations)) {
+            return Collections.emptyList();
+        }
+
+        // 注册映射关系
+        RepeatableMappingRegistry repeatableMappingRegistry = getRepeatableMappingRegistry();
+        repeatableMappingRegistry.register(repeatableAnnotationType);
+        for (Annotation annotation : annotations) {
+            repeatableMappingRegistry.register(annotation.annotationType());
+        }
+
+        // 获取对应类型的注解
+        List<T> results = Stream.of(annotations)
+            .filter(a -> Objects.equals(a.annotationType(), repeatableAnnotationType))
+            .map(repeatableAnnotationType::cast)
+            .collect(Collectors.toList());
+        Stream.of(annotations)
+            .filter(a -> repeatableMappingRegistry.isContainerOf(repeatableAnnotationType, a.annotationType()))
+            .map(a -> repeatableMappingRegistry.getElementsFromContainer(a, repeatableAnnotationType))
+            .filter(CollUtils::isNotEmpty)
+            .flatMap(Collection::stream)
+            .forEach(results::add);
+        return results;
+    }
+
     // =========================== synthesize ===========================
 
     /**
@@ -546,11 +582,18 @@ public class Annotations {
      * 获取一个标准的注解聚合器
      */
     private static <T> AnnotationAggregator<T> getAnnotationAggregator(T root) {
-        RepeatableMappingRegistry repeatableMappingRegistry = new SimpleRepeatableMappingRegistry(
+        RepeatableMappingRegistry repeatableMappingRegistry = getRepeatableMappingRegistry();
+        return new GenericAnnotationAggregator<>(root, 0, 0, repeatableMappingRegistry);
+    }
+
+    /**
+     * 获取一个标准的可重复注解关系映射表
+     */
+    private static RepeatableMappingRegistry getRepeatableMappingRegistry() {
+        return new SimpleRepeatableMappingRegistry(
             RepeatableMappingParser.STANDARD_REPEATABLE_MAPPING_PARSER,
             RepeatableMappingParser.REPEATABLE_BY_MAPPING_PARSER
         );
-        return new GenericAnnotationAggregator<>(root, 0, 0, repeatableMappingRegistry);
     }
 
     /**

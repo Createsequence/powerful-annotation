@@ -11,6 +11,8 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.lang.reflect.Method;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -331,6 +333,20 @@ public class AnnotationsTest {
         Assert.assertEquals("interface2", annotation6.name());
     }
 
+    @Test
+    public void testGetRepeatableFrom() {
+        AnnotationForTest1 annotation1 = ClassForTest.class.getAnnotation(AnnotationForTest1.class);
+        Assert.assertEquals(
+            Collections.singletonList(annotation1), Annotations.getRepeatableFrom(AnnotationForTest1.class, annotation1)
+        );
+
+        AnnotationForTest2 annotation2 = ClassForTest.class.getAnnotation(AnnotationForTest2.class);
+        List<AnnotationForTest1> annotations = Annotations.getRepeatableFrom(AnnotationForTest1.class, annotation1, annotation2);
+        Assert.assertEquals(
+            Arrays.asList(annotation1, annotation2.annotations()[0], annotation2.annotations()[1]),
+            annotations
+        );
+    }
 
     @AnnotationForTest4(text = "covered")
     @RepeatableBy(annotation = AnnotationForTest2.class, attribute = "annotations")
