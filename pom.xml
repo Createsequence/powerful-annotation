@@ -12,6 +12,13 @@
         </license>
     </licenses>
 
+    <scm>
+        <connection>scm:git:https://gitee.com/CreateSequence/powerful-annotation</connection>
+        <developerConnection>scm:git@gitee.com:CreateSequence/powerful-annotation.git</developerConnection>
+        <url>https://gitee.com/CreateSequence/powerful-annotation</url>
+        <tag>HEAD</tag>
+    </scm>
+
     <developers>
         <developer>
             <name>Createsequence</name>
@@ -42,6 +49,7 @@
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <version>${lomboke.version}</version>
+            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
