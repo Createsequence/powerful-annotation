@@ -13,10 +13,18 @@ public class MirroredAnnotationAttribute extends AbstractWrappedAnnotationAttrib
 
 	public MirroredAnnotationAttribute(AnnotationAttribute origin, AnnotationAttribute linked) {
 		super(origin, linked);
+		checkValue();
 	}
 
 	@Override
 	public Object getValue() {
+		final boolean originIsDefault = original.isValueEquivalentToDefaultValue();
+		final boolean targetIsDefault = linked.isValueEquivalentToDefaultValue();
+		return (originIsDefault == targetIsDefault) || targetIsDefault ?
+			original.getValue() : linked.getValue();
+	}
+
+	private void checkValue() {
 		final boolean originIsDefault = original.isValueEquivalentToDefaultValue();
 		final boolean targetIsDefault = linked.isValueEquivalentToDefaultValue();
 		final Object originValue = original.getValue();
@@ -29,11 +37,7 @@ public class MirroredAnnotationAttribute extends AbstractWrappedAnnotationAttrib
 				"the values of attributes [%s] and [%s] that mirror each other are different: [%s] <==> [%s]",
 				original.getAttribute(), linked.getAttribute(), originValue, targetValue
 			);
-			return originValue;
 		}
-
-		// 两者有一者不为默认值时，优先返回非默认值
-		return originIsDefault ? targetValue : originValue;
 	}
 
 	/**
