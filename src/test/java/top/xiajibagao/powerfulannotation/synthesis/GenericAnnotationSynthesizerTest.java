@@ -279,4 +279,59 @@ public class GenericAnnotationSynthesizerTest {
     @AnnotationForTest7(alias = "alias_name")
     public static class ClassForTest5 {}
 
+    @Test
+    public void testForHierarchy() {
+        GenericAnnotationSynthesizer synthesizer = new GenericAnnotationSynthesizer(
+            Arrays.asList(
+                new MirrorAttributeResolver(),
+                new AliasAttributeResolver(),
+                new CoveredAttributeResolver(true)
+            ),
+            HierarchySelector.farthestAndNewestPriority()
+        );
+        synthesizer.accept(0, 1, ClassForHierarchy.class.getAnnotation(AnnotationForHierarchy3.class));
+        synthesizer.accept(1, 1, AnnotationForHierarchy3.class.getAnnotation(AnnotationForHierarchy2.class));
+        synthesizer.accept(2, 1, AnnotationForHierarchy2.class.getAnnotation(AnnotationForHierarchy1.class));
+
+        AnnotationForHierarchy3 annotation3 = synthesizer.synthesize(AnnotationForHierarchy3.class);
+        Assert.assertEquals("foo", annotation3.value3());
+        AnnotationForHierarchy2 annotation2 = synthesizer.synthesize(AnnotationForHierarchy2.class);
+        Assert.assertEquals("foo", annotation2.value2());
+        Assert.assertEquals("foo", annotation2.name2());
+        AnnotationForHierarchy1 annotation1 = synthesizer.synthesize(AnnotationForHierarchy1.class);
+        Assert.assertEquals("foo", annotation1.name1());
+        Assert.assertEquals("foo", annotation1.value1());
+    }
+
+
+    @Retention(RetentionPolicy.RUNTIME)
+    @Target({ ElementType.METHOD, ElementType.TYPE })
+    private @interface AnnotationForHierarchy1 {
+        @MirrorFor(attribute = "name1")
+        String value1() default "";
+        @MirrorFor(attribute = "value1")
+        String name1() default "";
+    }
+
+    @AnnotationForHierarchy1
+    @Retention(RetentionPolicy.RUNTIME)
+    @Target({ ElementType.METHOD, ElementType.TYPE })
+    private @interface AnnotationForHierarchy2 {
+        @AliasFor(attribute = "name2")
+        String value2() default "";
+        @AliasFor(annotation = AnnotationForHierarchy1.class, attribute = "value1")
+        String name2() default "";
+    }
+
+    @AnnotationForHierarchy2
+    @Retention(RetentionPolicy.RUNTIME)
+    @Target({ ElementType.METHOD, ElementType.TYPE })
+    private @interface AnnotationForHierarchy3 {
+        @ForceAliasFor(annotation = AnnotationForHierarchy2.class, attribute = "value2")
+        String value3() default "";
+    }
+
+    @AnnotationForHierarchy3(value3 = "foo")
+    private static class ClassForHierarchy {}
+
 }

@@ -1,10 +1,7 @@
 package top.xiajibagao.powerfulannotation.synthesis.resolver;
 
 import top.xiajibagao.powerfulannotation.annotation.HierarchicalAnnotation;
-import top.xiajibagao.powerfulannotation.annotation.attribute.AbstractWrappedAnnotationAttribute;
-import top.xiajibagao.powerfulannotation.annotation.attribute.AliasedAnnotationAttribute;
-import top.xiajibagao.powerfulannotation.annotation.attribute.AnnotationAttribute;
-import top.xiajibagao.powerfulannotation.annotation.attribute.ForceAliasedAnnotationAttribute;
+import top.xiajibagao.powerfulannotation.annotation.attribute.*;
 import top.xiajibagao.powerfulannotation.helper.Assert;
 import top.xiajibagao.powerfulannotation.helper.ObjectUtils;
 import top.xiajibagao.powerfulannotation.synthesis.AnnotationSynthesizer;
@@ -104,27 +101,43 @@ public class AliasAttributeResolver extends AbstractDynamicAttributeResolver {
 		);
 		// 处理aliasFor类型的关系
 		if (RelationType.ALIAS_FOR.equals(annotation.type())) {
-			wrappingLinkedAttribute(synthesizer, originalAttribute, linkedAttribute, AliasedAnnotationAttribute::new);
+			wrappingLinkedAttribute(
+				synthesizer,
+				originalAnnotation, originalAttribute, linkedAttribute,
+				AliasedAnnotationAttribute::new
+			);
 			return;
 		}
 		// 处理forceAliasFor类型的关系
-		wrappingLinkedAttribute(synthesizer, originalAttribute, linkedAttribute, ForceAliasedAnnotationAttribute::new);
+		wrappingLinkedAttribute(
+			synthesizer,
+			originalAnnotation, originalAttribute, linkedAttribute,
+			ForceAliasedAnnotationAttribute::new
+		);
 	}
 
 	/**
 	 * 对指定注解属性进行包装，若该属性已被包装过，则递归以其为根节点的树结构，对树上全部的叶子节点进行包装
 	 */
 	private void wrappingLinkedAttribute(
-		AnnotationSynthesizer synthesizer, AnnotationAttribute originalAttribute, AnnotationAttribute aliasAttribute, BinaryOperator<AnnotationAttribute> wrapping) {
+		AnnotationSynthesizer synthesizer,
+		HierarchicalAnnotation<Annotation> originalAnnotation, AnnotationAttribute originalAttribute,
+		AnnotationAttribute linkedAttribute, BinaryOperator<AnnotationAttribute> wrapping) {
 		// 不是包装属性
-		if (!aliasAttribute.isWrapped()) {
-			processAttribute(synthesizer, originalAttribute, aliasAttribute, wrapping);
-			return;
+		if (!linkedAttribute.isWrapped()) {
+			processAttribute(synthesizer, originalAttribute, linkedAttribute, wrapping);
 		}
-		// 是包装属性
-		final AbstractWrappedAnnotationAttribute wrapper = (AbstractWrappedAnnotationAttribute)aliasAttribute;
-		wrapper.getAllLinkedNonWrappedAttributes().forEach(
-			t -> processAttribute(synthesizer, originalAttribute, t, wrapping)
+		else {
+			// 是包装属性
+			final WrappedAnnotationAttribute wrapper = (WrappedAnnotationAttribute)linkedAttribute;
+			wrapper.getAllLinkedNonWrappedAttributes().forEach(
+				t -> processAttribute(synthesizer, originalAttribute, t, wrapping)
+			);
+		}
+		// 包装别名属性
+		originalAnnotation.replaceAttribute(
+			originalAttribute.getAttributeName(),
+			old -> new AliasAnnotationAttribute(old, linkedAttribute)
 		);
 	}
 

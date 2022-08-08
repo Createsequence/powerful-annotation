@@ -6,6 +6,7 @@ import lombok.Getter;
 import top.xiajibagao.powerfulannotation.annotation.attribute.AnnotationAttribute;
 import top.xiajibagao.powerfulannotation.annotation.attribute.CacheableAnnotationAttribute;
 import top.xiajibagao.powerfulannotation.helper.Annotations;
+import top.xiajibagao.powerfulannotation.helper.Assert;
 import top.xiajibagao.powerfulannotation.helper.ReflectUtils;
 
 import java.lang.annotation.Annotation;
@@ -62,6 +63,7 @@ public class GenericHierarchicalAnnotation<T extends Annotation> implements Hier
      * @param horizontalIndex 水平索引
      */
     public GenericHierarchicalAnnotation(T annotation, Object root, int verticalIndex, int horizontalIndex) {
+        Assert.notNull(annotation, "annotation must not null");
         this.root = root;
         this.verticalIndex = verticalIndex;
         this.horizontalIndex = horizontalIndex;

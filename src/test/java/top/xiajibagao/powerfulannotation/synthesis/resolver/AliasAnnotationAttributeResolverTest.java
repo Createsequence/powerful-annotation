@@ -19,7 +19,7 @@ import java.util.Collections;
  *
  * @author huangchengxing
  */
-public class AliasAttributeResolverTest {
+public class AliasAnnotationAttributeResolverTest {
 
 	@Test
 	public void testOrder() {
@@ -38,15 +38,15 @@ public class AliasAttributeResolverTest {
 
 		AnnotationAttribute valueAttribute = annotation.getAttribute("value");
 		Assert.assertEquals(ReflectUtils.getDeclaredMethod(AnnotationForTest1.class, "value"), valueAttribute.getAttribute());
-		Assert.assertFalse(valueAttribute.isWrapped());
-		Assert.assertEquals(CacheableAnnotationAttribute.class, valueAttribute.getClass());
+		Assert.assertTrue(valueAttribute.isWrapped());
+		Assert.assertEquals(AliasAnnotationAttribute.class, valueAttribute.getClass());
 
 		AnnotationAttribute nameAttribute = annotation.getAttribute("name");
 		Assert.assertEquals(ReflectUtils.getDeclaredMethod(AnnotationForTest1.class, "name"), nameAttribute.getAttribute());
 		Assert.assertTrue(nameAttribute.isWrapped());
 		Assert.assertEquals(ForceAliasedAnnotationAttribute.class, nameAttribute.getClass());
 
-		Assert.assertEquals(valueAttribute, ((WrappedAnnotationAttribute)nameAttribute).getLinked());
+		Assert.assertEquals(((AliasAnnotationAttribute)valueAttribute).getOriginal(), ((WrappedAnnotationAttribute)nameAttribute).getLinked());
 	}
 
 	@Test
@@ -59,15 +59,15 @@ public class AliasAttributeResolverTest {
 
 		AnnotationAttribute valueAttribute = annotation.getAttribute("value2");
 		Assert.assertEquals(ReflectUtils.getDeclaredMethod(AnnotationForTest1.class, "value2"), valueAttribute.getAttribute());
-		Assert.assertFalse(valueAttribute.isWrapped());
-		Assert.assertEquals(CacheableAnnotationAttribute.class, valueAttribute.getClass());
+		Assert.assertTrue(valueAttribute.isWrapped());
+		Assert.assertEquals(AliasAnnotationAttribute.class, valueAttribute.getClass());
 
 		AnnotationAttribute nameAttribute = annotation.getAttribute("name2");
 		Assert.assertEquals(ReflectUtils.getDeclaredMethod(AnnotationForTest1.class, "name2"), nameAttribute.getAttribute());
 		Assert.assertTrue(nameAttribute.isWrapped());
 		Assert.assertEquals(AliasedAnnotationAttribute.class, nameAttribute.getClass());
 
-		Assert.assertEquals(valueAttribute, ((WrappedAnnotationAttribute)nameAttribute).getLinked());
+		Assert.assertEquals(((AliasAnnotationAttribute)valueAttribute).getOriginal(), ((WrappedAnnotationAttribute)nameAttribute).getLinked());
 	}
 
 	@AnnotationForTest3("value3")
@@ -102,5 +102,55 @@ public class AliasAttributeResolverTest {
 	private @interface AnnotationForTest3 {
 		String value() default "";
 	}
+
+	@Test
+	public void testMultiAlias() {
+		AliasAttributeResolver processor = new AliasAttributeResolver();
+		GenericAnnotationSynthesizer synthesizer = new GenericAnnotationSynthesizer(Collections.singletonList(processor), HierarchySelector.nearestAndOldestPriority());
+		synthesizer.accept(0, 1, ClassForTest2.class.getAnnotation(AnnotationForTest6.class));
+		synthesizer.accept(1, 1, AnnotationForTest6.class.getAnnotation(AnnotationForTest5.class));
+		synthesizer.accept(2, 1, AnnotationForTest5.class.getAnnotation(AnnotationForTest4.class));
+		synthesizer.resolve();
+
+		HierarchicalAnnotation<Annotation> annotation6 = synthesizer.getAnnotation(AnnotationForTest6.class);
+		Assert.assertNotNull(annotation6);
+		Assert.assertEquals("foo", annotation6.getAttribute("value6").getValue());
+
+		HierarchicalAnnotation<Annotation> annotation5 = synthesizer.getAnnotation(AnnotationForTest5.class);
+		Assert.assertNotNull(annotation5);
+		Assert.assertEquals("foo", annotation5.getAttribute("value5").getValue());
+
+		HierarchicalAnnotation<Annotation> annotation4 = synthesizer.getAnnotation(AnnotationForTest4.class);
+		Assert.assertNotNull(annotation4);
+		Assert.assertEquals("foo", annotation4.getAttribute("value4").getValue());
+		Assert.assertEquals("foo", annotation4.getAttribute("name4").getValue());
+	}
+
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target({ ElementType.METHOD, ElementType.TYPE })
+	private @interface AnnotationForTest4 {
+		@AliasFor(attribute = "name4")
+		String value4() default "";
+		String name4() default "";
+	}
+
+	@AnnotationForTest4
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target({ ElementType.METHOD, ElementType.TYPE })
+	private @interface AnnotationForTest5 {
+		@AliasFor(annotation = AnnotationForTest4.class, attribute = "value4")
+		String value5() default "";
+	}
+
+	@AnnotationForTest5
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target({ ElementType.METHOD, ElementType.TYPE })
+	private @interface AnnotationForTest6 {
+		@ForceAliasFor(annotation = AnnotationForTest5.class, attribute = "value5")
+		String value6() default "";
+	}
+
+	@AnnotationForTest6(value6 = "foo")
+	private static class ClassForTest2 {}
 
 }
