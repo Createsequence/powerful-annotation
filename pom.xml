@@ -4,20 +4,37 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>top.xiajibagao</groupId>
-    <artifactId>powerful-annotation</artifactId>
-    <version>0.0.1</version>
-    <name>powerful-annotation</name>
-    <description>一个小巧的 java 注解增强库，让注解更加好用</description>
-    <url>https://gitee.com/CreateSequence/powerful-annotation</url>
+    <licenses>
+        <license>
+            <name>The Apache Software License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <developers>
+        <developer>
+            <name>Createsequence</name>
+            <email>841396397@qq.com</email>
+            <organization>xiajibagao</organization>
+        </developer>
+    </developers>
 
     <properties>
+        <server.id>maven-central</server.id>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
         <lomboke.version>1.18.24</lomboke.version>
         <junit.version>4.13.2</junit.version>
     </properties>
+
+    <groupId>top.xiajibagao</groupId>
+    <artifactId>powerful-annotation</artifactId>
+    <version>0.0.1</version>
+    <name>powerful-annotation</name>
+    <description>一个小巧的、无依赖的 java 注解增强库</description>
+    <url>https://gitee.com/CreateSequence/powerful-annotation</url>
 
     <dependencies>
         <dependency>
