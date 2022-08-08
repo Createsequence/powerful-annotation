@@ -22,11 +22,11 @@ Its design inspiration comes from `spring-core.annotation`. In a non spring envi
 
 ## FEATURES
 
-- No dependency：after the introduction, no other dependencies will be brought to the user's project；
-- Get started quickly：It is a uniform static method encapsulation for all components. Users can use most of the functions through a static tool class；
-- More powerful annotation search：Provide more powerful annotation search capabilities, and support searching annotations from complex hierarchical structures including class, method, attribute or meta annotation of annotations；
-- More convenient repeatable annotations：It provides a more convenient way to obtain repeatable annotations, and provides more ways to create repeatable annotations on the basis of the native `@ repeatable`；
-- Support synthetic annotation mechanism：It supports a spring like annotation synthesis mechanism, and can "merge" multiple related arbitrary annotations into a specific type of annotation according to a specific policy. The content of the annotation will achieve effects such as aliasing or mirroring according to the specified processing policy；
+- No dependency：no other dependencies will be brought to the user's project；
+- Get started quickly：most functions can be used through static methods；
+- Powerful annotation search support：Provide more powerful annotation search capabilities, and support searching annotations from complex hierarchical structures including class, method, attribute or meta annotation of annotations；
+- Better repeatable annotation support：Provide more convenient ways to build or obtain repeatable annotations；
+- Annotation synthesis support：It supports a spring like annotation synthesis mechanism, and can "merge" multiple related arbitrary annotations into a specific type of annotation according to a specific policy. The content of the annotation will achieve effects such as aliasing or mirroring according to the specified processing policy；
 
 ## INSTALL
 
@@ -40,6 +40,6 @@ Introducing Maven dependency into XML files
 </dependency>
 ~~~
 
-##  Participation, contribution and technical support
+## Contributing && Support
 
 If you encounter problems, find bugs, or have any good ideas in use, welcome to issues or join QQ group: 540919540 feedback!
