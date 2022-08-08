@@ -10,6 +10,7 @@ import top.xiajibagao.powerfulannotation.synthesis.Link;
 import top.xiajibagao.powerfulannotation.synthesis.RelationType;
 
 import java.lang.annotation.Annotation;
+import java.util.Collection;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
@@ -29,16 +30,18 @@ public abstract class AbstractDynamicAttributeResolver implements SyntheticAnnot
 	 * 则从聚合器中获取类型对应的合成注解对象，与该对象中的指定属性，然后将全部关联数据交给
 	 * {@link #processLinkedAttribute}处理。
 	 *
-	 * @param annotation 合成的注解
+	 * @param annotations 合成的注解
 	 * @param synthesizer 合成注解聚合器
 	 */
 	@Override
-	public void resolve(HierarchicalAnnotation<Annotation> annotation, AnnotationSynthesizer synthesizer) {
-		annotation.getAllAttribute().stream()
-			.collect(Collectors.toMap(AnnotationAttribute::getAttributeName, Function.identity()))
-			.forEach((originalAttributeName, originalAttribute) ->
-				resolveAttribute(annotation, synthesizer, originalAttributeName, originalAttribute)
-			);
+	public void resolve(Collection<HierarchicalAnnotation<Annotation>> annotations, AnnotationSynthesizer synthesizer) {
+		for (HierarchicalAnnotation<Annotation> annotation : annotations) {
+			annotation.getAllAttribute().stream()
+				.collect(Collectors.toMap(AnnotationAttribute::getAttributeName, Function.identity()))
+				.forEach((originalAttributeName, originalAttribute) ->
+					resolveAttribute(annotation, synthesizer, originalAttributeName, originalAttribute)
+				);
+		}
 	}
 
 	/**
@@ -100,7 +103,6 @@ public abstract class AbstractDynamicAttributeResolver implements SyntheticAnnot
 	 */
 	protected Link getAttributeAnnotation(AnnotationAttribute attribute, RelationType... relationTypes) {
 		return Optional.ofNullable(attribute)
-			// TODO 此处也允许使用元注解机制
 			.map(t -> Annotations.getSynthesizedAnnotation(attribute.getAttribute(), Link.class))
 			.filter(a -> CollUtils.isContainsAny(relationTypes, a.type()))
 			.orElse(null);

@@ -107,15 +107,6 @@ public class GenericAnnotationSynthesizer implements AnnotationSynthesizer {
     }
 
     /**
-     * 解析注解
-     *
-     * @param hierarchicalAnnotation 注解
-     */
-    protected void resolveAnnotation(HierarchicalAnnotation<Annotation> hierarchicalAnnotation) {
-        resolvers.forEach(resolver -> resolver.resolve(hierarchicalAnnotation, this));
-    }
-
-    /**
      * 向当前实例注册注解，若该类型的注解已经在{@link #synthesizedAnnotationMap}中存在，
      * 则使用{@link #selector}两注解进行选择，并仅保留最终有效的注解
      */
@@ -136,12 +127,11 @@ public class GenericAnnotationSynthesizer implements AnnotationSynthesizer {
         if (this.resolved) {
             return;
         }
-        getAllAnnotation().stream()
-            .sorted(
-                Comparator.comparing(HierarchicalAnnotation<Annotation>::getVerticalIndex)
-                    .thenComparing(HierarchicalAnnotation<Annotation>::getHorizontalIndex)
-            )
-            .forEach(this::resolveAnnotation);
+        List<HierarchicalAnnotation<Annotation>> annotations = getAllAnnotation().stream()
+            .sorted(Comparator.comparing(HierarchicalAnnotation<Annotation>::getVerticalIndex)
+                .thenComparing(HierarchicalAnnotation<Annotation>::getHorizontalIndex)
+            ).collect(Collectors.toList());
+        resolvers.forEach(resolver -> resolver.resolve(annotations, this));
         this.resolved = true;
     }
 

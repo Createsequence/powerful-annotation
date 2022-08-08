@@ -4,6 +4,7 @@ import top.xiajibagao.powerfulannotation.annotation.HierarchicalAnnotation;
 import top.xiajibagao.powerfulannotation.synthesis.AnnotationSynthesizer;
 
 import java.lang.annotation.Annotation;
+import java.util.Collection;
 
 /**
  * 合成注解解析器
@@ -34,10 +35,10 @@ public interface SyntheticAnnotationResolver {
     /**
      * 处理注解
      *
-     * @param annotation 待处理的注解
+     * @param annotations 待处理的注解
      * @param synthesizer 合成器
      */
-    void resolve(HierarchicalAnnotation<Annotation> annotation, AnnotationSynthesizer synthesizer);
+    void resolve(Collection<HierarchicalAnnotation<Annotation>> annotations, AnnotationSynthesizer synthesizer);
 
     /**
      * 排序值，越小越靠前
