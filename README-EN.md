@@ -14,7 +14,7 @@
 
 `powerful-annotation` is a compact and independent Java annotation enhancement library. It is used to solve some pain points in the use of Java annotations in daily development, and provides more powerful annotation search capabilities, more flexible and convenient repeatable annotations, and annotation synthesis mechanism similar to spring
 
-Its design inspiration comes from `spring-core.annotation`. In a non spring environment, `powerful-annotation` is a friendly alternative to spring annotation mechanism.
+Its design inspiration comes from `spring-core`. In a non spring environment, `powerful-annotation` is a friendly alternative to spring annotation mechanism.
 
 ## DOCUMENT
 
@@ -24,9 +24,9 @@ Its design inspiration comes from `spring-core.annotation`. In a non spring envi
 
 - No dependency：no other dependencies will be brought to the user's project；
 - Get started quickly：most functions can be used through static methods；
-- Powerful annotation search support：Provide more powerful annotation search capabilities, and support searching annotations from complex hierarchical structures including class, method, attribute or meta annotation of annotations；
-- Better repeatable annotation support：Provide more convenient ways to build or obtain repeatable annotations；
-- Annotation synthesis support：It supports a spring like annotation synthesis mechanism, and can "merge" multiple related arbitrary annotations into a specific type of annotation according to a specific policy. The content of the annotation will achieve effects such as aliasing or mirroring according to the specified processing policy；
+- Powerful annotation search support：provide more powerful annotation search capabilities, and support searching annotations from complex hierarchical structures including class, method, attribute or meta annotation of annotations；
+- Better repeatable annotation support：provide more convenient ways to build or obtain repeatable annotations；
+- Annotation synthesis support：supports a spring like annotation synthesis mechanism, and can "merge" multiple related arbitrary annotations into a specific type of annotation according to a specific policy. The content of the annotation will achieve effects such as aliasing or mirroring according to the specified processing policy；
 
 ## INSTALL
 
@@ -42,9 +42,9 @@ Introducing Maven dependency into XML files
 
 ## QUICK START
 
-After adding Maven dependency, we can use most of the functions by `annotations`. Here are some basic functions:
+After adding Maven dependency, we can use most of the functions by `top.xiajibagao.powerfulannotation.helper.Annotations`. Here are some basic examples:
 
-### 1.Annotation search
+### 1.Search annotation
 
 <img src="https://img.xiajibagao.top/image-20220805152432933.png" alt="image-20220805152432933" style="zoom:50%;" />
 
@@ -115,7 +115,7 @@ private @interface Annotation2 {
 
 This annotation supports mixed use with ` @Repeatable '.
 
-### 4.Annotation synthesize
+### 4.Synthesize annotation
 
 annotation synthesize use like `MergedAnnotation` of  spring. It supports "merging" between multiple annotations and the alias mechanism based on attribute annotation. This function can also be used in combination with annotation search.
 
