@@ -28,6 +28,18 @@
 - 可重复注解支持：提供更灵活更便利的可重复注解创建及获取的方式；
 - 注解合成支持：支持类似 spring 注解合成机制，可以将多个相关的任意注解按照特定的策略“合并”为一个特定类型的注解，从而变相支持注解之间的“继承”；
 
+## 安装
+
+引入 maven 依赖即可使用：
+
+~~~xml
+<dependency>
+    <groupId>top.xiajibagao</groupId>
+    <artifactId>powerful-annotation</artifactId>
+    <version>${last-version}</version>
+</dependency>
+~~~
+
 ## 快速使用
 
 添加 maven 依赖后，引入通用工具类 `Annotations` 即可使用大部分功能。下面演示一些基本的功能：
@@ -163,18 +175,6 @@ Annotation1 annotation1 = Annotations.getSynthesizedAnnotation(Foo.class, Annota
 annotation1.value(); // "foo"
 Annotation2 annotation2 = Annotations.getSynthesizedAnnotation(Foo.class, Annotation2.class);
 annotation2.name(); // "foo"
-~~~
-
-## 安装
-
-引入 maven 依赖即可使用：
-
-~~~xml
-<dependency>
-    <groupId>top.xiajibagao</groupId>
-    <artifactId>powerful-annotation</artifactId>
-    <version>${last-version}</version>
-</dependency>
 ~~~
 
 ##  参与贡献和技术支持

@@ -20,6 +20,26 @@ Its design inspiration comes from `spring-core.annotation`. In a non spring envi
 
 [Wiki-CN](https://gitee.com/CreateSequence/powerful-annotation/wikis/Home)
 
+## FEATURES
+
+- No dependency：no other dependencies will be brought to the user's project；
+- Get started quickly：most functions can be used through static methods；
+- Powerful annotation search support：Provide more powerful annotation search capabilities, and support searching annotations from complex hierarchical structures including class, method, attribute or meta annotation of annotations；
+- Better repeatable annotation support：Provide more convenient ways to build or obtain repeatable annotations；
+- Annotation synthesis support：It supports a spring like annotation synthesis mechanism, and can "merge" multiple related arbitrary annotations into a specific type of annotation according to a specific policy. The content of the annotation will achieve effects such as aliasing or mirroring according to the specified processing policy；
+
+## INSTALL
+
+Introducing Maven dependency into XML files
+
+~~~xml
+<dependency>
+    <groupId>top.xiajibagao</groupId>
+    <artifactId>powerful-annotation</artifactId>
+    <version>${last-version}</version>
+</dependency>
+~~~
+
 ## QUICK START
 
 After adding Maven dependency, we can use most of the functions by `annotations`. Here are some basic functions:
@@ -156,26 +176,6 @@ Annotation1 annotation1 = Annotations.getSynthesizedAnnotation(Foo.class, Annota
 annotation1.value(); // "foo"
 Annotation2 annotation2 = Annotations.getSynthesizedAnnotation(Foo.class, Annotation2.class);
 annotation2.name(); // "foo"
-~~~
-
-## FEATURES
-
-- No dependency：no other dependencies will be brought to the user's project；
-- Get started quickly：most functions can be used through static methods；
-- Powerful annotation search support：Provide more powerful annotation search capabilities, and support searching annotations from complex hierarchical structures including class, method, attribute or meta annotation of annotations；
-- Better repeatable annotation support：Provide more convenient ways to build or obtain repeatable annotations；
-- Annotation synthesis support：It supports a spring like annotation synthesis mechanism, and can "merge" multiple related arbitrary annotations into a specific type of annotation according to a specific policy. The content of the annotation will achieve effects such as aliasing or mirroring according to the specified processing policy；
-
-## INSTALL
-
-Introducing Maven dependency into XML files
-
-~~~xml
-<dependency>
-    <groupId>top.xiajibagao</groupId>
-    <artifactId>powerful-annotation</artifactId>
-    <version>${last-version}</version>
-</dependency>
 ~~~
 
 ## Contributing && Support
