@@ -5,7 +5,6 @@ import top.xiajibagao.powerfulannotation.helper.*;
 import java.lang.annotation.Annotation;
 import java.lang.annotation.Repeatable;
 import java.util.*;
-import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -72,9 +71,9 @@ public class SimpleRepeatableMappingRegistry implements RepeatableMappingRegistr
 			final List<RepeatableMapping> mappings = deque.removeFirst();
 			final List<RepeatableMapping> next = new ArrayList<>();
 			for (final RepeatableMapping mapping : mappings) {
-				mappingForestMap.putLinkedNodes(
-					mapping.getElementType(), mapping.getContainerType(), mapping
-				);
+				// 以元素注解为子节点，容器注解为父节点，构建树结构
+				mappingForestMap.putNode(mapping.getElementType(), mapping);
+				mappingForestMap.linkNodes(mapping.getContainerType(), mapping.getElementType());
 				CollUtils.addAll(next, parseRepeatableMappings(mapping.getContainerType()));
 			}
 			if (CollUtils.isNotEmpty(next)) {
@@ -92,7 +91,8 @@ public class SimpleRepeatableMappingRegistry implements RepeatableMappingRegistr
 	private List<RepeatableMapping> parseRepeatableMappings(Class<? extends Annotation> annotationType) {
 		return mappingParsers.stream()
 			.map(p -> p.parse(annotationType, this))
-			.filter(Objects::nonNull)
+			.filter(CollUtils::isNotEmpty)
+			.flatMap(Collection::stream)
 			.collect(Collectors.toList());
 	}
 
@@ -105,7 +105,7 @@ public class SimpleRepeatableMappingRegistry implements RepeatableMappingRegistr
 	public boolean isContainer(Class<? extends Annotation> annotationType) {
 		return Optional.ofNullable(annotationType)
 			.map(mappingForestMap::get)
-			.map(TreeEntry::hasParent)
+			.map(TreeEntry::hasChildren)
 			.orElse(false);
 	}
 
@@ -119,7 +119,7 @@ public class SimpleRepeatableMappingRegistry implements RepeatableMappingRegistr
 	public boolean hasContainer(Class<? extends Annotation> annotationType) {
 		return Optional.ofNullable(annotationType)
 			.map(mappingForestMap::get)
-			.map(TreeEntry::hasChildren)
+			.map(TreeEntry::hasParent)
 			.orElse(false);
 	}
 
@@ -132,7 +132,7 @@ public class SimpleRepeatableMappingRegistry implements RepeatableMappingRegistr
 	 */
 	@Override
 	public boolean isContainerOf(Class<? extends Annotation> elementType, Class<? extends Annotation> containerType) {
-		return mappingForestMap.containsParentNode(containerType, elementType);
+		return mappingForestMap.containsChildNode(containerType, elementType);
 	}
 
 	/**
@@ -142,33 +142,17 @@ public class SimpleRepeatableMappingRegistry implements RepeatableMappingRegistr
 	 */
 	@Override
 	public List<RepeatableMapping> getContainers(Class<? extends Annotation> annotationType) {
-		return Optional.ofNullable(annotationType)
-			.map(mappingForestMap::get)
-			.map(TreeEntry::getChildren)
-			.map(Map::values)
-			.map(t -> CollUtils.toList(t, TreeEntry::getValue))
-			.orElseGet(Collections::emptyList);
-	}
-
-	/**
-	 * 获取包括自己在内的注解容器中的全部的注解
-	 *
-	 * @param container 容器注解
-	 * @return 注解对象
-	 */
-	@Override
-	public List<Annotation> getAllElementsFromContainer(Annotation container) {
-		if (Objects.isNull(container)) {
+		TreeEntry<Class<? extends Annotation>, RepeatableMapping> target = mappingForestMap.get(annotationType);
+		if (Objects.isNull(target) || Objects.isNull(target.getValue())) {
 			return Collections.emptyList();
 		}
-		// 若容器注解未在本表中注册，则直接返回其本身
-		final Class<? extends Annotation> containerType = container.annotationType();
-		if (!mappingForestMap.containsKey(containerType)) {
-			return Collections.singletonList(container);
+		List<RepeatableMapping> results = CollUtils.newArrayList(target.getValue());
+		while (target.hasParent()) {
+			target = target.getDeclaredParent();
+			if (Objects.nonNull(target.getValue())) {
+				results.add(target.getValue());
+			}
 		}
-		final TreeEntry<Class<? extends Annotation>, RepeatableMapping> containerMapping = mappingForestMap.get(containerType);
-		List<Annotation> results = CollUtils.newArrayList(container);
-		forEachElements(container, containerMapping.getRoot().getKey(), containerMapping, results::addAll);
 		return results;
 	}
 
@@ -182,51 +166,46 @@ public class SimpleRepeatableMappingRegistry implements RepeatableMappingRegistr
 	@SuppressWarnings("unchecked")
 	@Override
 	public <T extends Annotation> List<T> getElementsFromContainer(Annotation container, Class<T> elementType) {
+		// 容器注解为null
 		if (Objects.isNull(container)) {
 			return Collections.emptyList();
 		}
-		// 若元素注解类型与容器注解类型相同，则返回本身
-		final Class<? extends Annotation> containerType = container.annotationType();
+		// 容器类型即为元素类型
+		Class<? extends Annotation> containerType = container.annotationType();
 		if (Objects.equals(containerType, elementType)) {
 			return (List<T>)Collections.singletonList(container);
 		}
-		// 若容器注解为null，或者未在本表中注册，则直接返回空集合
-		if (!mappingForestMap.containsKey(containerType)) {
+		// 元素注解未在当前容器注册
+		TreeEntry<Class<? extends Annotation>, RepeatableMapping> elementMapping = mappingForestMap.get(elementType);
+		if (Objects.isNull(elementMapping)) {
 			return Collections.emptyList();
 		}
-		// 获取容器注解的映射，并确定其与指定的元素注解存在关系
-		final TreeEntry<Class<? extends Annotation>, RepeatableMapping> containerMapping = mappingForestMap.get(containerType);
-		if (Objects.isNull(containerMapping) || !containerMapping.containsParent(elementType)) {
+		// 元素注解与该容器注解不存在关联关系
+		if (!elementMapping.containsParent(containerType)) {
 			return Collections.emptyList();
 		}
-		// 将容器注解一层一层的兑换为元素注解
-		List<Annotation> results = forEachElements(container, elementType, containerMapping, t -> {});
-		return (List<T>)results;
-	}
 
-	private <T extends Annotation> List<Annotation> forEachElements(
-		Annotation container, Class<T> elementType,
-		TreeEntry<Class<? extends Annotation>, RepeatableMapping> containerMapping,
-		Consumer<List<Annotation>> consumer) {
+		// 获取从容器注解到该元素注解的转换路线
+		List<RepeatableMapping> route = new ArrayList<>();
+		TreeEntry<Class<? extends Annotation>, RepeatableMapping> cursor = elementMapping;
+		while (cursor.hasParent() && ObjectUtils.isNotEquals(cursor.getKey(), containerType)) {
+			route.add(cursor.getValue());
+			cursor = cursor.getDeclaredParent();
+		}
+		Collections.reverse(route);
 
-		List<Annotation> results = CollUtils.newArrayList(container);
-		TreeEntry<Class<? extends Annotation>, RepeatableMapping> mapping = containerMapping;
-		do {
-			final RepeatableMapping currContainerMapping = mapping.getValue();
-			if (Objects.isNull(currContainerMapping)) {
+		// 从容器注解一层一层的转换为元素注解
+		List<Annotation> elements = Collections.singletonList(container);
+		for (RepeatableMapping repeatableMapping : route) {
+			if (Objects.isNull(repeatableMapping)) {
 				continue;
 			}
-			results = results.stream()
-				.map(currContainerMapping::getElementsFromContainer)
-				.filter(CollUtils::isNotEmpty)
+			elements = elements.stream()
+				.map(repeatableMapping::getElementsFromContainer)
 				.flatMap(Stream::of)
 				.collect(Collectors.toList());
-			consumer.accept(results);
-			if (Objects.equals(currContainerMapping.getElementType(), elementType)) {
-				break;
-			}
-			mapping = mapping.getDeclaredParent();
-		} while (Objects.nonNull(mapping) && mapping.hasParent());
-		return results;
+		}
+		return (List<T>)elements;
 	}
+
 }

@@ -7,7 +7,6 @@ import top.xiajibagao.powerfulannotation.helper.ForestMap;
 import top.xiajibagao.powerfulannotation.helper.TreeEntry;
 
 import java.lang.annotation.*;
-import java.util.Collection;
 import java.util.Optional;
 import java.util.Set;
 
@@ -26,17 +25,17 @@ public class SimpleRepeatableMappingRegistryTest {
 		registry.register(AnnotationForTest1.class);
 
 		RepeatableMapping mapping1 = getNodeValue(registry.mappingForestMap, AnnotationForTest1.class);
-		Assert.assertNull(mapping1);
+		Assert.assertNotNull(mapping1);
+		Assert.assertEquals(AnnotationForTest1.class, mapping1.getElementType());
+		Assert.assertEquals(AnnotationForTest2.class, mapping1.getContainerType());
 
 		RepeatableMapping mapping2 = getNodeValue(registry.mappingForestMap, AnnotationForTest2.class);
 		Assert.assertNotNull(mapping2);
-		Assert.assertEquals(AnnotationForTest2.class, mapping2.getContainerType());
-		Assert.assertEquals(AnnotationForTest1.class, mapping2.getElementType());
+		Assert.assertEquals(AnnotationForTest2.class, mapping2.getElementType());
+		Assert.assertEquals(AnnotationForTest3.class, mapping2.getContainerType());
 
 		RepeatableMapping mapping3 = getNodeValue(registry.mappingForestMap, AnnotationForTest3.class);
-		Assert.assertNotNull(mapping3);
-		Assert.assertEquals(AnnotationForTest3.class, mapping3.getContainerType());
-		Assert.assertEquals(AnnotationForTest2.class, mapping3.getElementType());
+		Assert.assertNull(mapping3);
 	}
 
 	@Test
@@ -81,18 +80,6 @@ public class SimpleRepeatableMappingRegistryTest {
 	}
 
 	@Test
-	public void testGetAllElementsFromContainer() {
-		SimpleRepeatableMappingRegistry registry = new SimpleRepeatableMappingRegistry(
-			new StandardRepeatableMappingParser(), new RepeatableByMappingParser()
-		);
-		registry.register(AnnotationForTest1.class);
-
-		AnnotationForTest3 annotation =  ClassForTest.class.getAnnotation(AnnotationForTest3.class);
-		Collection<Annotation> annotations = registry.getAllElementsFromContainer(annotation);
-		Assert.assertEquals(7, annotations.size());
-	}
-
-	@Test
 	public void testGetElementsFromContainer() {
 		SimpleRepeatableMappingRegistry registry = new SimpleRepeatableMappingRegistry(
 			new StandardRepeatableMappingParser(), new RepeatableByMappingParser()
@@ -101,7 +88,7 @@ public class SimpleRepeatableMappingRegistryTest {
 
 		AnnotationForTest3 annotation = ClassForTest.class.getAnnotation(AnnotationForTest3.class);
 		Assert.assertTrue(registry.getElementsFromContainer(annotation, AnnotationForTest4.class).isEmpty());
-		Assert.assertEquals(CollUtils.newArrayList(annotation), registry.getElementsFromContainer(annotation, AnnotationForTest3.class));
+		Assert.assertEquals(1, registry.getElementsFromContainer(annotation, AnnotationForTest3.class).size());
 		Assert.assertEquals(2, registry.getElementsFromContainer(annotation, AnnotationForTest2.class).size());
 		Assert.assertEquals(4, registry.getElementsFromContainer(annotation, AnnotationForTest1.class).size());
 

@@ -4,6 +4,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import java.lang.annotation.*;
+import java.util.List;
 
 /**
  * test for {@link StandardRepeatableMappingParser}
@@ -15,19 +16,24 @@ public class StandardRepeatableMappingParserTest {
 	@Test
 	public void testParse() {
 		StandardRepeatableMappingParser parser = new StandardRepeatableMappingParser();
+		List<RepeatableMapping> mappings;
 
-		RepeatableMapping mapping1 = parser.parse(AnnotationForTest1.class, null);
+		mappings = parser.parse(AnnotationForTest1.class, null);
+		Assert.assertEquals(1, mappings.size());
+		RepeatableMapping mapping1 = mappings.get(0);
 		Assert.assertNotNull(mapping1);
 		Assert.assertEquals(AnnotationForTest2.class, mapping1.getContainerType());
 		Assert.assertEquals(AnnotationForTest1.class, mapping1.getElementType());
 
-		RepeatableMapping mapping2 = parser.parse(AnnotationForTest2.class, null);
+		mappings = parser.parse(AnnotationForTest2.class, null);
+		Assert.assertEquals(1, mappings.size());
+		RepeatableMapping mapping2 = mappings.get(0);
 		Assert.assertNotNull(mapping2);
 		Assert.assertEquals(AnnotationForTest3.class, mapping2.getContainerType());
 		Assert.assertEquals(AnnotationForTest2.class, mapping2.getElementType());
 
-		RepeatableMapping mapping3 = parser.parse(AnnotationForTest3.class, null);
-		Assert.assertNull(mapping3);
+		mappings = parser.parse(AnnotationForTest3.class, null);
+		Assert.assertTrue(mappings.isEmpty());
 	}
 
 	@Repeatable(AnnotationForTest2.class)

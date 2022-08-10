@@ -10,6 +10,7 @@ import java.lang.annotation.*;
  *
  * @author huangchengxing
  */
+@Repeatable(RepeatableBy.List.class)
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.METHOD, ElementType.ANNOTATION_TYPE})
@@ -24,5 +25,17 @@ public @interface RepeatableBy {
      * {@link #annotation()}指定注解中关联的属性
      */
     String attribute() default "value";
+
+    /**
+     * 容器注解
+     *
+     * @author huangchengxing
+     */
+    @Documented
+    @Retention(RetentionPolicy.RUNTIME)
+    @Target({ElementType.METHOD, ElementType.ANNOTATION_TYPE})
+    @interface List {
+        RepeatableBy[] value() default {};
+    }
 
 }

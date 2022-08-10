@@ -76,11 +76,13 @@ public class CollUtils {
     }
 
     public static <T, R> List<R> toList(Collection<T> collection, Function<T, R> mapping) {
-        return collection.stream().map(mapping).collect(Collectors.toList());
+        return isEmpty(collection) ?
+            Collections.emptyList() : collection.stream().map(mapping).collect(Collectors.toList());
     }
 
     public static <T, R> Set<R> toSet(Collection<T> collection, Function<T, R> mapping) {
-        return collection.stream().map(mapping).collect(Collectors.toSet());
+        return isEmpty(collection) ?
+            Collections.emptySet() : collection.stream().map(mapping).collect(Collectors.toSet());
     }
 
     // ================== array ==================

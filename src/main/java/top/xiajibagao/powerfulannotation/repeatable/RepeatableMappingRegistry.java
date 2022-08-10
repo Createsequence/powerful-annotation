@@ -73,14 +73,6 @@ public interface RepeatableMappingRegistry {
 	List<RepeatableMapping> getContainers(Class<? extends Annotation> annotationType);
 
 	/**
-	 * 获取注解容器中的全部的元素注解
-	 *
-	 * @param container 容器对象
-	 * @return 注解对象
-	 */
-	List<Annotation> getAllElementsFromContainer(Annotation container);
-
-	/**
 	 * 从容器注解中获得指定的元素注解，若该容器注解不为指定对元素的容器，或任意一者为空时返回null
 	 *
 	 * @param container   容器注解对象

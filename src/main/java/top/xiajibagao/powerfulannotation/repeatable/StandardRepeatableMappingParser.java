@@ -5,6 +5,8 @@ import top.xiajibagao.powerfulannotation.helper.ReflectUtils;
 import java.lang.annotation.Annotation;
 import java.lang.annotation.Repeatable;
 import java.lang.reflect.Method;
+import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -32,14 +34,14 @@ public class StandardRepeatableMappingParser implements RepeatableMappingParser 
 	 * @return 映射关系
 	 */
 	@Override
-	public RepeatableMapping parse(Class<? extends Annotation> annotationType, RepeatableMappingRegistry registry) {
+	public List<RepeatableMapping> parse(Class<? extends Annotation> annotationType, RepeatableMappingRegistry registry) {
 		final Class<? extends Annotation> containerType = getContainerType(annotationType);
 		if (Objects.isNull(containerType)) {
-			return null;
+			return Collections.emptyList();
 		}
 		final Method containedAttribute = ReflectUtils.getDeclaredMethod(containerType, VALUE);
 		RepeatableMappingParser.checkContainedAttribute(annotationType, containerType, containedAttribute);
-		return new RepeatableAnnotationMapping(annotationType, containerType, containedAttribute);
+		return Collections.singletonList(new RepeatableAnnotationMapping(annotationType, containerType, containedAttribute));
 	}
 
 	private Class<? extends Annotation> getContainerType(Class<?> annotationType) {

@@ -5,6 +5,7 @@ import top.xiajibagao.powerfulannotation.helper.Assert;
 import java.lang.annotation.Annotation;
 import java.lang.annotation.Repeatable;
 import java.lang.reflect.Method;
+import java.util.List;
 
 /**
  * 映射关系解析器，用于在{@link SimpleRepeatableMappingRegistry}
@@ -33,7 +34,7 @@ public interface RepeatableMappingParser {
 	 * @param registry       注册表
 	 * @return 映射关系
 	 */
-	RepeatableMapping parse(Class<? extends Annotation> annotationType, RepeatableMappingRegistry registry);
+	List<RepeatableMapping> parse(Class<? extends Annotation> annotationType, RepeatableMappingRegistry registry);
 
 	/**
 	 * 检查{@code containerAttribute}方法是否存在，且返回值类型为{@code elementType}
