@@ -10,7 +10,7 @@ import java.util.function.Predicate;
  * <p>注解过滤器，用于在{@link AbstractAnnotationScanner}中过滤不需要的注解。<br />
  * 提供了四种默认实现：
  * <ul>
- *     <li>{@link #FILTER_JAVA}：过滤{@link java.lang}, 与{@link javax}还有{@link com.sun}包下的注解；</li>
+ *     <li>{@link #FILTER_JAVA}：过滤{@link java.lang}还有{@link com.sun}包下的注解；</li>
  *     <li>{@link #FILTER_NOTHING}：不过滤任何注解；</li>
  *     <li>{@link #FILTER_ANYTHING}：过滤任何注解；</li>
  * </ul>
@@ -32,7 +32,7 @@ public interface AnnotationFilter extends Predicate<Annotation> {
 	// ===================== 默认实现 =====================
 
 	/**
-	 * 过滤JDK注解，包括{@link java.lang}, 与{@link javax}还有{@link com.sun}包下的注解
+	 * 过滤JDK注解，包括{@link java.lang}, 还有{@link com.sun}包下的注解
 	 */
 	AnnotationFilter FILTER_JAVA = new JavaAnnotationFilter();
 
@@ -47,7 +47,7 @@ public interface AnnotationFilter extends Predicate<Annotation> {
 	AnnotationFilter FILTER_ANYTHING = new AnythingFilter();
 
 	/**
-	 * 过滤JDK注解，包括{@link java.lang}, 与{@link javax}还有{@link com.sun}包下的注解
+	 * 过滤JDK注解，包括{@link java.lang}, 还有{@link com.sun}包下的注解
 	 *
 	 * @author huangchengxing
 	 */
@@ -55,7 +55,7 @@ public interface AnnotationFilter extends Predicate<Annotation> {
 		@Override
 		public boolean test(Annotation annotation) {
 			return StrUtils.isNotStartWithAny(
-				annotation.annotationType().getName(), "java.lang", "javax", "com.sum"
+				annotation.annotationType().getName(), "java.lang", "com.sum"
 			);
 		}
 	}
