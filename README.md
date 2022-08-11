@@ -18,7 +18,7 @@
 
 ## 文档
 
-[Wiki-CN](https://gitee.com/CreateSequence/powerful-annotation/wikis/Home)
+[Wiki-CN](https://gitee.com/CreateSequence/powerful-annotation/wikis/pages)
 
 ## 特性
 
