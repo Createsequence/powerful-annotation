@@ -11,6 +11,7 @@ import java.util.function.Predicate;
  * 注解扫描配置
  *
  * @author huangchengxing
+ * @see AbstractAnnotationScanner
  */
 @Accessors(chain = true)
 @Getter
@@ -32,12 +33,7 @@ public class ScanOptions {
     private boolean enableScanMetaAnnotation;
 
     /**
-     * 若一个非注解类已经被处理过，再次扫描到时是否再次处理
-     */
-    private boolean enableScanAccessedType;
-
-    /**
-     * 类型过滤器，若该类型——包括普通类与注解类——无法通过过滤器，则不会被扫描器扫描
+     * 类型过滤器，若该类型——包括普通类与注解类——无法通过过滤器，则扫描器扫描层级结构时，将会忽略该类型
      */
     private Predicate<Class<?>> typeFilter;
 
@@ -48,32 +44,26 @@ public class ScanOptions {
 
     /**
      * 构造一个扫描配置，默认不重复扫描已经访问过的普通类和注解类，
-     * 并且不处理包括{@link java.lang}，与{@link javax}还有{@link com.sun}包下的类的注解
+     * 并且不处理包括{@link java}包下的类的注解
      *
-     * @param enableScanSuperClass     是否扫描父类
-     * @param enableScanInterface      是否扫描接口
-     * @param enableScanMetaAnnotation 是否扫描父类
+     * @param enableScanSuperClass 是否扫描父类
+     * @param enableScanInterface 是否扫描接口
+     * @param enableScanMetaAnnotation 是否扫描元注解
      */
     public ScanOptions(boolean enableScanSuperClass, boolean enableScanInterface, boolean enableScanMetaAnnotation) {
         this.locked = false;
         this.enableScanSuperClass = enableScanSuperClass;
         this.enableScanInterface = enableScanInterface;
         this.enableScanMetaAnnotation = enableScanMetaAnnotation;
-        this.enableScanAccessedType = false;
-        this.typeFilter = t -> StrUtils.isNotStartWithAny(t.getName(), "java.lang", "javax", "com.sum");
+        this.typeFilter = t -> StrUtils.isNotStartWithAny(t.getName(), "java.");
     }
 
     /**
-     * 构造一个扫描配置，默认不重复扫描已经访问过的普通类和注解类，
-     * 并且不处理包括{@link java.lang}，与{@link javax}还有{@link com.sun}包下的类的注解
+     * 构造一个扫描配置，默认至
+     * 并且不处理包括{@link java}包下的类的注解
      */
     public ScanOptions() {
-        this.locked = false;
-        this.enableScanSuperClass = true;
-        this.enableScanInterface = true;
-        this.enableScanMetaAnnotation = true;
-        this.enableScanAccessedType = false;
-        this.typeFilter = t -> StrUtils.isNotStartWithAny(t.getName(), "java.lang", "javax", "com.sum");
+        this(true, true, true);
     }
 
     /**
@@ -84,7 +74,6 @@ public class ScanOptions {
         this.enableScanSuperClass = options.enableScanSuperClass;
         this.enableScanInterface = options.enableScanInterface;
         this.enableScanMetaAnnotation = options.enableScanMetaAnnotation;
-        this.enableScanAccessedType = options.enableScanAccessedType;
         this.typeFilter = options.typeFilter;
     }
 
@@ -115,24 +104,12 @@ public class ScanOptions {
     /**
      * 设置是否支持扫描元注解
      *
-     * @param enableScanMetaAnnotation 是否支持扫描元注解
+     * @param enableScanMetaAnnotation 是否支持扫描接口
      * @return 配置对象
      */
     public ScanOptions setEnableScanMetaAnnotation(boolean enableScanMetaAnnotation) {
         checkLocked();
         this.enableScanMetaAnnotation = enableScanMetaAnnotation;
-        return this;
-    }
-
-    /**
-     * 设置若一个类已经被处理过，再次扫描到时是否再次处理
-     *
-     * @param enableScanAccessedType 若一个类已经被处理过，再次扫描到时是否再次处理
-     * @return 配置对象
-     */
-    public ScanOptions setEnableScanAccessedType(boolean enableScanAccessedType) {
-        checkLocked();
-        this.enableScanAccessedType = enableScanAccessedType;
         return this;
     }
 

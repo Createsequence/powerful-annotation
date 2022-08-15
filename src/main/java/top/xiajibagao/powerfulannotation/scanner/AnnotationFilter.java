@@ -47,7 +47,7 @@ public interface AnnotationFilter extends Predicate<Annotation> {
 	AnnotationFilter FILTER_ANYTHING = new AnythingFilter();
 
 	/**
-	 * 过滤JDK注解，包括{@link java.lang}, 与{@link javax}还有{@link com.sun}包下的注解
+	 * 过滤JDK注解，包括{@link java}包下的注解
 	 *
 	 * @author huangchengxing
 	 */
@@ -55,7 +55,7 @@ public interface AnnotationFilter extends Predicate<Annotation> {
 		@Override
 		public boolean test(Annotation annotation) {
 			return StrUtils.isNotStartWithAny(
-				annotation.annotationType().getName(), "java.lang", "javax", "com.sum"
+				annotation.annotationType().getName(), "java."
 			);
 		}
 	}
