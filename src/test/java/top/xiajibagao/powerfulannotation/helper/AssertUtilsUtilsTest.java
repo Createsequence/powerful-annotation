@@ -3,21 +3,21 @@ package top.xiajibagao.powerfulannotation.helper;
 import org.junit.Test;
 
 /**
- * test for {@link Assert}
+ * test for {@link AssertUtils}
  *
  * @author huangchengxing
  */
-public class AssertTest {
+public class AssertUtilsUtilsTest {
 
     @Test
     public void testIsTrue() {
         org.junit.Assert.assertThrows(
             "msg", IllegalArgumentException.class,
-            () -> Assert.isTrue(false, "msg")
+            () -> AssertUtils.isTrue(false, "msg")
         );
         org.junit.Assert.assertThrows(
             "msg", IllegalArgumentException.class,
-            () -> Assert.isTrue(false, "%s", "msg")
+            () -> AssertUtils.isTrue(false, "%s", "msg")
         );
     }
 
@@ -25,11 +25,11 @@ public class AssertTest {
     public void testIsFalse() {
         org.junit.Assert.assertThrows(
             "msg", IllegalArgumentException.class,
-            () -> Assert.isFalse(true, "msg")
+            () -> AssertUtils.isFalse(true, "msg")
         );
         org.junit.Assert.assertThrows(
             "msg", IllegalArgumentException.class,
-            () -> Assert.isFalse(true, "%s", "msg")
+            () -> AssertUtils.isFalse(true, "%s", "msg")
         );
     }
 
@@ -37,11 +37,11 @@ public class AssertTest {
     public void testNotNull() {
         org.junit.Assert.assertThrows(
             "msg", IllegalArgumentException.class,
-            () -> Assert.notNull(null, "msg")
+            () -> AssertUtils.notNull(null, "msg")
         );
         org.junit.Assert.assertThrows(
             "msg", IllegalArgumentException.class,
-            () -> Assert.notNull(null, "%s", "msg")
+            () -> AssertUtils.notNull(null, "%s", "msg")
         );
     }
 
@@ -49,11 +49,11 @@ public class AssertTest {
     public void testIsAssignable() {
         org.junit.Assert.assertThrows(
             "msg", IllegalArgumentException.class,
-            () -> Assert.isAssignable(Integer.class, Long.class, "msg")
+            () -> AssertUtils.isAssignable(Integer.class, Long.class, "msg")
         );
         org.junit.Assert.assertThrows(
             "msg", IllegalArgumentException.class,
-            () -> Assert.isAssignable(Integer.class, Long.class, "%s", "msg")
+            () -> AssertUtils.isAssignable(Integer.class, Long.class, "%s", "msg")
         );
     }
 
@@ -61,11 +61,11 @@ public class AssertTest {
     public void testEquals() {
         org.junit.Assert.assertThrows(
             "msg", IllegalArgumentException.class,
-            () -> Assert.equals(Integer.class, Long.class, "msg")
+            () -> AssertUtils.equals(Integer.class, Long.class, "msg")
         );
         org.junit.Assert.assertThrows(
             "msg", IllegalArgumentException.class,
-            () -> Assert.equals(Integer.class, Long.class, "%s", "msg")
+            () -> AssertUtils.equals(Integer.class, Long.class, "%s", "msg")
         );
     }
 
@@ -73,11 +73,11 @@ public class AssertTest {
     public void testIsNotEquals() {
         org.junit.Assert.assertThrows(
             "msg", IllegalArgumentException.class,
-            () -> Assert.isNotEquals(Integer.class, Integer.class, "msg")
+            () -> AssertUtils.isNotEquals(Integer.class, Integer.class, "msg")
         );
         org.junit.Assert.assertThrows(
             "msg", IllegalArgumentException.class,
-            () -> Assert.isNotEquals(Integer.class, Integer.class, "%s", "msg")
+            () -> AssertUtils.isNotEquals(Integer.class, Integer.class, "%s", "msg")
         );
     }
 

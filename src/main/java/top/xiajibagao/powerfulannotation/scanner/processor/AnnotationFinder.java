@@ -1,7 +1,7 @@
 package top.xiajibagao.powerfulannotation.scanner.processor;
 
 import lombok.Getter;
-import top.xiajibagao.powerfulannotation.helper.Assert;
+import top.xiajibagao.powerfulannotation.helper.AssertUtils;
 import top.xiajibagao.powerfulannotation.scanner.AnnotationProcessor;
 import top.xiajibagao.powerfulannotation.scanner.AnnotationScanner;
 
@@ -42,7 +42,7 @@ public class AnnotationFinder implements AnnotationProcessor {
      * @param predicate 判断条件
      */
     public AnnotationFinder(Predicate<Annotation> predicate) {
-        Assert.notNull(predicate, "predicate must not null");
+        AssertUtils.notNull(predicate, "predicate must not null");
         this.predicate = predicate;
     }
 

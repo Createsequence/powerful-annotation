@@ -7,9 +7,9 @@ import java.util.Objects;
  *
  * @author huangchengxing
  */
-public class Assert {
+public class AssertUtils {
 
-    private Assert() {
+    private AssertUtils() {
     }
 
     public static void isTrue(boolean condition, String temp, Object... args) {

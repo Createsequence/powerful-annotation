@@ -2,7 +2,7 @@ package top.xiajibagao.powerfulannotation.scanner;
 
 import lombok.Getter;
 import lombok.experimental.Accessors;
-import top.xiajibagao.powerfulannotation.helper.Assert;
+import top.xiajibagao.powerfulannotation.helper.AssertUtils;
 import top.xiajibagao.powerfulannotation.helper.StrUtils;
 
 import java.util.function.Predicate;
@@ -136,7 +136,7 @@ public class ScanOptions {
      * 检查配置是否锁定
      */
     private void checkLocked() {
-        Assert.isFalse(locked, "options is locked");
+        AssertUtils.isFalse(locked, "options is locked");
     }
 
 }
