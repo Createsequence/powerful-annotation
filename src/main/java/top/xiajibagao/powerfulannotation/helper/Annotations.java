@@ -8,6 +8,7 @@ import top.xiajibagao.powerfulannotation.scanner.processor.AnnotationFinder;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
+import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -30,6 +31,21 @@ public class Annotations {
     private static final Annotation[] EMPTY_ANNOTATIONS = new Annotation[0];
 
     // ========================== default ==========================
+
+    /**
+     * 方法是否为注解属性方法。 <br>
+     * 方法无参数，且有返回值的方法认为是注解属性的方法。
+     * 不包括{@code toString}, {@code hashCode}与{@code annotationType}
+     *
+     * @param method 方法
+     */
+    public static boolean isAttributeMethod(Method method) {
+        return method.getParameterCount() == 0
+            && method.getReturnType() != void.class
+            && !"hashCode".equals(method.getName())
+            && !"toString".equals(method.getName())
+            && !"annotationType".equals(method.getName());
+    }
     
     /**
      * 获取空注解数组
