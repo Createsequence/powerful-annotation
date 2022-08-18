@@ -15,14 +15,34 @@ import java.util.List;
 public interface RepeatableMappingRegistry {
 
 	/**
-	 * 创建一个默认的映射关系注册表，支持处理原生的{@link Repeatable}注解与{@link RepeatableBy}注解
+	 * 创建一个映射关系注册表，支持处理原生的{@link Repeatable}注解
 	 *
 	 * @return 映射关系注册表
 	 */
-	static RepeatableMappingRegistry create() {
+	static RepeatableMappingRegistry standard() {
+		return new SimpleRepeatableMappingRegistry(
+			RepeatableMappingParser.STANDARD_REPEATABLE_MAPPING_PARSER
+		);
+	}
+
+	/**
+	 * 创建一个映射关系注册表，支持处理原生的{@link Repeatable}注解与{@link RepeatableBy}注解
+	 *
+	 * @return 映射关系注册表
+	 */
+	static RepeatableMappingRegistry enhanced() {
 		return new SimpleRepeatableMappingRegistry(
 			RepeatableMappingParser.STANDARD_REPEATABLE_MAPPING_PARSER, RepeatableMappingParser.REPEATABLE_BY_MAPPING_PARSER
 		);
+	}
+
+	/**
+	 * 创建一个空映射关系注册表，不处理任何可重复关系
+	 *
+	 * @return 映射关系注册表
+	 */
+	static RepeatableMappingRegistry none() {
+		return NoneRepeatableMappingRegistry.INSTANCE;
 	}
 
 	/**
