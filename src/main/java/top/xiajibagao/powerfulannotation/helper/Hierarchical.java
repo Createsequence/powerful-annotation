@@ -1,5 +1,6 @@
 package top.xiajibagao.powerfulannotation.helper;
 
+import java.util.Comparator;
 
 /**
  * <p>描述以一个在以{@link #getRoot()}为原点的二维坐标系中存在的对象，
@@ -32,7 +33,7 @@ package top.xiajibagao.powerfulannotation.helper;
  * @author huangchengxing
  * @see HierarchySelector
  */
-public interface Hierarchical {
+public interface Hierarchical extends Comparable<Hierarchical> {
 
     /**
      * 垂直索引起始点
@@ -70,5 +71,18 @@ public interface Hierarchical {
      * @return 合成注解与根对象的水平距离
      */
     int getHorizontalIndex();
+    
+    /**
+     * 按照{@link #getVerticalIndex()}与{@link #getHorizontalIndex()}返回值比较两个对象
+     *
+     * @param o 对象
+     * @return 比较值
+     */
+    @Override
+    default int compareTo(Hierarchical o) {
+        return Comparator.comparing(Hierarchical::getVerticalIndex)
+            .thenComparing(Hierarchical::getHorizontalIndex)
+            .compare(this, o);
+    }
 
 }
