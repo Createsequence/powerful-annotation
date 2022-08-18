@@ -32,7 +32,7 @@ public interface AnnotationFilter extends Predicate<Annotation> {
 	// ===================== 默认实现 =====================
 
 	/**
-	 * 过滤JDK注解，包括{@link java.lang}, 与{@link javax}还有{@link com.sun}包下的注解
+	 * 过滤JDK注解，包括{@link java}包下的注解
 	 */
 	AnnotationFilter FILTER_JAVA = new JavaAnnotationFilter();
 
